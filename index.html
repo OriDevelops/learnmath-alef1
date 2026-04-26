@@ -1,0 +1,1575 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>בית הספר למתמטיקה</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;font-family:"Heebo","Segoe UI",sans-serif;background:linear-gradient(135deg,#eef2ff 0%,#fdf2f8 50%,#ecfeff 100%);color:#0f172a;min-height:100vh}
+  /* Fix KaTeX/math direction inside RTL document */
+  .katex, .katex-display, .katex-html, span.katex {
+    direction: ltr !important;
+    unicode-bidi: isolate !important;
+    text-align: left;
+  }
+  .katex-display { display: block; margin: 0.5em 0; text-align: center !important; }
+  .wrap{max-width:1200px;margin:0 auto;padding:32px 24px}
+  .hello{text-align:center;padding:40px 20px 20px}
+  .hello h1{font-size:54px;font-weight:800;margin:0;background:linear-gradient(135deg,#6366f1,#8b5cf6,#ec4899);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:1px}
+  .hello p{margin:8px 0 0;color:#64748b;font-size:17px}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:30px}
+  @media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:560px){.grid{grid-template-columns:1fr}}
+  .tile{background:white;border-radius:18px;padding:24px;border:2px solid #e2e8f0;cursor:pointer;transition:all .25s;text-align:right;display:flex;flex-direction:column;gap:6px}
+  .tile:hover{border-color:#8b5cf6;transform:translateY(-4px);box-shadow:0 16px 40px rgba(139,92,246,.18)}
+  .tile .emoji{font-size:36px;margin-bottom:6px}
+  .tile h3{margin:0;font-size:18px;font-weight:700;color:#1e293b}
+  .tile p{margin:0;font-size:14px;color:#64748b;line-height:1.5}
+  .topbar{display:flex;align-items:center;gap:14px;margin-bottom:20px}
+  .topbar h2{margin:0;font-size:30px;font-weight:800;color:#0f172a;flex:1}
+  .back{background:white;border:2px solid #e2e8f0;color:#475569;padding:10px 18px;border-radius:12px;cursor:pointer;font-size:15px;font-weight:600;font-family:inherit;transition:all .2s}
+  .back:hover{border-color:#8b5cf6;color:#8b5cf6}
+  .card{background:white;border-radius:18px;padding:28px;box-shadow:0 8px 24px rgba(15,23,42,.06);border:1px solid #e2e8f0;margin-bottom:20px}
+  .lesson{background:linear-gradient(135deg,#f0f9ff,#fdf4ff);border-right:4px solid #6366f1;padding:18px 22px;border-radius:14px;margin:14px 0}
+  .lesson p{margin:8px 0;line-height:1.85;color:#334155}
+  .lesson ul, .lesson ol{margin:8px 0;padding-right:24px;line-height:2}
+  .lesson li{color:#334155}
+  .formula{background:#fefce8;border:1px dashed #facc15;padding:14px 18px;border-radius:12px;margin:12px 0;text-align:center;font-size:18px}
+  .example{background:#f0fdf4;border:1px solid #86efac;border-radius:14px;padding:18px 22px;margin:16px 0}
+  .example h4{margin:0 0 10px;color:#166534;font-size:17px}
+  .example .step{background:white;border-right:3px solid #10b981;padding:8px 14px;border-radius:8px;margin:6px 0;line-height:1.7}
+  .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+  .btn{padding:13px 24px;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;transition:transform .15s, box-shadow .15s}
+  .btn:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(0,0,0,.12)}
+  .btn-primary{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white}
+  .btn-success{background:linear-gradient(135deg,#10b981,#059669);color:white}
+  .btn-warn{background:linear-gradient(135deg,#f59e0b,#d97706);color:white}
+  .btn-secondary{background:#e2e8f0;color:#1e293b}
+  .btn-pink{background:linear-gradient(135deg,#ec4899,#db2777);color:white}
+  .qbox{background:linear-gradient(135deg,#fefce8,#fef3c7);border-radius:16px;padding:24px;border:2px solid #fde68a;margin:18px 0}
+  .qhead{font-size:14px;font-weight:700;color:#92400e;letter-spacing:.5px}
+  .qtext{font-size:18px;color:#451a03;margin-top:10px;line-height:1.8}
+  .multi-q{display:grid;grid-template-columns:auto 1fr;gap:10px 14px;align-items:center;margin-top:16px}
+  .multi-q label{font-weight:600;color:#334155;font-size:15px}
+  .multi-q input{padding:10px 14px;border:2px solid #e2e8f0;border-radius:10px;font-size:15px;direction:ltr;text-align:right;font-family:inherit;background:white}
+  .multi-q input:focus{outline:none;border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,.2)}
+  .feedback{margin-top:14px;padding:14px 18px;border-radius:12px;font-weight:600;display:none}
+  .feedback.show{display:block}
+  .feedback.ok{background:#dcfce7;color:#166534;border:1px solid #86efac}
+  .feedback.bad{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5}
+  .reveal{margin-top:14px;background:#f8fafc;border-radius:12px;padding:18px;border:1px solid #e2e8f0;display:none}
+  .reveal.show{display:block}
+  .reveal h4{margin:0 0 10px;color:#1e40af}
+  .step{padding:10px 14px;background:white;border-radius:10px;margin:6px 0;border-right:3px solid #06b6d4;line-height:1.7}
+  svg.parabola{background:#f8fafc;border-radius:10px;width:100%;max-width:400px;height:auto;display:block;margin:10px auto}
+  .stepcard{background:white;border-radius:14px;padding:16px 20px;margin:12px 0;border:2px solid #e2e8f0;display:flex;gap:14px;align-items:flex-start}
+  .stepcard.locked{opacity:.55;filter:grayscale(.4)}
+  .stepcard.passed{border-color:#86efac;background:#f0fdf4}
+  .stepcard.failed{border-color:#fca5a5;background:#fef2f2}
+  .stepnum{flex-shrink:0;width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px}
+  .stepcard.passed .stepnum{background:linear-gradient(135deg,#10b981,#059669)}
+  .stepcard.failed .stepnum{background:linear-gradient(135deg,#ef4444,#dc2626)}
+  .stepbody{flex:1;min-width:0}
+  .stepbody h4{margin:0 0 4px;font-size:16px;color:#1e293b}
+  .stephelp{font-size:14px;color:#64748b;margin:4px 0 10px;line-height:1.6}
+  .stepinputs{display:grid;grid-template-columns:auto 1fr auto;gap:8px 12px;align-items:center}
+  .stepinputs label{font-weight:600;color:#334155;font-size:14px}
+  .stepinputs input{padding:9px 12px;border:2px solid #e2e8f0;border-radius:8px;font-size:14px;direction:ltr;text-align:right;font-family:inherit;background:white}
+  .stepinputs input:focus{outline:none;border-color:#6366f1}
+  .stepactions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+  .stepactions .btn{padding:8px 14px;font-size:13px}
+  .stepfb{margin-top:8px;font-size:14px;font-weight:600;display:none}
+  .stepfb.show{display:block}
+  .stepfb.ok{color:#166534}
+  .stepfb.bad{color:#991b1b}
+  .stephint{margin-top:8px;padding:10px 12px;background:#fef3c7;border-radius:8px;font-size:14px;color:#78350f;line-height:1.6;display:none}
+  .stephint.show{display:block}
+  /* Device picker modal */
+  .device-modal{position:fixed;inset:0;background:rgba(15,23,42,.88);display:flex;align-items:center;justify-content:center;z-index:9999;backdrop-filter:blur(10px)}
+  .device-modal.hidden{display:none}
+  .device-modal-content{background:white;border-radius:26px;padding:36px 30px;max-width:520px;width:90%;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.3)}
+  .device-modal-content h2{margin:0 0 8px;font-size:26px;color:#0f172a;font-weight:800}
+  .device-modal-content p{margin:0 0 24px;color:#64748b}
+  .device-options{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .device-btn{padding:28px 18px;border:3px solid #e2e8f0;border-radius:20px;background:white;cursor:pointer;font-size:17px;font-weight:700;color:#1e293b;font-family:inherit;transition:all .2s}
+  .device-btn:hover{border-color:#6366f1;transform:translateY(-3px);box-shadow:0 12px 30px rgba(99,102,241,.2);background:#f5f3ff}
+  .device-btn .ic{font-size:54px;display:block;margin-bottom:10px}
+  .switch-mode{display:inline-flex;align-items:center;gap:6px;background:white;border:2px solid #e2e8f0;color:#475569;padding:8px 14px;border-radius:999px;cursor:pointer;font-size:13px;font-weight:600;font-family:inherit;transition:all .2s;margin-top:14px}
+  .switch-mode:hover{border-color:#6366f1;color:#6366f1}
+  /* Mobile mode overrides */
+  body.mode-mobile .wrap{padding:14px 10px}
+  body.mode-mobile .hello{padding:24px 12px 16px}
+  body.mode-mobile .hello h1{font-size:42px}
+  body.mode-mobile .grid{grid-template-columns:1fr !important;gap:12px}
+  body.mode-mobile .tile{padding:18px}
+  body.mode-mobile .tile h3{font-size:17px}
+  body.mode-mobile .card{padding:16px}
+  body.mode-mobile .topbar h2{font-size:22px}
+  body.mode-mobile .topbar{flex-direction:row;flex-wrap:wrap}
+  body.mode-mobile .qtext{font-size:15px}
+  body.mode-mobile .multi-q{grid-template-columns:1fr;gap:6px 0}
+  body.mode-mobile .multi-q label{margin-top:6px}
+  body.mode-mobile .stepinputs{grid-template-columns:1fr;gap:6px}
+  body.mode-mobile .stepinputs label{margin-top:6px}
+  body.mode-mobile .actions{flex-direction:column;gap:8px}
+  body.mode-mobile .actions .btn{width:100%}
+  body.mode-mobile .lesson p, body.mode-mobile .lesson li{font-size:15px}
+  body.mode-mobile .formula{font-size:15px;padding:10px;line-height:1.7}
+  body.mode-mobile h3{font-size:17px}
+  body.mode-mobile svg.parabola{max-width:100%}
+  body.mode-mobile .stepcard{padding:12px 14px;gap:10px;flex-direction:column}
+  body.mode-mobile .stepnum{width:34px;height:34px;font-size:14px}
+  body.mode-mobile .stepactions .btn{padding:8px 12px;font-size:13px}
+  body.mode-mobile .step{font-size:14px;padding:8px 12px}
+  body.mode-mobile .qbox{padding:16px}
+  body.mode-mobile .device-options{grid-template-columns:1fr 1fr}
+  /* Desktop mode forcing */
+  body.mode-desktop .grid{grid-template-columns:repeat(3,1fr)}
+  .pill{display:inline-block;background:linear-gradient(135deg,#dbeafe,#ede9fe);color:#4338ca;padding:5px 14px;border-radius:999px;font-size:13px;font-weight:600;margin-bottom:10px}
+  .hidden{display:none}
+</style>
+</head>
+<body>
+
+<div id="device-modal" class="device-modal hidden">
+  <div class="device-modal-content">
+    <h2>איך אתה גולש באתר?</h2>
+    <p>נתאים את התצוגה למכשיר שלך</p>
+    <div class="device-options">
+      <button class="device-btn" data-device="mobile">
+        <span class="ic">📱</span>
+        טלפון
+      </button>
+      <button class="device-btn" data-device="desktop">
+        <span class="ic">💻</span>
+        מחשב
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="wrap" id="root"></div>
+
+<script>
+const $ = s => document.querySelector(s);
+const root = () => document.getElementById('root');
+const rint = (a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+const pick = arr => arr[Math.floor(Math.random()*arr.length)];
+const isClose = (a,b,t=1e-3)=>Math.abs(a-b)<t;
+function parseAns(s){
+  if(s===undefined||s===null) return NaN;
+  s = String(s).trim().replace(/\s/g,'').replace('−','-');
+  if(s==='') return NaN;
+  if(s.includes('/')){ const [n,d]=s.split('/').map(Number); if(!isFinite(n)||!isFinite(d)||d===0) return NaN; return n/d; }
+  const v = Number(s); return isFinite(v)?v:NaN;
+}
+function refmath(){ if(window.renderMathInElement) renderMathInElement(root(),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]}); }
+
+/* ====== Topics list ====== */
+const topics = [
+  {id:'parab-vert',  emoji:'📈', title:'הזזה אנכית', desc:'$y=x^2+k$ קודקוד וחיתוכים'},
+  {id:'parab-horiz', emoji:'📉', title:'הזזה אופקית', desc:'$y=(x-p)^2$ מציאת קודקוד ותחומים'},
+  {id:'parab-comb',  emoji:'🎯', title:'הזזה משולבת', desc:'$y=(x-p)^2+k$ חקירה מלאה'},
+  {id:'parab-stretch', emoji:'↕️', title:'כיווץ ומתיחה', desc:'$y=ax^2$ השפעת הפרמטר $a$'},
+  {id:'parab-std',   emoji:'🔢', title:'הצגה סטנדרטית', desc:'$y=ax^2+bx+c$ ונוסחת השורשים'},
+  {id:'parab-line',  emoji:'✂️', title:'חיתוך פרבולה וישר', desc:'7 נקודות מסומנות (חיתוכי צירים וחיתוכי פרבולה–ישר)'},
+  {id:'parab-parab', emoji:'🔀', title:'חיתוך שתי פרבולות', desc:'מציאת נקודות החיתוך A,B'},
+  {id:'eqdenom',     emoji:'➗', title:'משוואות עם מכנים', desc:'תחום הצבה ופתרון בשלבים'},
+  {id:'quad-coord',  emoji:'▱',  title:'מקבילית אנליטית', desc:'קדקודים, אלכסונים ושטח'},
+  {id:'trap-coord',  emoji:'⏢',  title:'טרפז אנליטי', desc:'תכונות, גובה וחישוב שטח'},
+  {id:'parallelogram', emoji:'⬛', title:'מקבילית', desc:'הוכחות וחישוב זוויות, מהעבודה'},
+  {id:'trapezoid',   emoji:'🔷', title:'טרפז', desc:'הוכחות, חישוב זוויות ודמיון'},
+];
+
+/* ====== Home ====== */
+function renderHome(){
+  const cur = document.body.classList.contains('mode-mobile') ? 'mobile' : 'desktop';
+  const otherLabel = cur==='mobile' ? '💻 עבור למחשב' : '📱 עבור לטלפון';
+  root().innerHTML = `
+    <div class="hello">
+      <h1>שלום</h1>
+      <p>בחרו נושא להתחיל לתרגל</p>
+      <button class="switch-mode" id="switchModeBtn">${otherLabel}</button>
+    </div>
+    <div class="grid">
+      ${topics.map(t=>`
+        <div class="tile" data-id="${t.id}">
+          <div class="emoji">${t.emoji}</div>
+          <h3>${t.title}</h3>
+          <p>${t.desc}</p>
+        </div>`).join('')}
+    </div>`;
+  document.querySelectorAll('.tile').forEach(el=>el.onclick=()=>openTopic(el.dataset.id));
+  document.getElementById('switchModeBtn').onclick = ()=>showDevicePicker(false);
+  refmath();
+}
+
+/* ====== Device mode handling ====== */
+function applyDeviceMode(mode){
+  document.body.classList.remove('mode-mobile','mode-desktop');
+  document.body.classList.add('mode-'+mode);
+  try { localStorage.setItem('learnMathDevice', mode); } catch(e){}
+}
+function showDevicePicker(initial){
+  const modal = document.getElementById('device-modal');
+  modal.classList.remove('hidden');
+  modal.querySelectorAll('.device-btn').forEach(btn=>{
+    btn.onclick = ()=>{
+      applyDeviceMode(btn.dataset.device);
+      modal.classList.add('hidden');
+      renderHome();
+    };
+  });
+}
+
+/* ====== Topic page shell ====== */
+function openTopic(id){
+  const def = topicDefs[id];
+  root().innerHTML = `
+    <div class="topbar">
+      <button class="back" onclick="renderHome()">← חזרה</button>
+      <h2>${def.title}</h2>
+    </div>
+    <div class="card">
+      <span class="pill">הסבר</span>
+      ${def.lesson}
+    </div>
+    <div class="card">
+      <span class="pill">דוגמה</span>
+      ${def.example}
+    </div>
+    <div class="card">
+      <button class="btn btn-primary big" id="genBtn">✨ צור שאלה</button>
+      <div id="qSlot"></div>
+    </div>`;
+  document.getElementById('genBtn').onclick = ()=>{
+    document.getElementById('qSlot').innerHTML = '';
+    def.makeQuestion(document.getElementById('qSlot'));
+    refmath();
+  };
+  refmath();
+}
+
+/* ====== Question card builder ====== */
+function makeQuestion({html, answers, solution, regenerate}){
+  const wrap = document.createElement('div');
+  wrap.innerHTML = `
+    <div class="qbox">
+      <div class="qhead">📝 שאלה</div>
+      <div class="qtext">${html}</div>
+      <div class="multi-q"></div>
+      <div class="actions">
+        <button class="btn btn-pink nx">🔄 שאלה אחרת</button>
+        <button class="btn btn-success ck">✓ בדוק תשובה</button>
+        <button class="btn btn-warn sol">💡 רמז ופתרון</button>
+      </div>
+      <div class="feedback fb"></div>
+      <div class="reveal sl"></div>
+    </div>`;
+  const mq = wrap.querySelector('.multi-q');
+  answers.forEach(a=>{
+    const lab = document.createElement('label'); lab.textContent = a.label; mq.appendChild(lab);
+    const inp = document.createElement('input'); inp.dataset.key = a.key; inp.placeholder = a.placeholder||''; mq.appendChild(inp);
+  });
+  wrap.querySelector('.ck').onclick = ()=>{
+    const fb = wrap.querySelector('.fb');
+    let allOk = true; let report = [];
+    answers.forEach(a=>{
+      const inp = mq.querySelector(`input[data-key="${a.key}"]`);
+      const v = parseAns(inp.value);
+      let ok = false;
+      if(a.check){ ok = a.check(inp.value); }
+      else if(typeof a.correct === 'number'){ ok = !isNaN(v) && isClose(v,a.correct); }
+      else if(Array.isArray(a.correct)){ ok = !isNaN(v) && a.correct.some(c=>isClose(c,v)); }
+      else if(typeof a.correct === 'string'){ ok = (inp.value||'').trim().replace(/\s/g,'') === a.correct.replace(/\s/g,''); }
+      if(!ok) allOk = false;
+      inp.style.borderColor = ok?'#10b981':'#ef4444';
+      report.push(`${a.label} ${ok?'✓':'✗'}`);
+    });
+    fb.className = 'feedback show '+(allOk?'ok':'bad');
+    fb.textContent = allOk ? '🎉 כל הכבוד! כל התשובות נכונות.' : 'יש מה לשפר: '+report.join(' · ');
+  };
+  wrap.querySelector('.sol').onclick = ()=>{
+    const sl = wrap.querySelector('.sl');
+    sl.innerHTML = solution;
+    sl.classList.add('show');
+    refmath();
+  };
+  wrap.querySelector('.nx').onclick = ()=>regenerate && regenerate();
+  return wrap;
+}
+
+/* ====== Stepped question card (for problems that need step-by-step solving) ====== */
+function makeSteppedQuestion({html, steps, solution, regenerate}){
+  // steps: [{ title, hint, inputs:[{key,label,correct,placeholder,check}] }]
+  const wrap = document.createElement('div');
+  wrap.innerHTML = `
+    <div class="qbox">
+      <div class="qhead">📝 שאלה</div>
+      <div class="qtext">${html}</div>
+      <div class="stepslot"></div>
+      <div class="actions" style="margin-top:14px">
+        <button class="btn btn-pink nx">🔄 שאלה אחרת</button>
+        <button class="btn btn-warn sol">💡 פתרון מלא</button>
+      </div>
+      <div class="reveal sl"></div>
+    </div>`;
+  const slot = wrap.querySelector('.stepslot');
+
+  function unlockStep(i){
+    const card = slot.querySelectorAll('.stepcard')[i];
+    if(card){ card.classList.remove('locked'); }
+  }
+
+  steps.forEach((st, idx)=>{
+    const card = document.createElement('div');
+    card.className = 'stepcard' + (idx===0?'':' locked');
+    const inputsHtml = st.inputs.map(inp=>`
+      <label>${inp.label}</label>
+      <input data-key="${inp.key}" placeholder="${inp.placeholder||''}">
+      <span></span>
+    `).join('');
+    card.innerHTML = `
+      <div class="stepnum">${idx+1}</div>
+      <div class="stepbody">
+        <h4>${st.title}</h4>
+        ${st.help ? `<div class="stephelp">${st.help}</div>` : ''}
+        <div class="stepinputs">${inputsHtml}</div>
+        <div class="stepactions">
+          <button class="btn btn-success ckstep">✓ בדוק שלב</button>
+          <button class="btn btn-secondary hintbtn">💡 רמז</button>
+        </div>
+        <div class="stephint">${st.hint || ''}</div>
+        <div class="stepfb"></div>
+      </div>`;
+    card.querySelector('.hintbtn').onclick = ()=>{
+      const h = card.querySelector('.stephint'); h.classList.toggle('show');
+    };
+    card.querySelector('.ckstep').onclick = ()=>{
+      const inps = card.querySelectorAll('input');
+      let ok = true;
+      st.inputs.forEach((inp, i)=>{
+        const el = inps[i];
+        const v = parseAns(el.value);
+        let good = false;
+        if(inp.check){ good = inp.check(el.value); }
+        else if(typeof inp.correct === 'number'){ good = !isNaN(v) && isClose(v,inp.correct); }
+        else if(Array.isArray(inp.correct)){ good = !isNaN(v) && inp.correct.some(c=>isClose(c,v)); }
+        else if(typeof inp.correct === 'string'){ good = (el.value||'').trim().replace(/\s/g,'') === inp.correct.replace(/\s/g,''); }
+        if(!good) ok = false;
+        el.style.borderColor = good?'#10b981':'#ef4444';
+      });
+      const fb = card.querySelector('.stepfb');
+      fb.className = 'stepfb show ' + (ok?'ok':'bad');
+      fb.textContent = ok ? '✓ נכון! עברו לשלב הבא.' : '✗ לא מדויק. נסו שוב או הציצו ברמז.';
+      card.classList.remove('passed','failed');
+      card.classList.add(ok?'passed':'failed');
+      if(ok && idx+1 < steps.length){ unlockStep(idx+1); }
+    };
+    slot.appendChild(card);
+  });
+
+  wrap.querySelector('.sol').onclick = ()=>{
+    const sl = wrap.querySelector('.sl');
+    sl.innerHTML = solution;
+    sl.classList.add('show');
+    refmath();
+  };
+  wrap.querySelector('.nx').onclick = ()=>regenerate && regenerate();
+  return wrap;
+}
+
+/* ====== SVG of parabola ====== */
+function parabSVG(coeff,p,k,xMin=-7,xMax=7,yMin=-9,yMax=9,extras=[]){
+  const W=380,H=280;
+  const sx=v=>(v-xMin)/(xMax-xMin)*W;
+  const sy=v=>H-(v-yMin)/(yMax-yMin)*H;
+  function buildPath(c,pp,kk){
+    let path=''; for(let x=xMin;x<=xMax;x+=0.1){ const y=c*Math.pow(x-pp,2)+kk; if(y<yMin-2||y>yMax+2)continue; path += (path?' L ':'M ')+sx(x).toFixed(1)+' '+sy(y).toFixed(1); }
+    return path;
+  }
+  function buildStdPath(a,b,c){
+    let path=''; for(let x=xMin;x<=xMax;x+=0.1){ const y=a*x*x+b*x+c; if(y<yMin-2||y>yMax+2)continue; path += (path?' L ':'M ')+sx(x).toFixed(1)+' '+sy(y).toFixed(1); }
+    return path;
+  }
+  const path = buildPath(coeff,p,k);
+  let grid=''; for(let i=Math.ceil(xMin);i<=Math.floor(xMax);i++){grid+=`<line x1="${sx(i)}" y1="0" x2="${sx(i)}" y2="${H}" stroke="#e2e8f0" stroke-width="1"/>`}
+  for(let i=Math.ceil(yMin);i<=Math.floor(yMax);i++){grid+=`<line x1="0" y1="${sy(i)}" x2="${W}" y2="${sy(i)}" stroke="#e2e8f0" stroke-width="1"/>`}
+  let extra='';
+  extras.forEach(e=>{
+    if(e.type==='point'){ extra += `<circle cx="${sx(e.x)}" cy="${sy(e.y)}" r="4" fill="${e.color||'#ef4444'}"/>`; if(e.label) extra += `<text x="${sx(e.x)+6}" y="${sy(e.y)-6}" font-size="12" fill="${e.color||'#ef4444'}" font-weight="700">${e.label}</text>`}
+    if(e.type==='vline'){ extra += `<line x1="${sx(e.x)}" y1="0" x2="${sx(e.x)}" y2="${H}" stroke="#a78bfa" stroke-width="1.5" stroke-dasharray="5,4"/>`; }
+    if(e.type==='line'){ const x1=xMin,x2=xMax; extra += `<line x1="${sx(x1)}" y1="${sy(e.m*x1+e.n)}" x2="${sx(x2)}" y2="${sy(e.m*x2+e.n)}" stroke="${e.color||'#0891b2'}" stroke-width="2"/>`; }
+    if(e.type==='parab'){ extra += `<path d="${buildPath(e.coeff,e.p||0,e.k||0)}" stroke="${e.color||'#ec4899'}" stroke-width="2.5" fill="none"/>`; }
+    if(e.type==='parab-std'){ extra += `<path d="${buildStdPath(e.a,e.b,e.c)}" stroke="${e.color||'#ec4899'}" stroke-width="2.5" fill="none"/>`; }
+    if(e.type==='polygon'){ const pts=e.points.map(pt=>`${sx(pt[0])},${sy(pt[1])}`).join(' '); extra += `<polygon points="${pts}" fill="${e.fill||'rgba(99,102,241,0.18)'}" stroke="${e.stroke||'#4338ca'}" stroke-width="2"/>`; e.points.forEach((pt,i)=>{ if(e.labels&&e.labels[i]) extra += `<text x="${sx(pt[0])+6}" y="${sy(pt[1])-6}" font-size="13" fill="#1e293b" font-weight="700">${e.labels[i]}</text>`; }); }
+  });
+  return `<svg class="parabola" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">${grid}
+    <line x1="0" y1="${sy(0)}" x2="${W}" y2="${sy(0)}" stroke="#475569" stroke-width="1.5"/>
+    <line x1="${sx(0)}" y1="0" x2="${sx(0)}" y2="${H}" stroke="#475569" stroke-width="1.5"/>
+    <text x="${W-12}" y="${sy(0)-6}" font-size="12" fill="#475569">x</text>
+    <text x="${sx(0)+6}" y="14" font-size="12" fill="#475569">y</text>
+    <path d="${path}" stroke="#6366f1" stroke-width="2.5" fill="none"/>${extra}</svg>`;
+}
+
+/* Helper: SVG of just a coordinate plane with a polygon (for analytic geometry examples) */
+function planeSVG(xMin,xMax,yMin,yMax,extras=[]){
+  return parabSVG(0,0,yMax+100, xMin, xMax, yMin, yMax, extras).replace(/<path d="[^"]*" stroke="#6366f1"[^>]*\/>/, '');
+}
+
+/* ====== Topic Definitions ====== */
+const topicDefs = {};
+
+/* ---- Vertical translation y = x^2 + k ---- */
+topicDefs['parab-vert'] = {
+  title:'הזזה אנכית של פרבולה',
+  lesson:`
+    <h3 style="margin-top:0">הצורה $y = x^2 + k$</h3>
+    <div class="lesson">
+      <p>הפונקציה $y = x^2 + k$ היא הפרבולה הבסיסית $y=x^2$ שזזה אנכית.</p>
+      <ul>
+        <li>אם $k>0$ הפרבולה זזה למעלה.</li>
+        <li>אם $k<0$ הפרבולה זזה למטה.</li>
+        <li>קודקוד: $(0,k)$ והוא תמיד מינימום.</li>
+        <li>ציר סימטריה: $x = 0$.</li>
+        <li>חיתוך עם ציר $y$: $(0,k)$.</li>
+        <li>חיתוך עם ציר $x$: $x = \\pm\\sqrt{-k}$ (קיים רק כאשר $k<0$).</li>
+        <li>תחום עלייה: $x>0$. תחום ירידה: $x<0$.</li>
+      </ul>
+    </div>
+    <div class="formula">קודקוד $(0,k)$ &nbsp;·&nbsp; אפסים: $x = \\pm\\sqrt{-k}$ (אם $k<0$)</div>`,
+  example:`
+    <h3 style="margin-top:0">דוגמה: $y = x^2 - 4$</h3>
+    ${parabSVG(1,0,-4,-6,6,-6,8,[
+      {type:'point',x:0,y:-4,label:'V',color:'#dc2626'},
+      {type:'point',x:2,y:0,color:'#059669'},
+      {type:'point',x:-2,y:0,color:'#059669'}
+    ])}
+    <div class="example">
+      <div class="step">קודקוד: כאן $k = -4$, אז הקודקוד הוא $(0, -4)$.</div>
+      <div class="step">ציר סימטריה: $x = 0$.</div>
+      <div class="step">חיתוך עם ציר $y$: מציבים $x=0$ ומקבלים $y = -4$, כלומר $(0, -4)$.</div>
+      <div class="step">חיתוך עם ציר $x$: $x^2 - 4 = 0 \\Rightarrow x^2 = 4 \\Rightarrow x = \\pm 2$.</div>
+      <div class="step">תחום עלייה: $x>0$. תחום ירידה: $x<0$.</div>
+    </div>`,
+  makeQuestion:(slot)=>{
+    function gen(){
+      // Choose k so that when k<0, -k is a perfect square (so roots are integers)
+      const k = pick([-1,-4,-9,-16,-25,1,2,3,4,5,7,9]);
+      const hasRoots = k<0;
+      const root = hasRoots ? Math.sqrt(-k) : null;
+      const extras = [{type:'point',x:0,y:k,label:'V',color:'#dc2626'}];
+      if(hasRoots){
+        extras.push({type:'point',x:root,y:0,color:'#059669'});
+        extras.push({type:'point',x:-root,y:0,color:'#059669'});
+      }
+      const svg = parabSVG(1,0,k,-6,6,Math.min(k-2,-3),Math.max(k+8,8),extras);
+      slot.innerHTML='';
+      slot.appendChild(makeQuestion({
+        html:`נתונה הפונקציה $y = x^2 ${k>=0?'+ '+k:'- '+(-k)}$.<br>${svg}`,
+        answers:[
+          {key:'vx',label:'שיעור x של הקודקוד',correct:0},
+          {key:'vy',label:'שיעור y של הקודקוד',correct:k},
+          {key:'sym',label:'משוואת ציר הסימטריה (x=)',correct:0},
+          {key:'yint',label:'חיתוך עם ציר y',correct:k},
+          {key:'roots',label:'מספר נקודות חיתוך עם ציר x',correct: hasRoots?2:0},
+        ],
+        solution: `
+          <h4>פתרון מלא</h4>
+          <div class="step">בפונקציה $y=x^2+k$ אין הזזה אופקית, לכן שיעור x של הקודקוד הוא 0.</div>
+          <div class="step">$k = ${k}$, אז שיעור y של הקודקוד הוא $${k}$. הקודקוד: $(0, ${k})$.</div>
+          <div class="step">ציר הסימטריה: $x = 0$.</div>
+          <div class="step">חיתוך עם ציר y: מציבים $x=0$ ומקבלים $y = ${k}$.</div>
+          <div class="step">חיתוך עם ציר x: $x^2 ${k>=0?'+ '+k:'- '+(-k)} = 0 \\Rightarrow x^2 = ${-k}$. ${hasRoots?`$x = \\pm\\sqrt{${-k}}$ ולכן יש 2 נקודות.`:`$x^2 \\geq 0$ ו-$${-k}<0$ לא יתכן, אין פתרון. 0 נקודות חיתוך.`}</div>
+        `,
+        regenerate: gen
+      }));
+      refmath();
+    }
+    gen();
+  }
+};
+
+/* ---- Horizontal translation y = (x-p)^2 ---- */
+topicDefs['parab-horiz'] = {
+  title:'הזזה אופקית של פרבולה',
+  lesson:`
+    <h3 style="margin-top:0">הצורה $y = (x-p)^2$</h3>
+    <div class="lesson">
+      <p>הפונקציה $y = (x-p)^2$ היא הפרבולה הבסיסית $y=x^2$ שזזה אופקית.</p>
+      <ul>
+        <li>אם $p>0$ הפרבולה זזה ימינה.</li>
+        <li>אם $p<0$ הפרבולה זזה שמאלה.</li>
+        <li>שימו לב לסימן: $y=(x-3)^2$ זז ימינה ב-3, ואילו $y=(x+3)^2$ זז שמאלה ב-3.</li>
+        <li>קודקוד: $(p, 0)$ ותמיד מינימום.</li>
+        <li>ציר סימטריה: $x = p$.</li>
+        <li>חיתוך עם ציר $y$: $(0, p^2)$.</li>
+        <li>חיתוך עם ציר $x$: נקודה אחת בלבד $(p, 0)$, כי הפרבולה משיקה לציר.</li>
+      </ul>
+    </div>
+    <div class="formula">קודקוד $(p, 0)$ &nbsp;·&nbsp; חיתוך ציר y: $(0, p^2)$</div>`,
+  example:`
+    <h3 style="margin-top:0">דוגמה: $y = (x-3)^2$</h3>
+    ${parabSVG(1,3,0,-3,8,-2,11,[
+      {type:'point',x:3,y:0,label:'V',color:'#dc2626'},
+      {type:'point',x:0,y:9,color:'#0891b2',label:'(0,9)'},
+      {type:'vline',x:3}
+    ])}
+    <div class="example">
+      <div class="step">משווים לצורה $(x-p)^2$: כאן $p = 3$.</div>
+      <div class="step">קודקוד: $(3, 0)$.</div>
+      <div class="step">ציר סימטריה: $x = 3$.</div>
+      <div class="step">חיתוך עם ציר $y$: מציבים $x=0$ ומקבלים $y = (0-3)^2 = 9$, כלומר $(0, 9)$.</div>
+      <div class="step">חיתוך עם ציר $x$: $(x-3)^2 = 0 \\Rightarrow x = 3$. נקודה אחת.</div>
+    </div>`,
+  makeQuestion:(slot)=>{
+    function gen(){
+      const p = pick([-5,-4,-3,-2,2,3,4,5]);
+      const txt = p>=0 ? `(x - ${p})^2` : `(x + ${-p})^2`;
+      const svg = parabSVG(1,p,0,-7,7,-3,9,[
+        {type:'point',x:p,y:0,label:'V',color:'#dc2626'},
+        {type:'vline',x:p}
+      ]);
+      slot.innerHTML='';
+      slot.appendChild(makeQuestion({
+        html:`נתונה הפונקציה $y = ${txt}$.<br>${svg}`,
+        answers:[
+          {key:'vx',label:'שיעור x של הקודקוד',correct:p},
+          {key:'vy',label:'שיעור y של הקודקוד',correct:0},
+          {key:'sym',label:'ציר סימטריה (x=)',correct:p},
+          {key:'yint',label:'שיעור y בחיתוך עם ציר y',correct:p*p},
+          {key:'xint',label:'שיעור x בחיתוך עם ציר x',correct:p},
+        ],
+        solution:`
+          <h4>פתרון מלא</h4>
+          <div class="step">הצורה $y=(x-p)^2$. כאן: $${txt} = (x-(${p}))^2$, אז $p = ${p}$.</div>
+          <div class="step">קודקוד: $(p, 0) = (${p}, 0)$, מינימום.</div>
+          <div class="step">ציר סימטריה: $x = ${p}$.</div>
+          <div class="step">חיתוך עם ציר y: מציבים $x=0 \\Rightarrow y = (0-(${p}))^2 = ${p*p}$.</div>
+          <div class="step">חיתוך עם ציר x: $(x-(${p}))^2 = 0 \\Rightarrow x = ${p}$ (נקודה יחידה).</div>
+        `,
+        regenerate:gen
+      }));
+      refmath();
+    }
+    gen();
+  }
+};
+
+/* ---- Combined translation y = a(x-p)^2 + k ---- */
+topicDefs['parab-comb'] = {
+  title:'הזזה משולבת של פרבולה',
+  lesson:`
+    <h3 style="margin-top:0">הצורה $y = a(x-p)^2 + k$</h3>
+    <div class="lesson">
+      <p>זוהי הצורה הקודקודית של הפרבולה. היא משלבת הזזה אופקית והזזה אנכית.</p>
+      <ul>
+        <li>קודקוד: $(p, k)$.</li>
+        <li>ציר סימטריה: $x = p$.</li>
+        <li>אם $a>0$ הקודקוד מינימום, אם $a<0$ הקודקוד מקסימום.</li>
+        <li>חיתוך עם ציר $y$: מציבים $x=0$ ומקבלים $y = a\\cdot p^2 + k$.</li>
+        <li>חיתוך עם ציר $x$: פותרים $a(x-p)^2 + k = 0$ ומקבלים $x = p \\pm \\sqrt{-k/a}$.</li>
+      </ul>
+    </div>
+    <div class="formula">קודקוד $(p, k)$ &nbsp;·&nbsp; שורשים: $p \\pm \\sqrt{-k/a}$</div>`,
+  example:`
+    <h3 style="margin-top:0">דוגמה: $y = (x-2)^2 - 9$</h3>
+    ${parabSVG(1,2,-9,-4,8,-11,4,[
+      {type:'point',x:2,y:-9,label:'V',color:'#dc2626'},
+      {type:'point',x:-1,y:0,label:'',color:'#059669'},
+      {type:'point',x:5,y:0,label:'',color:'#059669'},
+      {type:'point',x:0,y:-5,color:'#0891b2',label:'(0,-5)'},
+      {type:'vline',x:2}
+    ])}
+    <div class="example">
+      <div class="step">משווים לצורה $a(x-p)^2 + k$: $a=1,\\;p=2,\\;k=-9$.</div>
+      <div class="step">קודקוד: $(2, -9)$, מינימום (כי $a>0$).</div>
+      <div class="step">ציר סימטריה: $x = 2$.</div>
+      <div class="step">חיתוך עם ציר $y$: $y = 1\\cdot(0-2)^2 - 9 = 4 - 9 = -5$, כלומר $(0, -5)$.</div>
+      <div class="step">חיתוך עם ציר $x$: $(x-2)^2 = 9 \\Rightarrow x-2 = \\pm 3 \\Rightarrow x = -1$ או $x = 5$.</div>
+    </div>`,
+  makeQuestion:(slot)=>{
+    function gen(){
+      const a = pick([1,-1]);
+      const p = rint(-4,4);
+      // Pick k so that -k/a is a perfect square (integer roots)
+      const k = a>0 ? pick([-1,-4,-9,-16,-25]) : pick([1,4,9,16,25]);
+      const xtxt = p===0?'x':(p>0?`(x - ${p})`:`(x + ${-p})`);
+      const sigA = a===1?'':'-';
+      const ktxt = k>=0?`+ ${k}`:`- ${-k}`;
+      const yint = a*p*p+k;
+      const root = Math.sqrt(-k/a);
+      const r1 = p-root, r2 = p+root;
+      const ext=[{type:'point',x:p,y:k,label:'V',color:'#dc2626'},{type:'vline',x:p}];
+      ext.push({type:'point',x:r1,y:0,color:'#059669'});
+      ext.push({type:'point',x:r2,y:0,color:'#059669'});
+      const svg = parabSVG(a,p,k,-7,7,Math.min(-2,k-2,yint-2),Math.max(8,k+2,yint+2),ext);
+      slot.innerHTML='';
+      slot.appendChild(makeQuestion({
+        html:`נתונה הפונקציה $y = ${sigA}${xtxt}^2 ${ktxt}$.<br>${svg}`,
+        answers:[
+          {key:'vx',label:'שיעור x של הקודקוד',correct:p},
+          {key:'vy',label:'שיעור y של הקודקוד',correct:k},
+          {key:'type',label:'סוג הקודקוד (מינ או מקס)',check:v=>{const x=v.trim(); return (a>0 && (x==='מינ'||x==='מינימום')) || (a<0 && (x==='מקס'||x==='מקסימום'))}},
+          {key:'yint',label:'חיתוך עם ציר y',correct:yint},
+          {key:'r1',label:'שורש קטן יותר',correct:Math.min(r1,r2)},
+          {key:'r2',label:'שורש גדול יותר',correct:Math.max(r1,r2)},
+        ],
+        solution:`
+          <h4>פתרון מלא</h4>
+          <div class="step">הצורה $y = a(x-p)^2+k$ עם $a=${a},\\;p=${p},\\;k=${k}$.</div>
+          <div class="step">קודקוד: $(${p}, ${k})$. כיוון ש-$a${a>0?'>0':'<0'}$, הקודקוד הוא ${a>0?'מינימום':'מקסימום'}.</div>
+          <div class="step">חיתוך עם ציר y: $y = ${a}\\cdot(0-${p})^2 + ${k} = ${a*p*p} + ${k} = ${yint}$.</div>
+          <div class="step">שורשים: $${a}(x-${p})^2 ${ktxt} = 0 \\Rightarrow (x-${p})^2 = ${(-k/a)} \\Rightarrow x = ${p} \\pm \\sqrt{${(-k/a)}}$. הפתרונות: $${r1},\\;${r2}$.</div>
+        `,
+        regenerate:gen
+      }));
+      refmath();
+    }
+    gen();
+  }
+};
+
+/* ---- Stretch y = a x^2 ---- */
+topicDefs['parab-stretch'] = {
+  title:'כיווץ ומתיחה אנכית',
+  lesson:`
+    <h3 style="margin-top:0">הצורה $y = ax^2$</h3>
+    <div class="lesson">
+      <p>הפרמטר $a$ קובע את צורת הפרבולה ואת כיוונה.</p>
+      <ul>
+        <li>אם $a>0$ הפרבולה ישרה (פתוחה כלפי מעלה).</li>
+        <li>אם $a<0$ הפרבולה הפוכה (פתוחה כלפי מטה).</li>
+        <li>ככל ש-$|a|$ גדול יותר, הפרבולה יותר צרה.</li>
+        <li>ככל ש-$|a|$ קטן יותר, הפרבולה יותר רחבה.</li>
+        <li>קודקוד: תמיד $(0,0)$. ציר סימטריה: $x=0$. אפס יחיד: $x=0$.</li>
+      </ul>
+    </div>`,
+  example:`
+    <h3 style="margin-top:0">דוגמה: $y = -2x^2$</h3>
+    ${parabSVG(-2,0,0,-4,4,-9,3,[
+      {type:'point',x:0,y:0,label:'V',color:'#dc2626'},
+      {type:'parab',coeff:1,p:0,k:0,color:'#94a3b8'}
+    ])}
+    <div class="example">
+      <div class="step">$a = -2$, אז $a<0$ והפרבולה הפוכה (בסגול).</div>
+      <div class="step">$|a| = 2$ גדול מ-1, אז הפרבולה צרה יותר מהפרבולה הבסיסית $y=x^2$ (באפור).</div>
+      <div class="step">קודקוד: $(0, 0)$, מקסימום.</div>
+      <div class="step">ציר סימטריה: $x = 0$.</div>
+      <div class="step">חיתוך יחיד עם הצירים: $(0, 0)$.</div>
+    </div>`,
+  makeQuestion:(slot)=>{
+    function gen(){
+      const opts = [
+        {label:'$y = 4x^2 + 3$', a:4, k:3},
+        {label:'$y = 2x^2 + 5$', a:2, k:5},
+        {label:'$y = -3x^2 + 2$', a:-3, k:2},
+        {label:'$y = -x^2 + 7$', a:-1, k:7},
+        {label:'$y = 5x^2 - 4$', a:5, k:-4},
+        {label:'$y = -2x^2 + 6$', a:-2, k:6},
+        {label:'$y = 2x^2$', a:2, k:0},
+        {label:'$y = -x^2$', a:-1, k:0},
+        {label:'$y = 3x^2$', a:3, k:0},
+        {label:'$y = -4x^2$', a:-4, k:0},
+        {label:'$y = x^2 + 8$', a:1, k:8},
+        {label:'$y = -5x^2 - 2$', a:-5, k:-2},
+      ];
+      const o = pick(opts);
+      slot.innerHTML='';
+      slot.appendChild(makeQuestion({
+        html:`נתונה הפונקציה ${o.label}. ענו על השאלות:`,
+        answers:[
+          {key:'dir',label:'כיוון (ישרה או הפוכה)',check:v=>{const x=v.trim();return (o.a>0 && (x==='ישרה'||x==='ישר')) || (o.a<0 && (x==='הפוכה'||x==='הפוך'))}},
+          {key:'vx',label:'שיעור x של הקודקוד',correct:0},
+          {key:'vy',label:'שיעור y של הקודקוד',correct:o.k},
+          {key:'sym',label:'ציר סימטריה (x=)',correct:0},
+          {key:'yint',label:'חיתוך עם ציר y',correct:o.k},
+        ],
+        solution:`
+          <h4>פתרון</h4>
+          <div class="step">$a = ${o.a}$, אז הפרבולה ${o.a>0?'ישרה (מינימום)':'הפוכה (מקסימום)'}.</div>
+          <div class="step">קודקוד: $(0, ${o.k})$ אין הזזה אופקית.</div>
+          <div class="step">ציר סימטריה: $x=0$.</div>
+          <div class="step">חיתוך עם ציר y: $x=0 \\Rightarrow y = ${o.k}$.</div>
+        `,
+        regenerate:gen
+      }));
+      refmath();
+    }
+    gen();
+  }
+};
+
+/* ---- Standard form ---- */
+topicDefs['parab-std'] = {
+  title:'הצגה סטנדרטית',
+  lesson:`
+    <h3 style="margin-top:0">הצורה $y = ax^2 + bx + c$</h3>
+    <div class="lesson">
+      <p>הצורה הסטנדרטית של פונקציה ריבועית. כדי לחקור אותה משתמשים בנוסחאות:</p>
+      <ul>
+        <li>ציר סימטריה ושיעור x של קודקוד: $x = -\\dfrac{b}{2a}$.</li>
+        <li>שיעור y של קודקוד: מציבים את ה-x הזה בפונקציה.</li>
+        <li>חיתוך עם ציר $y$: $y = c$.</li>
+        <li>חיתוך עם ציר $x$ (נוסחת השורשים): $x_{1,2} = \\dfrac{-b\\pm\\sqrt{b^2-4ac}}{2a}$.</li>
+        <li>דיסקרימיננטה $\\Delta = b^2 - 4ac$. אם $\\Delta>0$ שני שורשים, אם $\\Delta=0$ שורש יחיד, אם $\\Delta<0$ אין שורשים.</li>
+      </ul>
+    </div>
+    <div class="formula">$x_{vertex} = -\\dfrac{b}{2a}$ &nbsp;·&nbsp; $x_{1,2} = \\dfrac{-b \\pm \\sqrt{b^2-4ac}}{2a}$</div>`,
+  example:`
+    <h3 style="margin-top:0">דוגמה: $y = x^2 - 2x - 8$</h3>
+    ${parabSVG(1,1,-9,-4,7,-11,5,[
+      {type:'point',x:1,y:-9,label:'V',color:'#dc2626'},
+      {type:'point',x:-2,y:0,color:'#059669'},
+      {type:'point',x:4,y:0,color:'#059669'},
+      {type:'point',x:0,y:-8,color:'#0891b2',label:'(0,-8)'},
+      {type:'vline',x:1}
+    ])}
+    <div class="example">
+      <div class="step">מקדמים: $a=1,\\;b=-2,\\;c=-8$.</div>
+      <div class="step">$x_{vertex} = -\\dfrac{-2}{2\\cdot 1} = 1$.</div>
+      <div class="step">$y_{vertex} = 1^2 - 2\\cdot 1 - 8 = -9$. הקודקוד: $(1, -9)$.</div>
+      <div class="step">חיתוך עם ציר $y$: $y = c = -8$, כלומר $(0, -8)$.</div>
+      <div class="step">דיסקרימיננטה: $\\Delta = (-2)^2 - 4\\cdot 1\\cdot(-8) = 4 + 32 = 36$.</div>
+      <div class="step">שורשים: $x = \\dfrac{2 \\pm 6}{2}$, כלומר $x = -2$ או $x = 4$.</div>
+    </div>`,
+  makeQuestion:(slot)=>{
+    function gen(){
+      const a = pick([1,-1,1,1,-1]);
+      // r1+r2 must be even so vertex x is integer
+      let r1 = rint(-5,5);
+      let r2 = rint(-5,5);
+      while(r2===r1 || (r1+r2)%2 !== 0){ r2 = rint(-5,5); }
+      const b = -a*(r1+r2);
+      const c = a*r1*r2;
+      const vx = -b/(2*a);
+      const vy = a*vx*vx + b*vx + c;
+      const sgn = (n,first=false)=> (n>=0?(first?'':' + ')+n:' - '+(-n));
+      const expr = `${a===1?'':a===-1?'-':a}x^2${sgn(b)}x${sgn(c)}`;
+      slot.innerHTML='';
+      slot.appendChild(makeQuestion({
+        html:`נתונה הפונקציה $y = ${expr}$. השלימו את כל הערכים:`,
+        answers:[
+          {key:'a',label:'a =',correct:a},
+          {key:'b',label:'b =',correct:b},
+          {key:'c',label:'c =',correct:c},
+          {key:'vx',label:'שיעור x של הקודקוד',correct:vx},
+          {key:'vy',label:'שיעור y של הקודקוד',correct:vy},
+          {key:'yint',label:'חיתוך עם ציר y',correct:c},
+          {key:'r1',label:'שורש קטן יותר',correct:Math.min(r1,r2)},
+          {key:'r2',label:'שורש גדול יותר',correct:Math.max(r1,r2)},
+        ],
+        solution:`
+          <h4>פתרון מלא</h4>
+          <div class="step">זיהוי המקדמים: $a=${a},\\;b=${b},\\;c=${c}$.</div>
+          <div class="step">$x_{vertex} = -\\dfrac{b}{2a} = -\\dfrac{${b}}{2\\cdot${a}} = ${vx}$.</div>
+          <div class="step">$y_{vertex} = ${a}\\cdot(${vx})^2 + ${b}\\cdot(${vx}) + ${c} = ${vy}$.</div>
+          <div class="step">חיתוך עם ציר y: $y=c=${c}$.</div>
+          <div class="step">דיסקרימיננטה: $\\Delta = ${b*b - 4*a*c}$. שורשים: $${Math.min(r1,r2)}$ ו-$${Math.max(r1,r2)}$.</div>
+        `,
+        regenerate:gen
+      }));
+      refmath();
+    }
+    gen();
+  }
+};
+
+/* ---- Parabola line intersection (matches PDF Q2 style: 7 labeled points) ---- */
+function fmtDownParab(B, C){
+  const bs = B === 0 ? '' : B > 0 ? ` + ${B===1?'':B}x` : ` - ${B===-1?'':-B}x`;
+  const cs = C === 0 ? '' : C > 0 ? ` + ${C}` : ` - ${-C}`;
+  return `-x^2${bs}${cs}`;
+}
+function fmtLine(m, n){
+  const ms = m === 1 ? 'x' : m === -1 ? '-x' : `${m}x`;
+  const ns = n === 0 ? '' : n > 0 ? ` + ${n}` : ` - ${-n}`;
+  return `${ms}${ns}`;
+}
+topicDefs['parab-line'] = {
+  title:'חיתוך פרבולה וישר',
+  lesson:`
+    <h3 style="margin-top:0">חיתוך בין פרבולה לישר ונקודות מסומנות</h3>
+    <div class="lesson">
+      <p>בשאלה אופיינית מציירים פרבולה $y = ax^2 + bx + c$ וישר $y = mx + n$ ומסמנים מספר נקודות חשובות:</p>
+      <ul>
+        <li><strong>חיתוכי הישר עם הצירים</strong>: <em>ציר $y$</em> (מציבים $x=0$, מקבלים $y=n$). <em>ציר $x$</em> (מציבים $y=0$, פותרים $mx+n=0$).</li>
+        <li><strong>חיתוכי הפרבולה עם הצירים</strong>: <em>ציר $y$</em> (מציבים $x=0$, מקבלים $y=c$). <em>ציר $x$</em> (פותרים $ax^2+bx+c=0$ כדי לקבל את שני האפסים).</li>
+        <li><strong>חיתוכי הישר עם הפרבולה</strong>: משווים את הצדדים $ax^2+bx+c = mx+n$ ופותרים. עבור כל פתרון מציבים בישר לקבלת $y$.</li>
+      </ul>
+      <p>סוגי מצבים לפי הדיסקרימיננטה של משוואת החיתוך:</p>
+      <ul>
+        <li>$\\Delta > 0$: שתי נקודות חיתוך.</li>
+        <li>$\\Delta = 0$: הישר משיק לפרבולה ונוגע בה בנקודה אחת.</li>
+        <li>$\\Delta < 0$: הישר לא פוגש את הפרבולה.</li>
+      </ul>
+    </div>`,
+  example:`
+    <h3 style="margin-top:0">דוגמה: ישר $y=-2x+6$ ופרבולה $y=-x^2+5x-4$</h3>
+    ${parabSVG(-1, 2.5, 2.25, -2, 7, -6, 7, [
+      {type:'line', m:-2, n:6, color:'#0891b2'},
+      {type:'point', x:0, y:6, color:'#dc2626', label:'A'},
+      {type:'point', x:1, y:0, color:'#059669', label:'B'},
+      {type:'point', x:0, y:-4, color:'#dc2626', label:'C'},
+      {type:'point', x:3, y:0, color:'#0891b2', label:'D'},
+      {type:'point', x:4, y:0, color:'#059669', label:'E'},
+      {type:'point', x:2, y:2, color:'#7c3aed', label:'F'},
+      {type:'point', x:5, y:-4, color:'#7c3aed', label:'G'}
+    ])}
+    <div class="example">
+      <div class="step"><strong>A</strong> (חיתוך הישר עם ציר $y$): מציבים $x=0$ בישר $\\Rightarrow y=6$. אז $A=(0,6)$.</div>
+      <div class="step"><strong>D</strong> (חיתוך הישר עם ציר $x$): פותרים $-2x+6=0 \\Rightarrow x=3$. אז $D=(3,0)$.</div>
+      <div class="step"><strong>C</strong> (חיתוך הפרבולה עם ציר $y$): מציבים $x=0 \\Rightarrow y=-4$. אז $C=(0,-4)$.</div>
+      <div class="step"><strong>B, E</strong> (חיתוכי הפרבולה עם ציר $x$): פותרים $-x^2+5x-4=0 \\Rightarrow x^2-5x+4=0 \\Rightarrow (x-1)(x-4)=0$. אז $B=(1,0)$ ו-$E=(4,0)$.</div>
+      <div class="step"><strong>F, G</strong> (חיתוכי הישר עם הפרבולה): משווים $-2x+6 = -x^2+5x-4 \\Rightarrow x^2-7x+10=0 \\Rightarrow (x-2)(x-5)=0$. אז $x=2$ או $x=5$. מציבים בישר: $F=(2,\\;-2\\cdot 2+6)=(2,2)$, $G=(5,\\;-2\\cdot 5+6)=(5,-4)$.</div>
+    </div>`,
+  makeQuestion:(slot)=>{
+    function gen(){
+      // Generate parameters that yield integer answers for ALL 7 points
+      let p1, p2, q1, q2, m, n;
+      let attempts = 0;
+      while(attempts < 2000){
+        attempts++;
+        p1 = rint(0, 3);
+        p2 = p1 + rint(2, 4);  // ensure p2 > p1 with gap
+        m = pick([-3, -2, -1, 1, 2, 3]);
+        n = m * rint(-3, 4);   // n divisible by m so x-intercept is integer
+        const sum = p1 + p2 - m;
+        const prod = p1*p2 + n;
+        const disc = sum*sum - 4*prod;
+        if(disc <= 0) continue;
+        const sq = Math.sqrt(disc);
+        if(!Number.isInteger(sq)) continue;
+        if((sum - sq) % 2 !== 0) continue;
+        q1 = (sum - sq) / 2;
+        q2 = (sum + sq) / 2;
+        if(q1 === q2) continue;
+        if([p1, p2].includes(q1) || [p1, p2].includes(q2)) continue;
+        if(Math.abs(q1) > 7 || Math.abs(q2) > 7) continue;
+        if(n === 0) continue; // makes line pass through origin, less interesting
+        if(-n/m === 0) continue;
+        break;
+      }
+
+      // Downward parabola: y = -x^2 + bP*x + cP
+      const bP = p1 + p2;
+      const cP = -p1 * p2;
+      const xD = -n / m;
+      const F_y = m*q1 + n;
+      const G_y = m*q2 + n;
+      const parabEq = fmtDownParab(bP, cP);
+      const lineEq = fmtLine(m, n);
+
+      // SVG range
+      const xs = [p1, p2, q1, q2, 0, xD];
+      const ys = [F_y, G_y, n, cP, 0, (bP*bP/4)+cP];
+      const xMin = Math.floor(Math.min(...xs)) - 1;
+      const xMax = Math.ceil(Math.max(...xs)) + 1;
+      const yMin = Math.floor(Math.min(...ys)) - 1;
+      const yMax = Math.ceil(Math.max(...ys)) + 1;
+
+      const vx = bP/2, vk = cP + bP*bP/4;
+      const svg = parabSVG(-1, vx, vk, xMin, xMax, yMin, yMax, [
+        {type:'line', m:m, n:n, color:'#0891b2'},
+        {type:'point', x:0, y:n, color:'#dc2626', label:'A'},
+        {type:'point', x:p1, y:0, color:'#059669', label:'B'},
+        {type:'point', x:0, y:cP, color:'#dc2626', label:'C'},
+        {type:'point', x:xD, y:0, color:'#0891b2', label:'D'},
+        {type:'point', x:p2, y:0, color:'#059669', label:'E'},
+        {type:'point', x:q1, y:F_y, color:'#7c3aed', label:'F'},
+        {type:'point', x:q2, y:G_y, color:'#7c3aed', label:'G'}
+      ]);
+
+      slot.innerHTML='';
+      slot.appendChild(makeQuestion({
+        html:`בציור מתוארים הגרפים של הישר $y = ${lineEq}$ והפרבולה $y = ${parabEq}$. מצאו את שיעורי הנקודות $A, B, C, D, E, F, G$ המסומנות בציור.<br>${svg}`,
+        answers:[
+          {key:'A', label:'A — שיעור y של חיתוך הישר עם ציר y', correct: n},
+          {key:'B', label:'B — שיעור x של חיתוך הפרבולה השמאלי עם ציר x', correct: p1},
+          {key:'C', label:'C — שיעור y של חיתוך הפרבולה עם ציר y', correct: cP},
+          {key:'D', label:'D — שיעור x של חיתוך הישר עם ציר x', correct: xD},
+          {key:'E', label:'E — שיעור x של חיתוך הפרבולה הימני עם ציר x', correct: p2},
+          {key:'Fx', label:'F — שיעור x של חיתוך ישר–פרבולה (השמאלי)', correct: q1},
+          {key:'Fy', label:'F — שיעור y', correct: F_y},
+          {key:'Gx', label:'G — שיעור x של חיתוך ישר–פרבולה (הימני)', correct: q2},
+          {key:'Gy', label:'G — שיעור y', correct: G_y},
+        ],
+        solution:`
+          <h4>פתרון מלא</h4>
+          <div class="step"><strong>A</strong>: מציבים $x=0$ בישר $y = ${lineEq}$ ומקבלים $y = ${n}$. אז $A=(0,${n})$.</div>
+          <div class="step"><strong>D</strong>: פותרים $${lineEq} = 0$. $${m}x = ${-n}$, ולכן $x = ${xD}$. אז $D=(${xD},0)$.</div>
+          <div class="step"><strong>C</strong>: מציבים $x=0$ בפרבולה $y = ${parabEq}$ ומקבלים $y = ${cP}$. אז $C=(0,${cP})$.</div>
+          <div class="step"><strong>B, E</strong>: פותרים $${parabEq} = 0$. כופלים ב-$(-1)$: $x^2 ${-bP>=0?'+ '+(-bP):'- '+bP}x ${-cP>=0?'+ '+(-cP):'- '+cP} = 0$. הפתרונות: $x = ${p1}$ או $x = ${p2}$. אז $B=(${p1},0)$ ו-$E=(${p2},0)$.</div>
+          <div class="step"><strong>F, G</strong>: משווים בין הצדדים $${lineEq} = ${parabEq}$. אחרי סידור: $x^2 ${-(bP-m)>=0?'+ '+(-(bP-m)):'- '+(bP-m)}x ${-(cP-n)>=0?'+ '+(-(cP-n)):'- '+(cP-n)} = 0$. הפתרונות: $x = ${q1}$ או $x = ${q2}$.</div>
+          <div class="step">מציבים בישר $y = ${lineEq}$: $F = (${q1}, ${F_y})$ ו-$G = (${q2}, ${G_y})$.</div>
+        `,
+        regenerate: gen
+      }));
+      refmath();
+    }
+    gen();
+  }
+};
+
+/* ---- Two parabolas (real, varied parabolas with integer intersections, labels A and B) ---- */
+function fmtUpParab(b, c){
+  const bs = b === 0 ? '' : b > 0 ? ` + ${b===1?'':b}x` : ` - ${b===-1?'':-b}x`;
+  const cs = c === 0 ? '' : c > 0 ? ` + ${c}` : ` - ${-c}`;
+  return `x^2${bs}${cs}`;
+}
+topicDefs['parab-parab'] = {
+  title:'חיתוך בין שתי פרבולות',
+  lesson:`
+    <h3 style="margin-top:0">פתרון מערכת בין שתי פרבולות</h3>
+    <div class="lesson">
+      <p>נתונות שתי פרבולות $f(x)$ ו-$g(x)$. כדי למצוא את נקודות החיתוך ביניהן:</p>
+      <ol>
+        <li>משווים את שני הצדדים: $f(x) = g(x)$.</li>
+        <li>מעבירים את הכל לאגף אחד ומקבלים משוואה ריבועית.</li>
+        <li>פותרים את המשוואה ומקבלים את ערכי ה-$x$ של נקודות החיתוך.</li>
+        <li>מציבים את ערכי ה-$x$ באחת הפונקציות (זו הקלה יותר) כדי לקבל את שיעורי ה-$y$.</li>
+      </ol>
+      <p>הנקודות מסומנות באותיות גדולות $A$ ו-$B$, כאשר $A$ היא בדרך כלל הנקודה השמאלית (קטן יותר ב-$x$) ו-$B$ הימנית.</p>
+    </div>`,
+  example:`
+    <h3 style="margin-top:0">דוגמה: $f(x)=-x^2+10x-16$, $g(x)=x^2-8x+20$</h3>
+    ${parabSVG(-1, 5, 9, -1, 8, -2, 22, [
+      {type:'parab-std', a:1, b:-8, c:20, color:'#ec4899'},
+      {type:'point', x:3, y:5, color:'#dc2626', label:'A'},
+      {type:'point', x:6, y:8, color:'#dc2626', label:'B'},
+    ])}
+    <div class="example">
+      <div class="step">משווים את שני הצדדים: $-x^2 + 10x - 16 = x^2 - 8x + 20$.</div>
+      <div class="step">מעבירים לאגף אחד: $-2x^2 + 18x - 36 = 0$, מחלקים ב-$(-2)$: $x^2 - 9x + 18 = 0$.</div>
+      <div class="step">פירוק לגורמים: $(x-3)(x-6) = 0$, אז $x = 3$ או $x = 6$.</div>
+      <div class="step">מציבים ב-$g$: $y_A = 9 - 24 + 20 = 5$, $y_B = 36 - 48 + 20 = 8$.</div>
+      <div class="step">נקודות החיתוך: $A = (3, 5)$ ו-$B = (6, 8)$.</div>
+    </div>`,
+  makeQuestion:(slot)=>{
+    function gen(){
+      // Pick two integer intersection x-values
+      let r1 = rint(0, 3);
+      let r2 = r1 + rint(2, 4);
+      // Pick g(x) = x^2 + b_g x + c_g (upward parabola with small coefficients)
+      const b_g = rint(-7, -3);
+      const c_g = rint(8, 22);
+      // f(x) = -x^2 + b_f x + c_f, where f - g = -2(x-r1)(x-r2)
+      // f(x) = g(x) - 2(x-r1)(x-r2) = x^2 + b_g x + c_g - 2(x^2 - (r1+r2)x + r1 r2)
+      // f(x) = -x^2 + (b_g + 2(r1+r2))x + (c_g - 2 r1 r2)
+      const b_f = b_g + 2*(r1+r2);
+      const c_f = c_g - 2*r1*r2;
+      // y values at intersections (use g(x))
+      const y1 = r1*r1 + b_g*r1 + c_g;
+      const y2 = r2*r2 + b_g*r2 + c_g;
+      // Constraint check: keep coefficients reasonable
+      if(Math.abs(b_f) > 14 || Math.abs(c_f) > 30 || Math.abs(y1) > 25 || Math.abs(y2) > 25){
+        return gen();
+      }
+      const fEq = fmtDownParab(b_f, c_f);
+      const gEq = fmtUpParab(b_g, c_g);
+
+      // Vertex of f for SVG: x = b_f/2, y = -(b_f/2)^2 + b_f*(b_f/2) + c_f = b_f^2/4 + c_f
+      const vx_f = b_f/2, vy_f = (b_f*b_f)/4 + c_f;
+      const xs = [r1-1, r2+1, vx_f, 0, -b_g/2];
+      const ys = [y1, y2, vy_f, c_f, c_g, 0, c_g - (b_g*b_g)/4];
+      const xMin = Math.floor(Math.min(...xs)) - 1;
+      const xMax = Math.ceil(Math.max(...xs)) + 1;
+      const yMin = Math.floor(Math.min(...ys)) - 2;
+      const yMax = Math.ceil(Math.max(...ys)) + 2;
+
+      const svg = parabSVG(-1, vx_f, vy_f, xMin, xMax, yMin, yMax, [
+        {type:'parab-std', a:1, b:b_g, c:c_g, color:'#ec4899'},
+        {type:'point', x:r1, y:y1, color:'#dc2626', label:'A'},
+        {type:'point', x:r2, y:y2, color:'#dc2626', label:'B'},
+      ]);
+
+      // Difference equation for solution display
+      const diff_b = b_f - b_g;
+      const diff_c = c_f - c_g;
+      // After dividing by -2: x^2 - (r1+r2)x + r1*r2 = 0
+      const sumR = r1+r2, prodR = r1*r2;
+
+      slot.innerHTML='';
+      slot.appendChild(makeQuestion({
+        html:`נתונות שתי הפרבולות: $f(x) = ${fEq}$ (קו סגול) ו-$g(x) = ${gEq}$ (קו ורוד). מצאו את שיעורי נקודות החיתוך $A$ ו-$B$ (כאשר $A$ היא הנקודה השמאלית).<br>${svg}`,
+        answers:[
+          {key:'Ax', label:'A — שיעור x', correct: r1},
+          {key:'Ay', label:'A — שיעור y', correct: y1},
+          {key:'Bx', label:'B — שיעור x', correct: r2},
+          {key:'By', label:'B — שיעור y', correct: y2},
+        ],
+        solution:`
+          <h4>פתרון מלא</h4>
+          <div class="step">משווים: $${fEq} = ${gEq}$.</div>
+          <div class="step">מעבירים את כל האיברים לאגף אחד: $-2x^2 ${diff_b>=0?'+ '+diff_b:'- '+(-diff_b)}x ${diff_c>=0?'+ '+diff_c:'- '+(-diff_c)} = 0$.</div>
+          <div class="step">מחלקים ב-$(-2)$ ופותחים: $x^2 - ${sumR}x + ${prodR} = 0$.</div>
+          <div class="step">פירוק לגורמים: $(x-${r1})(x-${r2}) = 0$, אז $x_A = ${r1}$ או $x_B = ${r2}$.</div>
+          <div class="step">מציבים ב-$g(x)$: $y_A = ${r1}^2 ${b_g>=0?'+ '+b_g:'- '+(-b_g)}\\cdot${r1} ${c_g>=0?'+ '+c_g:'- '+(-c_g)} = ${y1}$, $y_B = ${r2}^2 ${b_g>=0?'+ '+b_g:'- '+(-b_g)}\\cdot${r2} ${c_g>=0?'+ '+c_g:'- '+(-c_g)} = ${y2}$.</div>
+          <div class="step">נקודות החיתוך: $A = (${r1}, ${y1})$ ו-$B = (${r2}, ${y2})$.</div>
+        `,
+        regenerate:gen
+      }));
+      refmath();
+    }
+    gen();
+  }
+};
+
+/* ---- Equations with denominators ---- */
+topicDefs['eqdenom'] = {
+  title:'משוואות עם מכנים',
+  lesson:`
+    <h3 style="margin-top:0">משוואות רציונליות</h3>
+    <div class="lesson">
+      <p>שלבי פתרון:</p>
+      <ol>
+        <li>קובעים את תחום ההצבה: כל ערך של $x$ ש<strong>אינו</strong> מאפס שום מכנה.</li>
+        <li>מוצאים מכנה משותף וכופלים את כל המשוואה במכנה המשותף.</li>
+        <li>פותרים את המשוואה (לרוב לינארית או ריבועית).</li>
+        <li>בודקים שכל פתרון שייך לתחום ההצבה. פתרון שמאפס מכנה נפסל.</li>
+      </ol>
+    </div>
+    <div class="formula">דוגמה: $\\dfrac{1}{x-2} = \\dfrac{3}{x+1}$ &nbsp;⇒&nbsp; תחום: $x \\neq 2,\\,-1$. כפל צולב: $x+1 = 3(x-2)$.</div>`,
+  example:`
+    <h3 style="margin-top:0">דוגמה: $12 + \\dfrac{3x}{3-x} = x$</h3>
+    <div class="example">
+      <div class="step">תחום הצבה: $3 - x \\neq 0 \\Rightarrow x \\neq 3$.</div>
+      <div class="step">כופלים ב-$(3-x)$: $12(3-x) + 3x = x(3-x)$.</div>
+      <div class="step">$36 - 12x + 3x = 3x - x^2$.</div>
+      <div class="step">$36 - 9x = 3x - x^2 \\Rightarrow x^2 - 12x + 36 = 0$.</div>
+      <div class="step">$(x-6)^2 = 0 \\Rightarrow x = 6$.</div>
+      <div class="step">בדיקה: $6 \\neq 3$ ✓ הפתרון תקף.</div>
+    </div>`,
+  makeQuestion:(slot)=>{
+    function gen(){
+      const tpl = pick(['t1','t2','t3']);
+      let html, steps, solution;
+      if(tpl==='t1'){
+        const B = rint(2,5);
+        const A = 4*B;
+        const root = A/2;
+        html = `פתרו את המשוואה: $\\;${A} + \\dfrac{${B}x}{${B}-x} = x$`;
+        steps = [
+          {
+            title:'שלב 1: מצא את תחום ההצבה',
+            help:'מצא ערכי $x$ שמאפסים את המכנה. ערכים אלה אסורים.',
+            hint:'המכנה הוא $${B}-x$. הוא מתאפס כאשר $x = ${B}$.'.replace('${B}',B),
+            inputs:[{key:'dom', label:'$x \\neq$', correct:B}]
+          },
+          {
+            title:'שלב 2: כפל את שני האגפים במכנה',
+            help:'כפל את שני האגפים ב-$(${B}-x)$ והגע למשוואה ריבועית. רשום את ערכי המקדמים $b$ ו-$c$ אחרי שתסדר לצורה $x^2 + bx + c = 0$.'.replace(/\${B}/g, B),
+            hint:'אחרי כפל ופישוט, מתקבל $x^2 - ${A}x + ${A*B} = 0$.'.replace('${A}',A).replace('${A*B}',A*B),
+            inputs:[
+              {key:'b', label:'$b =$', correct:-A},
+              {key:'c', label:'$c =$', correct:A*B},
+            ]
+          },
+          {
+            title:'שלב 3: חשב את הדיסקרימיננטה',
+            help:'הדיסקרימיננטה היא $\\Delta = b^2 - 4ac$ (כאשר $a=1$).',
+            hint:'$\\Delta = (-${A})^2 - 4\\cdot 1 \\cdot ${A*B} = ${A*A-4*A*B}$.'.replace('${A}',A).replace('${A*B}',A*B).replace('${A*A-4*A*B}',A*A-4*A*B),
+            inputs:[{key:'disc', label:'$\\Delta =$', correct:A*A-4*A*B}]
+          },
+          {
+            title:'שלב 4: פתור את המשוואה',
+            help:'השתמש בנוסחת השורשים. בדוק שהפתרון נמצא בתחום ההצבה.',
+            hint:'$x = \\dfrac{${A} \\pm \\sqrt{0}}{2} = ${root}$. שורש יחיד.'.replace('${A}',A).replace('${root}',root),
+            inputs:[{key:'x', label:'$x =$', correct:root}]
+          }
+        ];
+        solution = `
+          <h4>פתרון מלא</h4>
+          <div class="step">שלב 1: תחום הצבה. $${B}-x \\neq 0 \\Rightarrow x \\neq ${B}$.</div>
+          <div class="step">שלב 2: כופלים ב-$(${B}-x)$: $${A}(${B}-x) + ${B}x = x(${B}-x)$.</div>
+          <div class="step">פותחים סוגריים: $${A*B} - ${A}x + ${B}x = ${B}x - x^2$, ומסדרים: $x^2 - ${A}x + ${A*B} = 0$.</div>
+          <div class="step">שלב 3: דיסקרימיננטה $\\Delta = ${A*A}-${4*A*B}=${A*A-4*A*B}$.</div>
+          <div class="step">שלב 4: $x = \\dfrac{${A}}{2} = ${root}$ (שורש כפול).</div>
+          <div class="step">בדיקה: $${root} \\neq ${B}$ ✓ הפתרון תקף.</div>
+        `;
+      } else if(tpl==='t2'){
+        const a = rint(2,5), c = rint(2,5);
+        html = `פתרו את המשוואה: $\\;\\dfrac{x+${a}}{x-${c}} = \\dfrac{x-${a}}{x+${c}}$`;
+        steps = [
+          {
+            title:'שלב 1: מצא את תחום ההצבה',
+            help:'יש שני מכנים. מצא את שני הערכים שאסורים.',
+            hint:'המכנים הם $x-${c}$ ו-$x+${c}$, אז $x \\neq ${c}$ ו-$x \\neq -${c}$.'.replace(/\${c}/g, c),
+            inputs:[
+              {key:'d1', label:'$x \\neq$', correct:[c,-c]},
+              {key:'d2', label:'$x \\neq$', correct:[c,-c]},
+            ]
+          },
+          {
+            title:'שלב 2: בצע כפל צולב',
+            help:'כפל מכנה אגף ימין במונה אגף שמאל ולהפך. רשום את ההפרש בין שני האגפים אחרי פתיחה.',
+            hint:'לאחר כפל צולב ופישוט: $${aPc2}x = 0$.'.replace('${aPc2}',2*(a+c)),
+            inputs:[
+              {key:'coef', label:'מקדם של $x$ במשוואה הסופית', correct:2*(a+c)}
+            ]
+          },
+          {
+            title:'שלב 3: פתור את המשוואה',
+            help:'משוואה לינארית פשוטה. פתור עבור $x$.',
+            hint:'$${aPc2}x = 0 \\Rightarrow x = 0$.'.replace('${aPc2}',2*(a+c)),
+            inputs:[{key:'x', label:'$x =$', correct:0}]
+          }
+        ];
+        solution = `
+          <h4>פתרון מלא</h4>
+          <div class="step">שלב 1: תחום הצבה: $x \\neq ${c}$ ו-$x \\neq -${c}$.</div>
+          <div class="step">שלב 2: כפל צולב: $(x+${a})(x+${c}) = (x-${a})(x-${c})$.</div>
+          <div class="step">$x^2 + ${a+c}x + ${a*c} = x^2 - ${a+c}x + ${a*c} \\Rightarrow ${2*(a+c)}x = 0$.</div>
+          <div class="step">שלב 3: $x = 0$.</div>
+          <div class="step">בדיקה: $0 \\neq \\pm${c}$ ✓ הפתרון תקף.</div>
+        `;
+      } else {
+        const c = rint(3,7);
+        const r1 = rint(2,8);
+        let r2 = -rint(3,9);
+        if(r1===c||r2===c){r2 = -rint(2,5);}
+        const b = r1 + r2;
+        const aConst = -r1*r2 - c*c;
+        const sumRoots = r1 + r2;
+        const prodRoots = r1 * r2;
+        html = `פתרו את המשוואה: $\\;\\dfrac{${aConst} ${b>=0?'+ '+b:'- '+(-b)}x}{x-${c}} = x + ${c}$`;
+        steps = [
+          {
+            title:'שלב 1: מצא את תחום ההצבה',
+            help:'מצא איזה ערך של $x$ מאפס את המכנה.',
+            hint:'המכנה הוא $x-${c}$, אז $x \\neq ${c}$.'.replace(/\${c}/g, c),
+            inputs:[{key:'dom', label:'$x \\neq$', correct:c}]
+          },
+          {
+            title:'שלב 2: כפל במכנה',
+            help:'כפל את שני האגפים ב-$(x-${c})$ והגע לצורה $x^2 + bx + c = 0$. רשום את המקדמים.'.replace(/\${c}/g, c),
+            hint:'אחרי כפל: $${aConst} ${b>=0?'+ '+b:'- '+(-b)}x = x^2 - ${c2}$. מסדרים: $x^2 - ${b}x - ${aConstPlusC2} = 0$.'.replace('${aConst}',aConst).replace('${b}',b).replace('${c2}',c*c).replace('${aConstPlusC2}',aConst+c*c),
+            inputs:[
+              {key:'pb', label:'$b =$', correct:-b},
+              {key:'pc', label:'$c =$', correct:-(aConst+c*c)},
+            ]
+          },
+          {
+            title:'שלב 3: פתור את המשוואה הריבועית',
+            help:'מצא את שני הפתרונות. השתמש בנוסחת השורשים או בפירוק לגורמים.',
+            hint:'הפתרונות: $x_1 = ${r1}$ ו-$x_2 = ${r2}$.'.replace('${r1}',r1).replace('${r2}',r2),
+            inputs:[
+              {key:'x1', label:'פתרון ראשון $x =$', correct:[r1,r2]},
+              {key:'x2', label:'פתרון שני $x =$', correct:[r1,r2]},
+            ]
+          }
+        ];
+        solution = `
+          <h4>פתרון מלא</h4>
+          <div class="step">שלב 1: תחום: $x \\neq ${c}$.</div>
+          <div class="step">שלב 2: כופלים ב-$(x-${c})$: $${aConst}+${b}x = (x+${c})(x-${c}) = x^2 - ${c*c}$.</div>
+          <div class="step">מסדרים: $x^2 - ${b}x - ${aConst+c*c} = 0$.</div>
+          <div class="step">שלב 3: הפתרונות: $x_1=${r1},\\;x_2=${r2}$. שניהם בתחום ההצבה ✓.</div>
+        `;
+      }
+      slot.innerHTML='';
+      slot.appendChild(makeSteppedQuestion({html, steps, solution, regenerate:gen}));
+      refmath();
+    }
+    gen();
+  }
+};
+
+/* ---- Parallelogram analytical ---- */
+topicDefs['quad-coord'] = {
+  title:'מקבילית במערכת צירים',
+  lesson:`
+    <h3 style="margin-top:0">מקבילית $ABCD$ אנליטית</h3>
+    <div class="lesson">
+      <p>תכונות מקבילית $ABCD$:</p>
+      <ul>
+        <li>צלעות נגדיות מקבילות ושוות באורכן: $\\vec{AB} = \\vec{DC}$ כווקטורים.</li>
+        <li>אלכסונים חוצים זה את זה: אמצע $AC$ שווה לאמצע $BD$.</li>
+        <li>שטח: בסיס כפול גובה. אם הבסיס על ציר $x$, $S = |AB| \\cdot h$.</li>
+      </ul>
+      <p>נוסחאות חיוניות:</p>
+      <ul>
+        <li>אמצע קטע: $M = \\Big(\\dfrac{x_1+x_2}{2},\\dfrac{y_1+y_2}{2}\\Big)$.</li>
+        <li>שיפוע: $m = \\dfrac{y_2-y_1}{x_2-x_1}$.</li>
+        <li>אורך קטע: $\\sqrt{(x_2-x_1)^2+(y_2-y_1)^2}$.</li>
+        <li>נוסחת ישר דרך נקודה: $y - y_0 = m(x - x_0)$.</li>
+      </ul>
+    </div>`,
+  example:`
+    <h3 style="margin-top:0">דוגמה: $A=(-2,0),\\;B=(4,0),\\;D=(0,3),\\;C=(6,3)$</h3>
+    ${parabSVG(0,0,-100,-4,8,-2,5,[
+      {type:'polygon',points:[[-2,0],[4,0],[6,3],[0,3]],labels:['A','B','C','D'],fill:'rgba(99,102,241,0.18)',stroke:'#4338ca'},
+      {type:'point',x:2,y:1.5,color:'#dc2626',label:'M'}
+    ])}
+    <div class="example">
+      <div class="step">נתון: $A=(-2,0),\\;B=(4,0),\\;D=(0,3)$. מצאו את $C$, את שטח המקבילית, ואת מפגש האלכסונים.</div>
+      <div class="step">$\\vec{AD} = D - A = (0-(-2),\\;3-0) = (2, 3)$.</div>
+      <div class="step">$C = B + \\vec{AD} = (4+2,\\;0+3) = (6, 3)$.</div>
+      <div class="step">$|AB| = 4-(-2) = 6$. גובה $h = 3$. שטח: $6 \\cdot 3 = 18$.</div>
+      <div class="step">מפגש אלכסונים: אמצע $AC = \\Big(\\dfrac{-2+6}{2},\\dfrac{0+3}{2}\\Big) = (2,\\;1.5)$.</div>
+    </div>`,
+  makeQuestion:(slot)=>{
+    function gen(){
+      // Ensure midpoint coordinates are integers: dy even, and (xa + xb + dx) even
+      let xa, xb, dx, dy;
+      do {
+        xa = rint(-5,-1);
+        xb = rint(2,6);
+        dx = rint(-3,3);
+        dy = pick([2,4]);
+      } while ((xa + xb + dx) % 2 !== 0);
+      const D = [xa+dx, dy];
+      const C = [xb+dx, dy];
+      const base = xb - xa;
+      const area = base * dy;
+      const mid = [(xa+C[0])/2, (0+C[1])/2];
+      slot.innerHTML='';
+      slot.appendChild(makeQuestion({
+        html:`במקבילית $ABCD$ נתון: $A=(${xa},0),\\;B=(${xb},0),\\;D=(${D[0]},${D[1]})$. הנקודות $A,B$ נמצאות על ציר $x$.`,
+        answers:[
+          {key:'cx',label:'שיעור x של C',correct:C[0]},
+          {key:'cy',label:'שיעור y של C',correct:C[1]},
+          {key:'AB',label:'אורך הצלע AB',correct:base},
+          {key:'area',label:'שטח המקבילית',correct:area},
+          {key:'mx',label:'שיעור x של מפגש האלכסונים',correct:mid[0]},
+          {key:'my',label:'שיעור y של מפגש האלכסונים',correct:mid[1]},
+        ],
+        solution:`
+          <h4>פתרון מלא</h4>
+          <div class="step">במקבילית: $\\vec{AD} = \\vec{BC}$. וקטור $\\vec{AD} = D - A = (${D[0]-xa},${D[1]})$.</div>
+          <div class="step">$C = B + \\vec{AD} = (${xb}+${D[0]-xa},\\,0+${D[1]}) = (${C[0]},${C[1]})$.</div>
+          <div class="step">בסיס $|AB| = ${xb}-(${xa}) = ${base}$. גובה: $${dy}$.</div>
+          <div class="step">$S_{ABCD} = ${base} \\cdot ${dy} = ${area}$.</div>
+          <div class="step">מפגש אלכסונים: אמצע $AC = \\Big(\\dfrac{${xa}+${C[0]}}{2},\\dfrac{0+${C[1]}}{2}\\Big) = (${mid[0]},${mid[1]})$.</div>
+        `,
+        regenerate:gen
+      }));
+      refmath();
+    }
+    gen();
+  }
+};
+
+/* ---- Trapezoid ---- */
+topicDefs['trap-coord'] = {
+  title:'טרפז על מערכת הצירים',
+  lesson:`
+    <h3 style="margin-top:0">טרפז $ABCD$ אנליטי</h3>
+    <div class="lesson">
+      <p>טרפז הוא מרובע שיש לו זוג צלעות מקבילות בלבד.</p>
+      <p>טרפז שווה שוקיים: השוקיים שווים באורכם.</p>
+      <p>שטח טרפז: $S = \\dfrac{(a + b) \\cdot h}{2}$ כאשר $a,b$ הם הבסיסים ו-$h$ הגובה.</p>
+      <p>בדיקת מקבילות: שתי צלעות מקבילות אם ורק אם יש להן אותו שיפוע.</p>
+    </div>`,
+  example:`
+    <h3 style="margin-top:0">דוגמה: טרפז $ABCD$</h3>
+    ${parabSVG(0,0,-100,-5,7,-2,5,[
+      {type:'polygon',points:[[-3,0],[5,0],[4,3],[-1,3]],labels:['A','B','C','D'],fill:'rgba(236,72,153,0.18)',stroke:'#be185d'}
+    ])}
+    <div class="example">
+      <div class="step">בטרפז $ABCD$ נתון: $A=(-3,0),\\;B=(5,0),\\;C=(4,3),\\;D=(-1,3)$.</div>
+      <div class="step">$AB$ על ציר $x$ ו-$DC$ על הישר $y=3$, שני הבסיסים מקבילים.</div>
+      <div class="step">$|AB| = 5-(-3) = 8$. $|DC| = 4-(-1) = 5$.</div>
+      <div class="step">גובה: מרחק אנכי בין הבסיסים $= 3$.</div>
+      <div class="step">$S = \\dfrac{(8+5)\\cdot 3}{2} = \\dfrac{39}{2} = 19.5$.</div>
+    </div>`,
+  makeQuestion:(slot)=>{
+    function gen(){
+      // Generate a trapezoid where (base1+base2)*h is even (so area is integer)
+      let xa, xb, h, xd, xc, base1, base2, area;
+      let attempts = 0;
+      do {
+        xa = rint(-5,-1);
+        xb = rint(2,6);
+        h = rint(2,5);
+        xd = xa + rint(1,2);
+        xc = xb - rint(1,2);
+        base1 = xb - xa;
+        base2 = xc - xd;
+        area = (base1+base2)*h/2;
+        attempts++;
+      } while ((xc<=xd || (base1+base2)*h % 2 !== 0) && attempts<50);
+      slot.innerHTML='';
+      slot.appendChild(makeQuestion({
+        html:`בטרפז $ABCD$ הקודקודים: $A=(${xa},0),\\;B=(${xb},0),\\;C=(${xc},${h}),\\;D=(${xd},${h})$ כאשר $AB \\parallel DC$.`,
+        answers:[
+          {key:'b1',label:'אורך הבסיס AB',correct:base1},
+          {key:'b2',label:'אורך הבסיס DC',correct:base2},
+          {key:'h',label:'גובה הטרפז',correct:h},
+          {key:'area',label:'שטח הטרפז',correct:area},
+        ],
+        solution:`
+          <h4>פתרון</h4>
+          <div class="step">$AB$ על ציר $x$ ו-$DC$ על הישר $y=${h}$. שני הבסיסים מקבילים.</div>
+          <div class="step">$|AB| = ${xb}-(${xa})=${base1}$, $|DC|=${xc}-${xd}=${base2}$.</div>
+          <div class="step">גובה: מרחק אנכי בין הבסיסים $=${h}$.</div>
+          <div class="step">$S = \\dfrac{(${base1}+${base2})\\cdot${h}}{2} = ${area}$.</div>
+        `,
+        regenerate:gen
+      }));
+      refmath();
+    }
+    gen();
+  }
+};
+
+/* ---- Parallelogram proofs (from File 4: גיאומטריה סימולציה) ---- */
+const parallelogramProblems = [
+  {
+    title:'חפיפת משולשים במקבילית',
+    problem:`במקבילית $ABCD$, הנקודה $C$ היא אמצע הקטע $DE$ (הנקודה $E$ על המשך $DC$).<br><strong>הוכיחו:</strong> (א) $\\triangle ABM \\cong \\triangle ECM$ &nbsp; (ב) הנקודה $M$ היא אמצע הקטע $BC$.`,
+    hints:[
+      'במקבילית: $AB \\parallel DC$ ו-$AB = DC$.',
+      '$C$ היא אמצע $DE$, לכן $DC = CE$. מכאן $AB = CE$.',
+      '$AB \\parallel DC$ וכן $E$ על המשך הישר $DC$, אז $AB \\parallel CE$.',
+      'במשולשים $ABM$ ו-$ECM$: $\\angle BAM = \\angle CEM$ (זוויות מתחלפות בין מקבילים).',
+      '$\\angle ABM = \\angle ECM$ (זוויות מתחלפות), $AB = CE$ (הוכחנו).',
+      'לפי ז.צ.ז: $\\triangle ABM \\cong \\triangle ECM$.',
+      'מהחפיפה $BM = CM$, לכן $M$ אמצע $BC$.'
+    ]
+  },
+  {
+    title:'חוצי זוויות במקבילית',
+    problem:`במקבילית $ABCD$, $\\vec{BN}$ הוא חוצה זווית $B$ ($N$ על $DC$) ו-$\\vec{DK}$ חוצה זווית $D$ ($K$ על $AB$).<br><strong>הוכיחו:</strong> (א) $BN = DK$ &nbsp; (ב) $BN \\parallel DK$.`,
+    hints:[
+      'במקבילית, זוויות נגדיות שוות: $\\angle ABC = \\angle ADC$.',
+      'מכיוון שהקטעים חוצי זוויות: $\\angle 1 = \\angle 2 = \\frac{1}{2}\\angle B$ ו-$\\angle 3 = \\angle 4 = \\frac{1}{2}\\angle D$.',
+      'אז $\\angle 2 = \\angle 4$ (חצאי הזוויות הנגדיות).',
+      '$AB \\parallel DC$ במקבילית, ולכן $\\angle 2$ ו-$\\angle 4$ הן זוויות מתחלפות בין $BN$ ו-$DK$.',
+      'מכאן $BN \\parallel DK$.',
+      'במרובע $BNDK$: $BK \\parallel DN$ (כי $AB \\parallel DC$) וגם $BN \\parallel DK$.',
+      'שני זוגות של צלעות נגדיות מקבילות, אז $BNDK$ מקבילית, ולכן $BN = DK$.'
+    ]
+  },
+  {
+    title:'הוכחת מקבילית מזוויות',
+    problem:`נתון: $\\angle BEA = \\angle CFD$ ו-$\\angle ABE = \\angle CDF$ (כאשר $E,F$ נקודות פנימיות של $ABCD$ ושניהם על אלכסון $BD$).<br><strong>הוכיחו:</strong> המרובע $ABCD$ הוא מקבילית.`,
+    hints:[
+      'במשולשים $ABE$ ו-$CDF$: נתון $\\angle BEA = \\angle CFD$ ו-$\\angle ABE = \\angle CDF$.',
+      'סכום הזוויות במשולש הוא $180°$, לכן גם הזוויות השלישיות שוות: $\\angle BAE = \\angle DCF$.',
+      'הזוויות $\\angle ABE$ ו-$\\angle CDF$ הן זוויות מתחלפות בין הצלעות $AB,CD$ עם החותך $BD$.',
+      'מהזוויות המתחלפות השוות נובע: $AB \\parallel CD$.',
+      'באופן דומה $\\angle BAE = \\angle DCF$ נותן: $AD \\parallel BC$.',
+      'שני זוגות צלעות מקבילות, לכן $ABCD$ מקבילית.'
+    ]
+  },
+  {
+    title:'מקבילית פנימית מחוצי זוויות',
+    problem:`במקבילית $ABCD$, $AE$ חוצה את זווית $A$ ($E$ על $BC$) ו-$CF$ חוצה את זווית $C$ ($F$ על $AD$).<br><strong>הוכיחו:</strong> $AECF$ מקבילית.`,
+    hints:[
+      'במקבילית $\\angle A = \\angle C$ (זוויות נגדיות).',
+      '$AE$ ו-$CF$ הם חוצי זוויות, אז $\\angle FAE = \\frac{1}{2}\\angle A = \\frac{1}{2}\\angle C = \\angle ECF$.',
+      'במקבילית $AD \\parallel BC$, לכן $AF \\parallel EC$ (כי $F \\in AD, E \\in BC$).',
+      'הזוויות $\\angle FAE$ ו-$\\angle ECF$ הן זוויות מתחלפות עם חותך $AE$ או $CF$.',
+      'מהשוויון של זוויות מתחלפות נובע: $AE \\parallel CF$.',
+      'במרובע $AECF$ שני זוגות של צלעות נגדיות מקבילות, אז זוהי מקבילית.'
+    ]
+  },
+  {
+    title:'זווית ישרה במקבילית',
+    problem:`במקבילית $ABCD$ הנקודה $H$ נמצאת על הצלע $AD$ כך ש-$AB = AH$ ו-$DC = HD$.<br><strong>הוכיחו:</strong> $\\angle BHC = 90°$.`,
+    hints:[
+      'במקבילית $AB = DC$. נתון $AB = AH$ ו-$DC = HD$, לכן $AH = HD$.',
+      'משולש $ABH$ שווה שוקיים ($AB = AH$). זוויות הבסיס שוות: $\\angle ABH = \\angle AHB$.',
+      'משולש $DHC$ שווה שוקיים ($DC = HD$). זוויות הבסיס שוות: $\\angle DHC = \\angle DCH$.',
+      'במקבילית, זוויות סמוכות משלימות ל-$180°$: $\\angle A + \\angle D = 180°$.',
+      'בכל משולש סכום הזוויות $180°$. במשולש $ABH$: $2\\angle AHB + \\angle A = 180°$, אז $\\angle AHB = 90° - \\frac{\\angle A}{2}$.',
+      'באופן דומה במשולש $DHC$: $\\angle DHC = 90° - \\frac{\\angle D}{2}$.',
+      'על הישר $AD$: $\\angle AHB + \\angle BHC + \\angle DHC = 180°$.',
+      'מציבים: $90° - \\frac{\\angle A}{2} + \\angle BHC + 90° - \\frac{\\angle D}{2} = 180°$, ולכן $\\angle BHC = \\frac{\\angle A + \\angle D}{2} = \\frac{180°}{2} = 90°$.'
+    ]
+  },
+  {
+    title:'הוכחת מקבילית מאמצעים',
+    problem:`נתונים המרובעים $ABCD$ ו-$AFBE$. נתון $AF = FC$ וגם $FH = HE$, $AH = HB$, $AF = FC$.<br><strong>הוכיחו:</strong> (א) המרובע $FEBC$ מקבילית. (ב) המרובע $ABCD$ מקבילית. (נתון בנוסף $AB \\parallel DC$).`,
+    hints:[
+      '$F$ הוא אמצע $AC$ (כי $AF = FC$).',
+      '$H$ הוא אמצע $AB$ (כי $AH = HB$) וגם אמצע $FE$ (כי $FH = HE$).',
+      'במרובע $FEBC$: האלכסונים $FB$ ו-$EC$ חותכים זה את זה ב-$H$. צריך להראות שזה אמצע שניהם.',
+      'אבל מה שנתון הוא ש-$H$ אמצע $FE$ ואמצע $AB$. במרובע $AFBE$, האלכסונים $AB$ ו-$FE$ חותכים זה את זה ב-$H$ באמצע. לכן $AFBE$ מקבילית.',
+      'במקבילית $AFBE$: $AE \\parallel FB$ ו-$AE = FB$. גם $AF \\parallel EB$ ו-$AF = EB$.',
+      '$F$ אמצע $AC$, אז $FC = AF = EB$. ו-$FC \\parallel EB$ (כי $AC \\parallel EB$ דרך $AF$).',
+      'במרובע $FEBC$: זוג צלעות שוות ומקבילות $FC$ ו-$EB$, לכן $FEBC$ מקבילית.',
+      'נתון $AB \\parallel DC$. ב-$ABCD$ צריך להראות שגם $AD \\parallel BC$ או שהצלעות הנגדיות שוות.',
+    ]
+  }
+];
+
+/* ---- Trapezoid proofs (from File 4) ---- */
+const trapezoidProblems = [
+  {
+    title:'מרובע פנימי בטרפז',
+    problem:`בטרפז $ABCD$ ($AD \\parallel BC$), הנקודה $P$ נמצאת על השוק $AB$ והנקודה $Q$ נמצאת על השוק $CD$ כך ש-$PQ \\parallel AD$.<br><strong>צ"ל:</strong> המרובע $PBCQ$ הוא טרפז.`,
+    hints:[
+      'בטרפז $ABCD$ נתון $AD \\parallel BC$.',
+      'נתון: $PQ \\parallel AD$. שני קווים מקבילים לאותו ישר מקבילים זה לזה, אז $PQ \\parallel BC$.',
+      'במרובע $PBCQ$: הצלעות $PQ$ ו-$BC$ מקבילות.',
+      'הצלעות $PB$ ו-$QC$ אינן מקבילות (כי $AB$ ו-$CD$ אינן מקבילות בטרפז).',
+      'מרובע עם זוג אחד בלבד של צלעות מקבילות הוא טרפז. לכן $PBCQ$ טרפז.'
+    ]
+  },
+  {
+    title:'דמיון משולשים בטרפז',
+    problem:`בטרפז $ABCD$ ($AD \\parallel BC$), $M$ היא נקודת חיתוך האלכסונים.<br>(א) <strong>הוכיחו:</strong> $\\triangle ADM \\sim \\triangle CBM$.<br>(ב) <strong>נתון:</strong> $\\angle C_1 = 30°$ ו-$\\angle D_1 = 40°$. <strong>חשבו</strong> את $\\angle CMD$.`,
+    hints:[
+      'במשולשים $\\triangle ADM$ ו-$\\triangle CBM$: $\\angle AMD = \\angle CMB$ (זוויות קודקודיות).',
+      '$AD \\parallel BC$ נתון. אלכסון $AC$ הוא חותך, אז $\\angle DAM = \\angle BCM$ (זוויות מתחלפות).',
+      'באופן דומה אלכסון $BD$ הוא חותך: $\\angle ADM = \\angle CBM$ (זוויות מתחלפות).',
+      'לפי ז.ז שני המשולשים דומים: $\\triangle ADM \\sim \\triangle CBM$.',
+      'במשולש $CMD$ סכום הזוויות $180°$: $\\angle CMD + \\angle C_1 + \\angle D_1 = 180°$.',
+      'מציבים: $\\angle CMD = 180° - 30° - 40° = 110°$.'
+    ]
+  },
+  {
+    title:'טרפז שווה שוקיים',
+    problem:`$ABCD$ טרפז שווה שוקיים ($DA = CB$), נתון $AE = CD$ (כאשר $E$ על המשך $BA$ מעבר ל-$A$).<br><strong>הוכיחו:</strong> (א) $DCAE$ מקבילית &nbsp; (ב) $\\triangle EDB$ שווה שוקיים &nbsp; (ג) $\\triangle COD \\sim \\triangle AOB$ (כש-$O$ נקודת חיתוך האלכסונים).`,
+    hints:[
+      '$E$ על המשך $BA$, ובטרפז $AB \\parallel CD$. אז $AE \\parallel CD$ (אותו ישר).',
+      'נתון $AE = CD$, ושתי הצלעות מקבילות. לכן $DCAE$ מקבילית (זוג צלעות שוות ומקבילות).',
+      'במקבילית $DCAE$: $DE = CA$ (אלכסונים נגדיים? לא — צלעות נגדיות שוות).',
+      'בטרפז שווה שוקיים האלכסונים שווים: $DB = CA$.',
+      'מכאן $DE = CA = DB$, אז $\\triangle EDB$ שווה שוקיים ($DE = DB$).',
+      'במשולשים $\\triangle COD$ ו-$\\triangle AOB$: $\\angle DOC = \\angle BOA$ (זוויות קודקודיות).',
+      '$AB \\parallel CD$, ועם החותך $AC$: $\\angle OCD = \\angle OAB$ (זוויות מתחלפות).',
+      'לפי ז.ז המשולשים דומים: $\\triangle COD \\sim \\triangle AOB$.'
+    ]
+  },
+  {
+    title:'הוכחת טרפז עם קטעים שווים',
+    problem:`בטרפז $ABCD$ ($AD \\parallel BC$), הנקודות $P,Q$ נמצאות על השוקיים $AB, CD$ בהתאמה כך ש-$AP = DQ$ ו-$BP = CQ$.<br><strong>הוכיחו:</strong> $PQ \\parallel AD$ (ולכן $APQD$ ו-$PBCQ$ שניהם טרפזים).`,
+    hints:[
+      'אם $AP = DQ$ ו-$BP = CQ$, היחסים מתאימים: $\\dfrac{AP}{PB} = \\dfrac{DQ}{QC}$.',
+      'לפי משפט תלס ההפוך: אם נקודות מחלקות שוקיים של מרובע ביחסים שווים, הקטע המחבר ביניהן מקביל לבסיסים.',
+      '$AD \\parallel PQ$ (וגם $PQ \\parallel BC$).',
+      'במרובע $APQD$: $AD \\parallel PQ$, צלעות $AP, DQ$ אינן מקבילות, לכן זה טרפז.',
+      'באופן דומה $PBCQ$ טרפז.'
+    ]
+  }
+];
+
+function makeProofTopic(title, lessonHTML, exampleHTML, problemBank){
+  return {
+    title,
+    lesson: lessonHTML,
+    example: exampleHTML,
+    makeQuestion:(slot)=>{
+      function gen(){
+        const p = pick(problemBank);
+        slot.innerHTML='';
+        const wrap = document.createElement('div');
+        wrap.innerHTML = `
+          <div class="qbox">
+            <div class="qhead">📝 בעיה</div>
+            <div class="qtext"><strong>${p.title}</strong><br>${p.problem}</div>
+            <div class="actions">
+              <button class="btn btn-pink nx">🔄 שאלה אחרת</button>
+              <button class="btn btn-warn hint">💡 רמז הבא</button>
+              <button class="btn btn-success show">📖 הצג הוכחה מלאה</button>
+            </div>
+            <div class="reveal sl"></div>
+          </div>`;
+        let hintsShown = 0;
+        const sl = wrap.querySelector('.sl');
+        wrap.querySelector('.hint').onclick = ()=>{
+          if(hintsShown >= p.hints.length){ return; }
+          hintsShown++;
+          sl.classList.add('show');
+          sl.innerHTML = '<h4>רמזים:</h4>' + p.hints.slice(0,hintsShown).map((h,i)=>`<div class="step">${i+1}. ${h}</div>`).join('');
+          refmath();
+        };
+        wrap.querySelector('.show').onclick = ()=>{
+          sl.classList.add('show');
+          sl.innerHTML = '<h4>הוכחה מלאה:</h4>' + p.hints.map((h,i)=>`<div class="step">${i+1}. ${h}</div>`).join('');
+          refmath();
+        };
+        wrap.querySelector('.nx').onclick = gen;
+        slot.appendChild(wrap);
+        refmath();
+      }
+      gen();
+    }
+  };
+}
+
+topicDefs['parallelogram'] = makeProofTopic(
+  'מקבילית — הוכחות וחישוב',
+  `
+    <h3 style="margin-top:0">תכונות ותנאי מקבילית</h3>
+    <div class="lesson">
+      <p>תכונות של מקבילית $ABCD$:</p>
+      <ul>
+        <li>צלעות נגדיות שוות באורכן ומקבילות.</li>
+        <li>זוויות נגדיות שוות.</li>
+        <li>זוויות סמוכות משלימות ל-$180°$.</li>
+        <li>אלכסונים חוצים זה את זה.</li>
+      </ul>
+      <p>תנאים מספיקים לכך שמרובע הוא מקבילית (מספיק להוכיח אחד מהם):</p>
+      <ol>
+        <li>שני זוגות של צלעות נגדיות מקבילות.</li>
+        <li>שני זוגות של צלעות נגדיות שוות.</li>
+        <li>זוג צלעות נגדיות שוות ומקבילות.</li>
+        <li>אלכסונים חוצים זה את זה.</li>
+        <li>שני זוגות של זוויות נגדיות שוות.</li>
+      </ol>
+    </div>`,
+  `
+    <h3 style="margin-top:0">דוגמה: חפיפת משולשים באלכסונים</h3>
+    <div class="example">
+      <div class="step">במקבילית $ABCD$, $M$ היא נקודת חיתוך האלכסונים. הוכיחו: $\\triangle ABM \\cong \\triangle CDM$.</div>
+      <div class="step">במקבילית האלכסונים חוצים זה את זה: $AM = CM$ ו-$BM = DM$.</div>
+      <div class="step">$\\angle AMB = \\angle CMD$ (זוויות קודקודיות).</div>
+      <div class="step">לפי משפט החפיפה צ.ז.צ: $\\triangle ABM \\cong \\triangle CDM$.</div>
+    </div>`,
+  parallelogramProblems
+);
+
+topicDefs['trapezoid'] = makeProofTopic(
+  'טרפז — הוכחות ותכונות',
+  `
+    <h3 style="margin-top:0">תכונות ותנאי טרפז</h3>
+    <div class="lesson">
+      <p>טרפז הוא מרובע שיש לו זוג צלעות מקבילות בלבד (הבסיסים).</p>
+      <p>טרפז שווה שוקיים: השוקיים שווים באורכם. בטרפז שווה שוקיים:</p>
+      <ul>
+        <li>זוויות הבסיס שוות (לכל בסיס).</li>
+        <li>האלכסונים שווים באורכם.</li>
+      </ul>
+      <p>קטע אמצעים בטרפז: קטע המחבר את אמצעי השוקיים, מקביל לבסיסים, ואורכו שווה לחצי סכום הבסיסים.</p>
+      <p>חפיפה ודמיון של משולשים נדרשים בהוכחות:</p>
+      <ul>
+        <li>חפיפה: צ.ז.צ, ז.צ.ז, צ.צ.צ, צ.צ.ז.</li>
+        <li>דמיון: ז.ז (שתי זוויות שוות).</li>
+      </ul>
+    </div>`,
+  `
+    <h3 style="margin-top:0">דוגמה: דמיון משולשים בטרפז</h3>
+    <div class="example">
+      <div class="step">בטרפז $ABCD$ ($AD \\parallel BC$), $M$ נקודת חיתוך האלכסונים. הוכיחו: $\\triangle ADM \\sim \\triangle CBM$.</div>
+      <div class="step">$\\angle AMD = \\angle CMB$ (זוויות קודקודיות).</div>
+      <div class="step">$AD \\parallel BC$ ואלכסון $AC$ חותך: $\\angle DAM = \\angle BCM$ (זוויות מתחלפות).</div>
+      <div class="step">לפי ז.ז המשולשים דומים: $\\triangle ADM \\sim \\triangle CBM$.</div>
+    </div>`,
+  trapezoidProblems
+);
+
+/* ===== Init ===== */
+let savedMode = null;
+try { savedMode = localStorage.getItem('learnMathDevice'); } catch(e){}
+if(savedMode === 'mobile' || savedMode === 'desktop'){
+  applyDeviceMode(savedMode);
+  renderHome();
+} else {
+  // Default to desktop class while picker is shown so layout doesn't break
+  document.body.classList.add('mode-desktop');
+  showDevicePicker(true);
+  // Render home in background so when modal closes, content is ready
+  renderHome();
+}
+</script>
+</body>
+</html>
