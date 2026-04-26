@@ -132,6 +132,30 @@
   body.mode-desktop .grid{grid-template-columns:repeat(3,1fr)}
   .pill{display:inline-block;background:linear-gradient(135deg,#dbeafe,#ede9fe);color:#4338ca;padding:5px 14px;border-radius:999px;font-size:13px;font-weight:600;margin-bottom:10px}
   .hidden{display:none}
+  /* Geometry diagram styles */
+  .geom-svg{background:#fafbfc;border-radius:14px;width:100%;max-width:520px;height:auto;display:block;margin:0 auto;border:1px solid #e2e8f0}
+  .diagram-container{margin:14px 0}
+  .facts-container{background:#f8fafc;border-radius:14px;padding:16px 18px;margin:14px 0;border:1px solid #e2e8f0}
+  .facts-container h4{margin:0 0 10px;font-size:15px;color:#475569;font-weight:700}
+  .fact-list{display:flex;flex-direction:column;gap:8px}
+  .fact-btn{text-align:right;background:white;border:2px solid #e2e8f0;color:#1e293b;padding:10px 14px;border-radius:10px;cursor:pointer;font-size:14px;font-weight:600;font-family:inherit;transition:all .15s;display:flex;align-items:center;gap:10px}
+  .fact-btn::before{content:'○';font-size:20px;color:#cbd5e1;transition:all .15s}
+  .fact-btn:hover{border-color:#a78bfa;background:#faf5ff}
+  .fact-btn.discovered{border-color:#10b981;background:#dcfce7;color:#14532d}
+  .fact-btn.discovered::before{content:'●';color:#10b981}
+  .proof-steps{background:linear-gradient(135deg,#fefce8,#fef9c3);border-radius:14px;padding:16px 18px;margin:14px 0;border:1px solid #fde68a}
+  .proof-steps h4{margin:0 0 10px;font-size:15px;color:#854d0e;font-weight:700}
+  .step-rows{display:flex;flex-direction:column;gap:8px}
+  .step-row{display:flex;gap:10px;align-items:flex-start}
+  .step-num{flex-shrink:0;width:30px;height:30px;border-radius:50%;background:#fef3c7;color:#854d0e;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;margin-top:4px}
+  .step-row textarea{flex:1;padding:8px 12px;border:2px solid #fde68a;border-radius:10px;font-size:14px;font-family:inherit;background:white;resize:vertical;min-height:36px;line-height:1.5}
+  .step-row textarea:focus{outline:none;border-color:#f59e0b}
+  .step-remove{background:transparent;border:none;color:#94a3b8;cursor:pointer;font-size:18px;padding:4px 8px;font-family:inherit}
+  .step-remove:hover{color:#ef4444}
+  .add-step-btn{margin-top:10px;background:white;border:2px dashed #fde68a;color:#854d0e;padding:9px 14px;border-radius:10px;cursor:pointer;font-size:14px;font-weight:600;font-family:inherit;transition:all .15s}
+  .add-step-btn:hover{border-color:#f59e0b;background:#fef9c3}
+  body.mode-mobile .geom-svg{max-width:100%}
+  body.mode-mobile .step-row textarea{font-size:13px}
 </style>
 </head>
 <body>
@@ -1318,16 +1342,148 @@ topicDefs['trap-coord'] = {
   }
 };
 
+/* ---- Geometry diagram helpers ---- */
+function geomTickMark(p1, p2, count){
+  const [x1,y1]=p1,[x2,y2]=p2;
+  const mx=(x1+x2)/2, my=(y1+y2)/2;
+  const dx=x2-x1, dy=y2-y1;
+  const len=Math.sqrt(dx*dx+dy*dy)||1;
+  const px=-dy/len, py=dx/len;
+  const tx=dx/len, ty=dy/len;
+  const tickLen=0.18, spacing=0.12;
+  const offsets = count===1?[0]:count===2?[-spacing/2,spacing/2]:[-spacing,0,spacing];
+  let svg='';
+  for(const off of offsets){
+    const cx=mx+tx*off, cy=my+ty*off;
+    svg += `<line x1="${cx-px*tickLen}" y1="${cy-py*tickLen}" x2="${cx+px*tickLen}" y2="${cy+py*tickLen}" stroke="#dc2626" stroke-width="0.07" stroke-linecap="round"/>`;
+  }
+  return svg;
+}
+function geomParallelMark(p1, p2, count){
+  const [x1,y1]=p1,[x2,y2]=p2;
+  const mx=(x1+x2)/2, my=(y1+y2)/2;
+  const dx=x2-x1, dy=y2-y1;
+  const len=Math.sqrt(dx*dx+dy*dy)||1;
+  const tx=dx/len, ty=dy/len;
+  const px=-dy/len, py=dx/len;
+  const armLen=0.22, armWidth=0.16;
+  const offsets = count===1?[0]:[-0.18,0.18];
+  let svg='';
+  for(const off of offsets){
+    const cx=mx+tx*off, cy=my+ty*off;
+    const ax=cx-tx*armLen+px*armWidth, ay=cy-ty*armLen+py*armWidth;
+    const bx=cx-tx*armLen-px*armWidth, by=cy-ty*armLen-py*armWidth;
+    svg += `<polyline points="${ax},${ay} ${cx},${cy} ${bx},${by}" fill="none" stroke="#059669" stroke-width="0.07" stroke-linecap="round" stroke-linejoin="round"/>`;
+  }
+  return svg;
+}
+function geomRightAngle(vertex, p1, p2){
+  const [vx,vy]=vertex,[x1,y1]=p1,[x2,y2]=p2;
+  const d1x=x1-vx, d1y=y1-vy, d2x=x2-vx, d2y=y2-vy;
+  const l1=Math.sqrt(d1x*d1x+d1y*d1y)||1, l2=Math.sqrt(d2x*d2x+d2y*d2y)||1;
+  const u1x=d1x/l1, u1y=d1y/l1, u2x=d2x/l2, u2y=d2y/l2;
+  const sz=0.3;
+  return `<polyline points="${vx+u1x*sz},${vy+u1y*sz} ${vx+u1x*sz+u2x*sz},${vy+u1y*sz+u2y*sz} ${vx+u2x*sz},${vy+u2y*sz}" fill="none" stroke="#dc2626" stroke-width="0.07"/>`;
+}
+function geomAngleArc(vertex, p1, p2, label, color='#7c3aed'){
+  const [vx,vy]=vertex,[x1,y1]=p1,[x2,y2]=p2;
+  const d1x=x1-vx, d1y=y1-vy, d2x=x2-vx, d2y=y2-vy;
+  const l1=Math.sqrt(d1x*d1x+d1y*d1y)||1, l2=Math.sqrt(d2x*d2x+d2y*d2y)||1;
+  const r=0.5;
+  const ax=vx+d1x/l1*r, ay=vy+d1y/l1*r;
+  const bx=vx+d2x/l2*r, by=vy+d2y/l2*r;
+  let svg = `<path d="M ${ax} ${ay} A ${r} ${r} 0 0 1 ${bx} ${by}" fill="none" stroke="${color}" stroke-width="0.06"/>`;
+  if(label){
+    const mx=(d1x/l1+d2x/l2)/2, my=(d1y/l1+d2y/l2)/2;
+    const ml=Math.sqrt(mx*mx+my*my)||1;
+    svg += `<text x="${vx+mx/ml*0.85}" y="${vy+my/ml*0.85}" font-size="0.4" fill="${color}" text-anchor="middle" font-weight="700">${label}</text>`;
+  }
+  return svg;
+}
+function renderGeomElement(el, pts){
+  if(el.type==='polygon'){
+    const points = el.vs.map(n => pts[n].join(',')).join(' ');
+    return `<polygon points="${points}" fill="rgba(99,102,241,0.07)" stroke="#1e293b" stroke-width="0.08" stroke-linejoin="round"/>`;
+  }
+  if(el.type==='segment'){
+    const [x1,y1]=pts[el.from], [x2,y2]=pts[el.to];
+    const dash = el.dash?'stroke-dasharray="0.25 0.18"':'';
+    return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${el.color||'#1e293b'}" stroke-width="${el.width||0.08}" ${dash}/>`;
+  }
+  if(el.type==='tick-marks'){
+    return el.segments.map(([f,t])=>geomTickMark(pts[f],pts[t],el.style||1)).join('');
+  }
+  if(el.type==='parallel-marks'){
+    return el.segments.map(([f,t])=>geomParallelMark(pts[f],pts[t],el.style||1)).join('');
+  }
+  if(el.type==='right-angle'){
+    return geomRightAngle(pts[el.vertex], pts[el.from], pts[el.to]);
+  }
+  if(el.type==='angle-arc'){
+    return geomAngleArc(pts[el.vertex], pts[el.from], pts[el.to], el.label, el.color);
+  }
+  return '';
+}
+function geomSVG(diagram, activeFacts){
+  const { viewBox, points, initial=[], facts=[], labelOffsets={} } = diagram;
+  let elements = [...initial];
+  for(const f of facts){
+    if(activeFacts.has(f.id) && f.draw){
+      elements = elements.concat(f.draw);
+    }
+  }
+  let svg = `<svg viewBox="${viewBox.join(' ')}" xmlns="http://www.w3.org/2000/svg" class="geom-svg">`;
+  for(const el of elements){
+    svg += renderGeomElement(el, points);
+  }
+  for(const [name, [x, y]] of Object.entries(points)){
+    const offset = labelOffsets[name] || [0.25, -0.25];
+    svg += `<circle cx="${x}" cy="${y}" r="0.1" fill="#1e293b"/>`;
+    svg += `<text x="${x + offset[0]}" y="${y + offset[1]}" font-size="0.55" font-weight="800" fill="#1e293b">${name}</text>`;
+  }
+  svg += '</svg>';
+  return svg;
+}
+
 /* ---- Parallelogram proofs (from File 4: גיאומטריה סימולציה) ---- */
+// Standard parallelogram layout
+const PARA = { A:[2,2], B:[7,2], C:[8.5,6], D:[3.5,6] };
+const PARA_LABELS = { A:[-0.5,-0.2], B:[0.2,-0.2], C:[0.2,0.7], D:[-0.7,0.7] };
+
 const parallelogramProblems = [
   {
     title:'חפיפת משולשים במקבילית',
-    problem:`במקבילית $ABCD$, הנקודה $C$ היא אמצע הקטע $DE$ (הנקודה $E$ על המשך $DC$).<br><strong>הוכיחו:</strong> (א) $\\triangle ABM \\cong \\triangle ECM$ &nbsp; (ב) הנקודה $M$ היא אמצע הקטע $BC$.`,
+    problem:`במקבילית $ABCD$, הנקודה $C$ היא אמצע הקטע $DE$ (הנקודה $E$ על המשך $DC$). מסמנים את $M$ כנקודת חיתוך הישר $AE$ עם הצלע $BC$.<br><strong>הוכיחו:</strong> (א) $\\triangle ABM \\cong \\triangle ECM$ &nbsp; (ב) הנקודה $M$ היא אמצע הקטע $BC$.`,
+    diagram:{
+      viewBox:[0,0,15,8],
+      points:{ A:[2,2], B:[7,2], C:[8.5,6], D:[3.5,6], E:[13.5,6], M:[7.75,4] },
+      labelOffsets:{ A:[-0.5,-0.2], B:[0.2,-0.2], C:[-0.5,0.7], D:[-0.7,0.7], E:[0.2,0.7], M:[0.3,0.0] },
+      initial:[
+        { type:'polygon', vs:['A','B','C','D'] },
+        { type:'segment', from:'C', to:'E' },
+        { type:'segment', from:'A', to:'E' },
+      ],
+      facts:[
+        { id:'parallel', label:'$ABCD$ מקבילית: $AB \\parallel DC$ ו-$AD \\parallel BC$', draw:[
+          { type:'parallel-marks', segments:[['A','B'],['D','C']], style:1 },
+          { type:'parallel-marks', segments:[['A','D'],['B','C']], style:2 }
+        ]},
+        { id:'eqAB', label:'במקבילית $AB = DC$', draw:[
+          { type:'tick-marks', segments:[['A','B'],['D','C']], style:1 }
+        ]},
+        { id:'midDE', label:'$C$ אמצע $DE$, אז $DC = CE$', draw:[
+          { type:'tick-marks', segments:[['D','C'],['C','E']], style:2 }
+        ]},
+        { id:'concAB', label:'מסקנה: $AB = CE$ ו-$AB \\parallel CE$', draw:[
+          { type:'parallel-marks', segments:[['A','B'],['C','E']], style:3 }
+        ]},
+      ]
+    },
     hints:[
       'במקבילית: $AB \\parallel DC$ ו-$AB = DC$.',
       '$C$ היא אמצע $DE$, לכן $DC = CE$. מכאן $AB = CE$.',
-      '$AB \\parallel DC$ וכן $E$ על המשך הישר $DC$, אז $AB \\parallel CE$.',
-      'במשולשים $ABM$ ו-$ECM$: $\\angle BAM = \\angle CEM$ (זוויות מתחלפות בין מקבילים).',
+      '$E$ על המשך הישר $DC$, ולכן $AB \\parallel CE$.',
+      'במשולשים $ABM$ ו-$ECM$: $\\angle BAM = \\angle CEM$ (זוויות מתחלפות בין $AB \\parallel CE$).',
       '$\\angle ABM = \\angle ECM$ (זוויות מתחלפות), $AB = CE$ (הוכחנו).',
       'לפי ז.צ.ז: $\\triangle ABM \\cong \\triangle ECM$.',
       'מהחפיפה $BM = CM$, לכן $M$ אמצע $BC$.'
@@ -1336,66 +1492,118 @@ const parallelogramProblems = [
   {
     title:'חוצי זוויות במקבילית',
     problem:`במקבילית $ABCD$, $\\vec{BN}$ הוא חוצה זווית $B$ ($N$ על $DC$) ו-$\\vec{DK}$ חוצה זווית $D$ ($K$ על $AB$).<br><strong>הוכיחו:</strong> (א) $BN = DK$ &nbsp; (ב) $BN \\parallel DK$.`,
+    diagram:{
+      viewBox:[0,0,11,8],
+      points:{ A:[2,2], B:[7,2], C:[8.5,6], D:[3.5,6], K:[4.5,2], N:[6,6] },
+      labelOffsets:{ A:[-0.5,-0.2], B:[0.2,-0.2], C:[0.2,0.7], D:[-0.6,0.7], K:[-0.2,-0.4], N:[-0.1,0.7] },
+      initial:[
+        { type:'polygon', vs:['A','B','C','D'] },
+        { type:'segment', from:'B', to:'N' },
+        { type:'segment', from:'D', to:'K' },
+      ],
+      facts:[
+        { id:'paraB_D', label:'במקבילית $\\angle B = \\angle D$ (זוויות נגדיות שוות)', draw:[
+          { type:'angle-arc', vertex:'B', from:'A', to:'C', label:'B', color:'#7c3aed' },
+          { type:'angle-arc', vertex:'D', from:'A', to:'C', label:'D', color:'#7c3aed' }
+        ]},
+        { id:'bisB', label:'$BN$ חוצה זווית $B$ לשני חצאים שווים', draw:[
+          { type:'angle-arc', vertex:'B', from:'A', to:'N', label:'1', color:'#dc2626' },
+          { type:'angle-arc', vertex:'B', from:'N', to:'C', label:'2', color:'#dc2626' }
+        ]},
+        { id:'bisD', label:'$DK$ חוצה זווית $D$ לשני חצאים שווים', draw:[
+          { type:'angle-arc', vertex:'D', from:'A', to:'K', label:'4', color:'#059669' },
+          { type:'angle-arc', vertex:'D', from:'K', to:'C', label:'3', color:'#059669' }
+        ]},
+        { id:'parABDC', label:'במקבילית $AB \\parallel DC$', draw:[
+          { type:'parallel-marks', segments:[['A','B'],['D','C']], style:1 }
+        ]},
+      ]
+    },
     hints:[
       'במקבילית, זוויות נגדיות שוות: $\\angle ABC = \\angle ADC$.',
-      'מכיוון שהקטעים חוצי זוויות: $\\angle 1 = \\angle 2 = \\frac{1}{2}\\angle B$ ו-$\\angle 3 = \\angle 4 = \\frac{1}{2}\\angle D$.',
-      'אז $\\angle 2 = \\angle 4$ (חצאי הזוויות הנגדיות).',
-      '$AB \\parallel DC$ במקבילית, ולכן $\\angle 2$ ו-$\\angle 4$ הן זוויות מתחלפות בין $BN$ ו-$DK$.',
-      'מכאן $BN \\parallel DK$.',
+      'הקטעים חוצי זוויות, אז $\\angle 1 = \\angle 2 = \\frac{1}{2}\\angle B$ ו-$\\angle 3 = \\angle 4 = \\frac{1}{2}\\angle D$.',
+      'מכאן $\\angle 2 = \\angle 4$ (חצאי הזוויות הנגדיות).',
+      '$AB \\parallel DC$ במקבילית. הזוויות $\\angle 2$ ו-$\\angle 4$ הן זוויות מתחלפות בין $BN$ ו-$DK$.',
+      'מהשוויון של הזוויות המתחלפות: $BN \\parallel DK$.',
       'במרובע $BNDK$: $BK \\parallel DN$ (כי $AB \\parallel DC$) וגם $BN \\parallel DK$.',
-      'שני זוגות של צלעות נגדיות מקבילות, אז $BNDK$ מקבילית, ולכן $BN = DK$.'
-    ]
-  },
-  {
-    title:'הוכחת מקבילית מזוויות',
-    problem:`נתון: $\\angle BEA = \\angle CFD$ ו-$\\angle ABE = \\angle CDF$ (כאשר $E,F$ נקודות פנימיות של $ABCD$ ושניהם על אלכסון $BD$).<br><strong>הוכיחו:</strong> המרובע $ABCD$ הוא מקבילית.`,
-    hints:[
-      'במשולשים $ABE$ ו-$CDF$: נתון $\\angle BEA = \\angle CFD$ ו-$\\angle ABE = \\angle CDF$.',
-      'סכום הזוויות במשולש הוא $180°$, לכן גם הזוויות השלישיות שוות: $\\angle BAE = \\angle DCF$.',
-      'הזוויות $\\angle ABE$ ו-$\\angle CDF$ הן זוויות מתחלפות בין הצלעות $AB,CD$ עם החותך $BD$.',
-      'מהזוויות המתחלפות השוות נובע: $AB \\parallel CD$.',
-      'באופן דומה $\\angle BAE = \\angle DCF$ נותן: $AD \\parallel BC$.',
-      'שני זוגות צלעות מקבילות, לכן $ABCD$ מקבילית.'
+      'שני זוגות צלעות מקבילות $\\Rightarrow$ $BNDK$ מקבילית $\\Rightarrow$ $BN = DK$.'
     ]
   },
   {
     title:'מקבילית פנימית מחוצי זוויות',
     problem:`במקבילית $ABCD$, $AE$ חוצה את זווית $A$ ($E$ על $BC$) ו-$CF$ חוצה את זווית $C$ ($F$ על $AD$).<br><strong>הוכיחו:</strong> $AECF$ מקבילית.`,
+    diagram:{
+      viewBox:[0,0,11,8],
+      points:{ A:[2,2], B:[7,2], C:[8.5,6], D:[3.5,6], E:[7.6,3], F:[2.9,5] },
+      labelOffsets:{ A:[-0.5,-0.2], B:[0.2,-0.2], C:[0.2,0.7], D:[-0.6,0.7], E:[0.2,0.0], F:[-0.5,0.0] },
+      initial:[
+        { type:'polygon', vs:['A','B','C','D'] },
+        { type:'segment', from:'A', to:'E' },
+        { type:'segment', from:'C', to:'F' },
+      ],
+      facts:[
+        { id:'eqAC', label:'במקבילית $\\angle A = \\angle C$', draw:[
+          { type:'angle-arc', vertex:'A', from:'B', to:'D', label:'α', color:'#7c3aed' },
+          { type:'angle-arc', vertex:'C', from:'B', to:'D', label:'α', color:'#7c3aed' }
+        ]},
+        { id:'bisA', label:'$AE$ חוצה את זווית $A$', draw:[
+          { type:'angle-arc', vertex:'A', from:'B', to:'E', label:'½α', color:'#dc2626' }
+        ]},
+        { id:'bisC', label:'$CF$ חוצה את זווית $C$', draw:[
+          { type:'angle-arc', vertex:'C', from:'D', to:'F', label:'½α', color:'#dc2626' }
+        ]},
+        { id:'parAFEC', label:'$AF \\parallel EC$ (חלקי הצלעות הנגדיות $AD$ ו-$BC$)', draw:[
+          { type:'parallel-marks', segments:[['A','F'],['E','C']], style:1 }
+        ]},
+      ]
+    },
     hints:[
       'במקבילית $\\angle A = \\angle C$ (זוויות נגדיות).',
-      '$AE$ ו-$CF$ הם חוצי זוויות, אז $\\angle FAE = \\frac{1}{2}\\angle A = \\frac{1}{2}\\angle C = \\angle ECF$.',
-      'במקבילית $AD \\parallel BC$, לכן $AF \\parallel EC$ (כי $F \\in AD, E \\in BC$).',
-      'הזוויות $\\angle FAE$ ו-$\\angle ECF$ הן זוויות מתחלפות עם חותך $AE$ או $CF$.',
-      'מהשוויון של זוויות מתחלפות נובע: $AE \\parallel CF$.',
-      'במרובע $AECF$ שני זוגות של צלעות נגדיות מקבילות, אז זוהי מקבילית.'
+      '$AE$ ו-$CF$ חוצי זוויות, אז $\\angle EAF = \\frac{1}{2}\\angle A = \\frac{1}{2}\\angle C = \\angle ECF$.',
+      'במקבילית $AD \\parallel BC$, ולכן $AF \\parallel EC$ ($F \\in AD, E \\in BC$).',
+      'מהזוויות השוות $\\angle EAF = \\angle ECF$ ומקבילות $AF \\parallel EC$, נובע $AE \\parallel CF$ (זוויות מתאימות).',
+      'במרובע $AECF$ שני זוגות צלעות נגדיות מקבילות $\\Rightarrow$ מקבילית.'
     ]
   },
   {
     title:'זווית ישרה במקבילית',
     problem:`במקבילית $ABCD$ הנקודה $H$ נמצאת על הצלע $AD$ כך ש-$AB = AH$ ו-$DC = HD$.<br><strong>הוכיחו:</strong> $\\angle BHC = 90°$.`,
+    diagram:{
+      viewBox:[0,0,11,8],
+      points:{ A:[2,2], B:[7,2], C:[8.5,6], D:[3.5,6], H:[2.75,4] },
+      labelOffsets:{ A:[-0.5,-0.2], B:[0.2,-0.2], C:[0.2,0.7], D:[-0.6,0.7], H:[-0.6,0.0] },
+      initial:[
+        { type:'polygon', vs:['A','B','C','D'] },
+        { type:'segment', from:'B', to:'H' },
+        { type:'segment', from:'C', to:'H' },
+      ],
+      facts:[
+        { id:'paraEq', label:'במקבילית $AB = DC$ (צלעות נגדיות שוות)', draw:[
+          { type:'tick-marks', segments:[['A','B'],['D','C']], style:1 }
+        ]},
+        { id:'AB_AH', label:'נתון: $AB = AH$', draw:[
+          { type:'tick-marks', segments:[['A','B'],['A','H']], style:1 }
+        ]},
+        { id:'DC_HD', label:'נתון: $DC = HD$', draw:[
+          { type:'tick-marks', segments:[['D','C'],['H','D']], style:2 }
+        ]},
+        { id:'AH_HD', label:'מסקנה: $AH = HD$ ($H$ אמצע $AD$)', draw:[
+          { type:'tick-marks', segments:[['A','H'],['H','D']], style:3 }
+        ]},
+        { id:'right', label:'מסקנה: $\\angle BHC = 90°$', draw:[
+          { type:'right-angle', vertex:'H', from:'B', to:'C' }
+        ]},
+      ]
+    },
     hints:[
       'במקבילית $AB = DC$. נתון $AB = AH$ ו-$DC = HD$, לכן $AH = HD$.',
       'משולש $ABH$ שווה שוקיים ($AB = AH$). זוויות הבסיס שוות: $\\angle ABH = \\angle AHB$.',
       'משולש $DHC$ שווה שוקיים ($DC = HD$). זוויות הבסיס שוות: $\\angle DHC = \\angle DCH$.',
-      'במקבילית, זוויות סמוכות משלימות ל-$180°$: $\\angle A + \\angle D = 180°$.',
-      'בכל משולש סכום הזוויות $180°$. במשולש $ABH$: $2\\angle AHB + \\angle A = 180°$, אז $\\angle AHB = 90° - \\frac{\\angle A}{2}$.',
+      'במשולש $ABH$ סכום הזוויות $180°$: $2\\angle AHB + \\angle A = 180°$, אז $\\angle AHB = 90° - \\frac{\\angle A}{2}$.',
       'באופן דומה במשולש $DHC$: $\\angle DHC = 90° - \\frac{\\angle D}{2}$.',
       'על הישר $AD$: $\\angle AHB + \\angle BHC + \\angle DHC = 180°$.',
-      'מציבים: $90° - \\frac{\\angle A}{2} + \\angle BHC + 90° - \\frac{\\angle D}{2} = 180°$, ולכן $\\angle BHC = \\frac{\\angle A + \\angle D}{2} = \\frac{180°}{2} = 90°$.'
-    ]
-  },
-  {
-    title:'הוכחת מקבילית מאמצעים',
-    problem:`נתונים המרובעים $ABCD$ ו-$AFBE$. נתון $AF = FC$ וגם $FH = HE$, $AH = HB$, $AF = FC$.<br><strong>הוכיחו:</strong> (א) המרובע $FEBC$ מקבילית. (ב) המרובע $ABCD$ מקבילית. (נתון בנוסף $AB \\parallel DC$).`,
-    hints:[
-      '$F$ הוא אמצע $AC$ (כי $AF = FC$).',
-      '$H$ הוא אמצע $AB$ (כי $AH = HB$) וגם אמצע $FE$ (כי $FH = HE$).',
-      'במרובע $FEBC$: האלכסונים $FB$ ו-$EC$ חותכים זה את זה ב-$H$. צריך להראות שזה אמצע שניהם.',
-      'אבל מה שנתון הוא ש-$H$ אמצע $FE$ ואמצע $AB$. במרובע $AFBE$, האלכסונים $AB$ ו-$FE$ חותכים זה את זה ב-$H$ באמצע. לכן $AFBE$ מקבילית.',
-      'במקבילית $AFBE$: $AE \\parallel FB$ ו-$AE = FB$. גם $AF \\parallel EB$ ו-$AF = EB$.',
-      '$F$ אמצע $AC$, אז $FC = AF = EB$. ו-$FC \\parallel EB$ (כי $AC \\parallel EB$ דרך $AF$).',
-      'במרובע $FEBC$: זוג צלעות שוות ומקבילות $FC$ ו-$EB$, לכן $FEBC$ מקבילית.',
-      'נתון $AB \\parallel DC$. ב-$ABCD$ צריך להראות שגם $AD \\parallel BC$ או שהצלעות הנגדיות שוות.',
+      'מציבים: $\\angle BHC = 180° - (90° - \\frac{\\angle A}{2}) - (90° - \\frac{\\angle D}{2}) = \\frac{\\angle A + \\angle D}{2}$.',
+      'במקבילית $\\angle A + \\angle D = 180°$, אז $\\angle BHC = 90°$.'
     ]
   }
 ];
@@ -1405,6 +1613,26 @@ const trapezoidProblems = [
   {
     title:'מרובע פנימי בטרפז',
     problem:`בטרפז $ABCD$ ($AD \\parallel BC$), הנקודה $P$ נמצאת על השוק $AB$ והנקודה $Q$ נמצאת על השוק $CD$ כך ש-$PQ \\parallel AD$.<br><strong>צ"ל:</strong> המרובע $PBCQ$ הוא טרפז.`,
+    diagram:{
+      viewBox:[0,0,11,8],
+      points:{ A:[1,6], B:[3,2], C:[7,2], D:[9,6], P:[2,4], Q:[8,4] },
+      labelOffsets:{ A:[-0.6,0.0], B:[-0.2,-0.4], C:[0.0,-0.4], D:[0.2,0.0], P:[-0.6,0.0], Q:[0.2,0.0] },
+      initial:[
+        { type:'polygon', vs:['A','B','C','D'] },
+        { type:'segment', from:'P', to:'Q' },
+      ],
+      facts:[
+        { id:'givenPara', label:'נתון: $AD \\parallel BC$ (זה טרפז)', draw:[
+          { type:'parallel-marks', segments:[['A','D'],['B','C']], style:1 }
+        ]},
+        { id:'PQpara', label:'נתון: $PQ \\parallel AD$', draw:[
+          { type:'parallel-marks', segments:[['P','Q']], style:2 }
+        ]},
+        { id:'PQparBC', label:'מסקנה: $PQ \\parallel BC$ (שניהם מקבילים ל-$AD$)', draw:[
+          { type:'parallel-marks', segments:[['P','Q'],['B','C']], style:3 }
+        ]},
+      ]
+    },
     hints:[
       'בטרפז $ABCD$ נתון $AD \\parallel BC$.',
       'נתון: $PQ \\parallel AD$. שני קווים מקבילים לאותו ישר מקבילים זה לזה, אז $PQ \\parallel BC$.',
@@ -1416,38 +1644,106 @@ const trapezoidProblems = [
   {
     title:'דמיון משולשים בטרפז',
     problem:`בטרפז $ABCD$ ($AD \\parallel BC$), $M$ היא נקודת חיתוך האלכסונים.<br>(א) <strong>הוכיחו:</strong> $\\triangle ADM \\sim \\triangle CBM$.<br>(ב) <strong>נתון:</strong> $\\angle C_1 = 30°$ ו-$\\angle D_1 = 40°$. <strong>חשבו</strong> את $\\angle CMD$.`,
+    diagram:{
+      viewBox:[0,0,11,8],
+      points:{ A:[1,6], B:[3,2], C:[7,2], D:[9,6], M:[5,4] },
+      labelOffsets:{ A:[-0.6,0.0], B:[-0.2,-0.4], C:[0.0,-0.4], D:[0.2,0.0], M:[0.2,0.5] },
+      initial:[
+        { type:'polygon', vs:['A','B','C','D'] },
+        { type:'segment', from:'A', to:'C' },
+        { type:'segment', from:'B', to:'D' },
+      ],
+      facts:[
+        { id:'givenPara', label:'נתון: $AD \\parallel BC$', draw:[
+          { type:'parallel-marks', segments:[['A','D'],['B','C']], style:1 }
+        ]},
+        { id:'angleC', label:'נתון: $\\angle C_1 = 30°$', draw:[
+          { type:'angle-arc', vertex:'C', from:'B', to:'M', label:'30°', color:'#dc2626' }
+        ]},
+        { id:'angleD', label:'נתון: $\\angle D_1 = 40°$', draw:[
+          { type:'angle-arc', vertex:'D', from:'A', to:'M', label:'40°', color:'#059669' }
+        ]},
+        { id:'altAngles', label:'מסקנה: זוויות מתחלפות שוות', draw:[
+          { type:'angle-arc', vertex:'A', from:'D', to:'M', label:'', color:'#059669' },
+          { type:'angle-arc', vertex:'B', from:'M', to:'C', label:'', color:'#dc2626' }
+        ]},
+      ]
+    },
     hints:[
       'במשולשים $\\triangle ADM$ ו-$\\triangle CBM$: $\\angle AMD = \\angle CMB$ (זוויות קודקודיות).',
       '$AD \\parallel BC$ נתון. אלכסון $AC$ הוא חותך, אז $\\angle DAM = \\angle BCM$ (זוויות מתחלפות).',
       'באופן דומה אלכסון $BD$ הוא חותך: $\\angle ADM = \\angle CBM$ (זוויות מתחלפות).',
       'לפי ז.ז שני המשולשים דומים: $\\triangle ADM \\sim \\triangle CBM$.',
-      'במשולש $CMD$ סכום הזוויות $180°$: $\\angle CMD + \\angle C_1 + \\angle D_1 = 180°$.',
+      'לחישוב $\\angle CMD$: במשולש $CMD$ סכום הזוויות $180°$: $\\angle CMD + \\angle C_1 + \\angle D_1 = 180°$.',
       'מציבים: $\\angle CMD = 180° - 30° - 40° = 110°$.'
     ]
   },
   {
     title:'טרפז שווה שוקיים',
-    problem:`$ABCD$ טרפז שווה שוקיים ($DA = CB$), נתון $AE = CD$ (כאשר $E$ על המשך $BA$ מעבר ל-$A$).<br><strong>הוכיחו:</strong> (א) $DCAE$ מקבילית &nbsp; (ב) $\\triangle EDB$ שווה שוקיים &nbsp; (ג) $\\triangle COD \\sim \\triangle AOB$ (כש-$O$ נקודת חיתוך האלכסונים).`,
+    problem:`$ABCD$ טרפז שווה שוקיים ($DA = CB$, $AB \\parallel CD$). נתון $AE = CD$ (כאשר $E$ על המשך $BA$ מעבר ל-$A$).<br><strong>הוכיחו:</strong> (א) $DCAE$ מקבילית &nbsp; (ב) $\\triangle EDB$ שווה שוקיים.`,
+    diagram:{
+      viewBox:[-2,0,13,8],
+      points:{ A:[2,6], B:[8,6], C:[6.5,2], D:[3.5,2], E:[-1,6] },
+      labelOffsets:{ A:[-0.2,0.7], B:[0.2,0.7], C:[0.2,-0.4], D:[-0.4,-0.4], E:[-0.6,0.7] },
+      initial:[
+        { type:'polygon', vs:['A','B','C','D'] },
+        { type:'segment', from:'E', to:'A' },
+        { type:'segment', from:'D', to:'E' },
+        { type:'segment', from:'D', to:'B' },
+      ],
+      facts:[
+        { id:'isoTrap', label:'$ABCD$ טרפז שווה שוקיים: $DA = CB$', draw:[
+          { type:'tick-marks', segments:[['D','A'],['C','B']], style:1 }
+        ]},
+        { id:'parABCD', label:'בטרפז $AB \\parallel CD$', draw:[
+          { type:'parallel-marks', segments:[['A','B'],['D','C']], style:1 }
+        ]},
+        { id:'eqAE', label:'נתון: $AE = CD$', draw:[
+          { type:'tick-marks', segments:[['A','E'],['D','C']], style:2 }
+        ]},
+        { id:'isoEDB', label:'מסקנה: $DE = DB$ (שווה שוקיים)', draw:[
+          { type:'tick-marks', segments:[['D','E'],['D','B']], style:3 }
+        ]},
+      ]
+    },
     hints:[
-      '$E$ על המשך $BA$, ובטרפז $AB \\parallel CD$. אז $AE \\parallel CD$ (אותו ישר).',
-      'נתון $AE = CD$, ושתי הצלעות מקבילות. לכן $DCAE$ מקבילית (זוג צלעות שוות ומקבילות).',
-      'במקבילית $DCAE$: $DE = CA$ (אלכסונים נגדיים? לא — צלעות נגדיות שוות).',
+      '$E$ על המשך $BA$, ובטרפז $AB \\parallel CD$. אז $AE$ נמצא על אותו הישר עם $AB$, ולכן $AE \\parallel CD$.',
+      'נתון $AE = CD$, ושתי הצלעות מקבילות. לפי תכונת מקבילית (זוג צלעות נגדיות שוות ומקבילות): $DCAE$ מקבילית.',
+      'במקבילית $DCAE$: $DE = CA$ (צלעות נגדיות שוות).',
       'בטרפז שווה שוקיים האלכסונים שווים: $DB = CA$.',
-      'מכאן $DE = CA = DB$, אז $\\triangle EDB$ שווה שוקיים ($DE = DB$).',
-      'במשולשים $\\triangle COD$ ו-$\\triangle AOB$: $\\angle DOC = \\angle BOA$ (זוויות קודקודיות).',
-      '$AB \\parallel CD$, ועם החותך $AC$: $\\angle OCD = \\angle OAB$ (זוויות מתחלפות).',
-      'לפי ז.ז המשולשים דומים: $\\triangle COD \\sim \\triangle AOB$.'
+      'מכאן $DE = CA = DB$, אז $\\triangle EDB$ שווה שוקיים ($DE = DB$).'
     ]
   },
   {
-    title:'הוכחת טרפז עם קטעים שווים',
-    problem:`בטרפז $ABCD$ ($AD \\parallel BC$), הנקודות $P,Q$ נמצאות על השוקיים $AB, CD$ בהתאמה כך ש-$AP = DQ$ ו-$BP = CQ$.<br><strong>הוכיחו:</strong> $PQ \\parallel AD$ (ולכן $APQD$ ו-$PBCQ$ שניהם טרפזים).`,
+    title:'הוכחת מקבילות עם משפט תלס',
+    problem:`בטרפז $ABCD$ ($AD \\parallel BC$), הנקודות $P,Q$ נמצאות על השוקיים $AB, CD$ בהתאמה כך ש-$\\dfrac{AP}{PB} = \\dfrac{DQ}{QC}$.<br><strong>הוכיחו:</strong> $PQ \\parallel AD$ ($APQD$ טרפז).`,
+    diagram:{
+      viewBox:[0,0,11,8],
+      points:{ A:[1,6], B:[3,2], C:[7,2], D:[9,6], P:[1.7,4.6], Q:[8.4,4.6] },
+      labelOffsets:{ A:[-0.6,0.0], B:[-0.2,-0.4], C:[0.0,-0.4], D:[0.2,0.0], P:[-0.6,0.0], Q:[0.2,0.0] },
+      initial:[
+        { type:'polygon', vs:['A','B','C','D'] },
+        { type:'segment', from:'P', to:'Q' },
+      ],
+      facts:[
+        { id:'givenPara', label:'נתון: $AD \\parallel BC$', draw:[
+          { type:'parallel-marks', segments:[['A','D'],['B','C']], style:1 }
+        ]},
+        { id:'ratios', label:'נתון: $\\dfrac{AP}{PB} = \\dfrac{DQ}{QC}$', draw:[
+          { type:'tick-marks', segments:[['A','P']], style:1 },
+          { type:'tick-marks', segments:[['D','Q']], style:1 }
+        ]},
+        { id:'thales', label:'מסקנה (תלס): $PQ \\parallel AD$', draw:[
+          { type:'parallel-marks', segments:[['P','Q'],['A','D']], style:2 }
+        ]},
+      ]
+    },
     hints:[
-      'אם $AP = DQ$ ו-$BP = CQ$, היחסים מתאימים: $\\dfrac{AP}{PB} = \\dfrac{DQ}{QC}$.',
-      'לפי משפט תלס ההפוך: אם נקודות מחלקות שוקיים של מרובע ביחסים שווים, הקטע המחבר ביניהן מקביל לבסיסים.',
-      '$AD \\parallel PQ$ (וגם $PQ \\parallel BC$).',
-      'במרובע $APQD$: $AD \\parallel PQ$, צלעות $AP, DQ$ אינן מקבילות, לכן זה טרפז.',
-      'באופן דומה $PBCQ$ טרפז.'
+      'נתון $\\dfrac{AP}{PB} = \\dfrac{DQ}{QC}$ — נקודות $P,Q$ מחלקות את השוקיים ביחסים שווים.',
+      'משפט תלס ההפוך: אם נקודות מחלקות שני קווים ביחסים שווים, הקטע המחבר ביניהן מקביל לישרים המקוריים.',
+      'במקרה שלנו: $AB$ ו-$CD$ הן השוקיים, ו-$AD \\parallel BC$. אבל אנחנו מחלקים את השוקיים ביחסים שווים, אז $PQ$ מקביל לבסיסים.',
+      'מכאן $PQ \\parallel AD$ (וגם $PQ \\parallel BC$).',
+      'במרובע $APQD$: $AD \\parallel PQ$, וצלעות $AP, DQ$ אינן מקבילות. לכן זה טרפז.'
     ]
   }
 ];
@@ -1460,12 +1756,34 @@ function makeProofTopic(title, lessonHTML, exampleHTML, problemBank){
     makeQuestion:(slot)=>{
       function gen(){
         const p = pick(problemBank);
+        const activeFacts = new Set();
         slot.innerHTML='';
         const wrap = document.createElement('div');
+        const factsHTML = (p.diagram && p.diagram.facts) ? p.diagram.facts.map(f =>
+          `<button class="fact-btn" data-fact="${f.id}">${f.label}</button>`
+        ).join('') : '';
+        const diagramHTML = p.diagram ? `<div class="diagram-container"></div>` : '';
         wrap.innerHTML = `
           <div class="qbox">
             <div class="qhead">📝 בעיה</div>
             <div class="qtext"><strong>${p.title}</strong><br>${p.problem}</div>
+            ${diagramHTML}
+            ${p.diagram && p.diagram.facts ? `
+              <div class="facts-container">
+                <h4>📌 סמן נתונים שגילית — הם יתווספו לציור:</h4>
+                <div class="fact-list">${factsHTML}</div>
+              </div>` : ''}
+            <div class="proof-steps">
+              <h4>✏️ הפתרון שלי:</h4>
+              <div class="step-rows">
+                <div class="step-row">
+                  <span class="step-num">1</span>
+                  <textarea placeholder="כתבו את השלב הראשון..." rows="1"></textarea>
+                  <button class="step-remove" title="הסר שלב" style="visibility:hidden">✕</button>
+                </div>
+              </div>
+              <button class="add-step-btn">+ הוסף שלב</button>
+            </div>
             <div class="actions">
               <button class="btn btn-pink nx">🔄 שאלה אחרת</button>
               <button class="btn btn-warn hint">💡 רמז הבא</button>
@@ -1473,6 +1791,61 @@ function makeProofTopic(title, lessonHTML, exampleHTML, problemBank){
             </div>
             <div class="reveal sl"></div>
           </div>`;
+
+        // Render diagram
+        const diagramContainer = wrap.querySelector('.diagram-container');
+        function renderDiagram(){
+          if(p.diagram && diagramContainer){
+            diagramContainer.innerHTML = geomSVG(p.diagram, activeFacts);
+          }
+        }
+        renderDiagram();
+
+        // Fact buttons
+        wrap.querySelectorAll('.fact-btn').forEach(btn=>{
+          btn.onclick = ()=>{
+            const id = btn.dataset.fact;
+            if(activeFacts.has(id)){
+              activeFacts.delete(id);
+              btn.classList.remove('discovered');
+            } else {
+              activeFacts.add(id);
+              btn.classList.add('discovered');
+            }
+            renderDiagram();
+            refmath();
+          };
+        });
+
+        // Auto-render math in fact labels
+        refmath();
+
+        // Add step button
+        const stepRows = wrap.querySelector('.step-rows');
+        const addBtn = wrap.querySelector('.add-step-btn');
+        function addStepRow(){
+          const num = stepRows.children.length + 1;
+          const row = document.createElement('div');
+          row.className = 'step-row';
+          row.innerHTML = `
+            <span class="step-num">${num}</span>
+            <textarea placeholder="כתבו את שלב ${num}..." rows="1"></textarea>
+            <button class="step-remove" title="הסר שלב">✕</button>`;
+          row.querySelector('.step-remove').onclick = ()=>{
+            row.remove();
+            // Renumber
+            stepRows.querySelectorAll('.step-row').forEach((r, i)=>{
+              r.querySelector('.step-num').textContent = i+1;
+              const ta = r.querySelector('textarea');
+              if(ta && ta.placeholder.startsWith('כתבו את שלב')){
+                ta.placeholder = `כתבו את שלב ${i+1}...`;
+              }
+            });
+          };
+          stepRows.appendChild(row);
+        }
+        addBtn.onclick = addStepRow;
+
         let hintsShown = 0;
         const sl = wrap.querySelector('.sl');
         wrap.querySelector('.hint').onclick = ()=>{
