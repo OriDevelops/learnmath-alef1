@@ -1464,17 +1464,17 @@ const parallelogramProblems = [
         { type:'segment', from:'A', to:'E' },
       ],
       facts:[
-        { id:'parallel', label:'$ABCD$ מקבילית: $AB \\parallel DC$ ו-$AD \\parallel BC$', draw:[
+        { id:'parallel', triggers:['ABCDמקבילית','מקביליתABCD','מקבילית','AB||DC','ABמקבילDC','AB||CD','AD||BC'], draw:[
           { type:'parallel-marks', segments:[['A','B'],['D','C']], style:1 },
           { type:'parallel-marks', segments:[['A','D'],['B','C']], style:2 }
         ]},
-        { id:'eqAB', label:'במקבילית $AB = DC$', draw:[
+        { id:'eqAB', triggers:['AB=DC','DC=AB','צלעותנגדיותשוות'], draw:[
           { type:'tick-marks', segments:[['A','B'],['D','C']], style:1 }
         ]},
-        { id:'midDE', label:'$C$ אמצע $DE$, אז $DC = CE$', draw:[
+        { id:'midDE', triggers:['DC=CE','CE=DC','Cאמצע','אמצעDE'], draw:[
           { type:'tick-marks', segments:[['D','C'],['C','E']], style:2 }
         ]},
-        { id:'concAB', label:'מסקנה: $AB = CE$ ו-$AB \\parallel CE$', draw:[
+        { id:'concAB', triggers:['AB=CE','CE=AB','AB||CE','CE||AB'], draw:[
           { type:'parallel-marks', segments:[['A','B'],['C','E']], style:3 }
         ]},
       ]
@@ -1502,19 +1502,19 @@ const parallelogramProblems = [
         { type:'segment', from:'D', to:'K' },
       ],
       facts:[
-        { id:'paraB_D', label:'במקבילית $\\angle B = \\angle D$ (זוויות נגדיות שוות)', draw:[
+        { id:'paraB_D', triggers:['B=D','זווית B','זווית D','זוויות נגדיות','∠B=∠D'], draw:[
           { type:'angle-arc', vertex:'B', from:'A', to:'C', label:'B', color:'#7c3aed' },
           { type:'angle-arc', vertex:'D', from:'A', to:'C', label:'D', color:'#7c3aed' }
         ]},
-        { id:'bisB', label:'$BN$ חוצה זווית $B$ לשני חצאים שווים', draw:[
+        { id:'bisB', triggers:['BN חוצה','חוצה זווית B','חוצי זוויות'], draw:[
           { type:'angle-arc', vertex:'B', from:'A', to:'N', label:'1', color:'#dc2626' },
           { type:'angle-arc', vertex:'B', from:'N', to:'C', label:'2', color:'#dc2626' }
         ]},
-        { id:'bisD', label:'$DK$ חוצה זווית $D$ לשני חצאים שווים', draw:[
+        { id:'bisD', triggers:['DK חוצה','חוצה זווית D'], draw:[
           { type:'angle-arc', vertex:'D', from:'A', to:'K', label:'4', color:'#059669' },
           { type:'angle-arc', vertex:'D', from:'K', to:'C', label:'3', color:'#059669' }
         ]},
-        { id:'parABDC', label:'במקבילית $AB \\parallel DC$', draw:[
+        { id:'parABDC', triggers:['AB||DC','AB מקביל DC','מקבילית','מקביל'], draw:[
           { type:'parallel-marks', segments:[['A','B'],['D','C']], style:1 }
         ]},
       ]
@@ -1542,17 +1542,17 @@ const parallelogramProblems = [
         { type:'segment', from:'C', to:'F' },
       ],
       facts:[
-        { id:'eqAC', label:'במקבילית $\\angle A = \\angle C$', draw:[
+        { id:'eqAC', triggers:['A=C','זווית A','זווית C','זוויות נגדיות','∠A=∠C'], draw:[
           { type:'angle-arc', vertex:'A', from:'B', to:'D', label:'α', color:'#7c3aed' },
           { type:'angle-arc', vertex:'C', from:'B', to:'D', label:'α', color:'#7c3aed' }
         ]},
-        { id:'bisA', label:'$AE$ חוצה את זווית $A$', draw:[
+        { id:'bisA', triggers:['AE חוצה','חוצה זווית A'], draw:[
           { type:'angle-arc', vertex:'A', from:'B', to:'E', label:'½α', color:'#dc2626' }
         ]},
-        { id:'bisC', label:'$CF$ חוצה את זווית $C$', draw:[
+        { id:'bisC', triggers:['CF חוצה','חוצה זווית C'], draw:[
           { type:'angle-arc', vertex:'C', from:'D', to:'F', label:'½α', color:'#dc2626' }
         ]},
-        { id:'parAFEC', label:'$AF \\parallel EC$ (חלקי הצלעות הנגדיות $AD$ ו-$BC$)', draw:[
+        { id:'parAFEC', triggers:['AF||EC','AD||BC','EC||AF'], draw:[
           { type:'parallel-marks', segments:[['A','F'],['E','C']], style:1 }
         ]},
       ]
@@ -1578,19 +1578,19 @@ const parallelogramProblems = [
         { type:'segment', from:'C', to:'H' },
       ],
       facts:[
-        { id:'paraEq', label:'במקבילית $AB = DC$ (צלעות נגדיות שוות)', draw:[
+        { id:'paraEq', triggers:['AB=DC','DC=AB','צלעות נגדיות'], draw:[
           { type:'tick-marks', segments:[['A','B'],['D','C']], style:1 }
         ]},
-        { id:'AB_AH', label:'נתון: $AB = AH$', draw:[
+        { id:'AB_AH', triggers:['AB=AH','AH=AB'], draw:[
           { type:'tick-marks', segments:[['A','B'],['A','H']], style:1 }
         ]},
-        { id:'DC_HD', label:'נתון: $DC = HD$', draw:[
+        { id:'DC_HD', triggers:['DC=HD','HD=DC'], draw:[
           { type:'tick-marks', segments:[['D','C'],['H','D']], style:2 }
         ]},
-        { id:'AH_HD', label:'מסקנה: $AH = HD$ ($H$ אמצע $AD$)', draw:[
+        { id:'AH_HD', triggers:['AH=HD','HD=AH','H אמצע AD','אמצע AD'], draw:[
           { type:'tick-marks', segments:[['A','H'],['H','D']], style:3 }
         ]},
-        { id:'right', label:'מסקנה: $\\angle BHC = 90°$', draw:[
+        { id:'right', triggers:['BHC=90','∠BHC=90','90°','זווית ישרה'], draw:[
           { type:'right-angle', vertex:'H', from:'B', to:'C' }
         ]},
       ]
@@ -1622,13 +1622,13 @@ const trapezoidProblems = [
         { type:'segment', from:'P', to:'Q' },
       ],
       facts:[
-        { id:'givenPara', label:'נתון: $AD \\parallel BC$ (זה טרפז)', draw:[
+        { id:'givenPara', triggers:['AD||BC','טרפז','BC||AD','AD מקביל','מקבילים'], draw:[
           { type:'parallel-marks', segments:[['A','D'],['B','C']], style:1 }
         ]},
-        { id:'PQpara', label:'נתון: $PQ \\parallel AD$', draw:[
+        { id:'PQpara', triggers:['PQ||AD','AD||PQ','PQ מקביל'], draw:[
           { type:'parallel-marks', segments:[['P','Q']], style:2 }
         ]},
-        { id:'PQparBC', label:'מסקנה: $PQ \\parallel BC$ (שניהם מקבילים ל-$AD$)', draw:[
+        { id:'PQparBC', triggers:['PQ||BC','BC||PQ'], draw:[
           { type:'parallel-marks', segments:[['P','Q'],['B','C']], style:3 }
         ]},
       ]
@@ -1654,16 +1654,16 @@ const trapezoidProblems = [
         { type:'segment', from:'B', to:'D' },
       ],
       facts:[
-        { id:'givenPara', label:'נתון: $AD \\parallel BC$', draw:[
+        { id:'givenPara', triggers:['AD||BC','טרפז','BC||AD','מקבילים'], draw:[
           { type:'parallel-marks', segments:[['A','D'],['B','C']], style:1 }
         ]},
-        { id:'angleC', label:'נתון: $\\angle C_1 = 30°$', draw:[
+        { id:'angleC', triggers:['C1=30','∠C1=30','זווית C','30°'], draw:[
           { type:'angle-arc', vertex:'C', from:'B', to:'M', label:'30°', color:'#dc2626' }
         ]},
-        { id:'angleD', label:'נתון: $\\angle D_1 = 40°$', draw:[
+        { id:'angleD', triggers:['D1=40','∠D1=40','זווית D','40°'], draw:[
           { type:'angle-arc', vertex:'D', from:'A', to:'M', label:'40°', color:'#059669' }
         ]},
-        { id:'altAngles', label:'מסקנה: זוויות מתחלפות שוות', draw:[
+        { id:'altAngles', triggers:['זוויות מתחלפות','מתחלפות'], draw:[
           { type:'angle-arc', vertex:'A', from:'D', to:'M', label:'', color:'#059669' },
           { type:'angle-arc', vertex:'B', from:'M', to:'C', label:'', color:'#dc2626' }
         ]},
@@ -1692,16 +1692,16 @@ const trapezoidProblems = [
         { type:'segment', from:'D', to:'B' },
       ],
       facts:[
-        { id:'isoTrap', label:'$ABCD$ טרפז שווה שוקיים: $DA = CB$', draw:[
+        { id:'isoTrap', triggers:['DA=CB','CB=DA','שווה שוקיים','שווה-שוקיים'], draw:[
           { type:'tick-marks', segments:[['D','A'],['C','B']], style:1 }
         ]},
-        { id:'parABCD', label:'בטרפז $AB \\parallel CD$', draw:[
+        { id:'parABCD', triggers:['AB||CD','CD||AB','AB||DC','DC||AB','AB מקביל'], draw:[
           { type:'parallel-marks', segments:[['A','B'],['D','C']], style:1 }
         ]},
-        { id:'eqAE', label:'נתון: $AE = CD$', draw:[
+        { id:'eqAE', triggers:['AE=CD','CD=AE','AE=DC'], draw:[
           { type:'tick-marks', segments:[['A','E'],['D','C']], style:2 }
         ]},
-        { id:'isoEDB', label:'מסקנה: $DE = DB$ (שווה שוקיים)', draw:[
+        { id:'isoEDB', triggers:['DE=DB','DB=DE','EDB שווה','משולש EDB'], draw:[
           { type:'tick-marks', segments:[['D','E'],['D','B']], style:3 }
         ]},
       ]
@@ -1726,14 +1726,14 @@ const trapezoidProblems = [
         { type:'segment', from:'P', to:'Q' },
       ],
       facts:[
-        { id:'givenPara', label:'נתון: $AD \\parallel BC$', draw:[
+        { id:'givenPara', triggers:['AD||BC','טרפז','BC||AD'], draw:[
           { type:'parallel-marks', segments:[['A','D'],['B','C']], style:1 }
         ]},
-        { id:'ratios', label:'נתון: $\\dfrac{AP}{PB} = \\dfrac{DQ}{QC}$', draw:[
+        { id:'ratios', triggers:['AP/PB','DQ/QC','יחסים','תלס','יחסים שווים'], draw:[
           { type:'tick-marks', segments:[['A','P']], style:1 },
           { type:'tick-marks', segments:[['D','Q']], style:1 }
         ]},
-        { id:'thales', label:'מסקנה (תלס): $PQ \\parallel AD$', draw:[
+        { id:'thales', triggers:['PQ||AD','AD||PQ','תלס ההפוך','PQ מקביל'], draw:[
           { type:'parallel-marks', segments:[['P','Q'],['A','D']], style:2 }
         ]},
       ]
@@ -1748,6 +1748,10 @@ const trapezoidProblems = [
   }
 ];
 
+function normalizeText(s){
+  // Lowercase + remove all whitespace + normalize quotes/symbols
+  return (s||'').toLowerCase().replace(/\s+/g,'').replace(/[״"׳']/g,'');
+}
 function makeProofTopic(title, lessonHTML, exampleHTML, problemBank){
   return {
     title,
@@ -1759,22 +1763,14 @@ function makeProofTopic(title, lessonHTML, exampleHTML, problemBank){
         const activeFacts = new Set();
         slot.innerHTML='';
         const wrap = document.createElement('div');
-        const factsHTML = (p.diagram && p.diagram.facts) ? p.diagram.facts.map(f =>
-          `<button class="fact-btn" data-fact="${f.id}">${f.label}</button>`
-        ).join('') : '';
         const diagramHTML = p.diagram ? `<div class="diagram-container"></div>` : '';
         wrap.innerHTML = `
           <div class="qbox">
             <div class="qhead">📝 בעיה</div>
             <div class="qtext"><strong>${p.title}</strong><br>${p.problem}</div>
             ${diagramHTML}
-            ${p.diagram && p.diagram.facts ? `
-              <div class="facts-container">
-                <h4>📌 סמן נתונים שגילית — הם יתווספו לציור:</h4>
-                <div class="fact-list">${factsHTML}</div>
-              </div>` : ''}
             <div class="proof-steps">
-              <h4>✏️ הפתרון שלי:</h4>
+              <h4>✏️ הפתרון שלי (ככל שתכתבו, הציור יתעדכן):</h4>
               <div class="step-rows">
                 <div class="step-row">
                   <span class="step-num">1</span>
@@ -1801,28 +1797,39 @@ function makeProofTopic(title, lessonHTML, exampleHTML, problemBank){
         }
         renderDiagram();
 
-        // Fact buttons
-        wrap.querySelectorAll('.fact-btn').forEach(btn=>{
-          btn.onclick = ()=>{
-            const id = btn.dataset.fact;
-            if(activeFacts.has(id)){
-              activeFacts.delete(id);
-              btn.classList.remove('discovered');
-            } else {
-              activeFacts.add(id);
-              btn.classList.add('discovered');
-            }
-            renderDiagram();
-            refmath();
-          };
-        });
-
-        // Auto-render math in fact labels
-        refmath();
-
-        // Add step button
+        // Step rows + text-driven fact detection
         const stepRows = wrap.querySelector('.step-rows');
         const addBtn = wrap.querySelector('.add-step-btn');
+
+        function recomputeFactsFromText(){
+          if(!p.diagram || !p.diagram.facts){ return; }
+          const allText = Array.from(stepRows.querySelectorAll('textarea'))
+            .map(t => normalizeText(t.value))
+            .join(' ');
+          const before = new Set(activeFacts);
+          activeFacts.clear();
+          for(const fact of p.diagram.facts){
+            if(!fact.triggers) continue;
+            for(const trig of fact.triggers){
+              if(allText.includes(normalizeText(trig))){
+                activeFacts.add(fact.id);
+                break;
+              }
+            }
+          }
+          // only re-render if changed
+          let changed = before.size !== activeFacts.size;
+          if(!changed){
+            for(const id of before){ if(!activeFacts.has(id)){ changed = true; break; } }
+          }
+          if(changed){ renderDiagram(); }
+        }
+
+        function attachInputListener(textarea){
+          textarea.addEventListener('input', recomputeFactsFromText);
+        }
+        wrap.querySelectorAll('textarea').forEach(attachInputListener);
+
         function addStepRow(){
           const num = stepRows.children.length + 1;
           const row = document.createElement('div');
@@ -1833,7 +1840,6 @@ function makeProofTopic(title, lessonHTML, exampleHTML, problemBank){
             <button class="step-remove" title="הסר שלב">✕</button>`;
           row.querySelector('.step-remove').onclick = ()=>{
             row.remove();
-            // Renumber
             stepRows.querySelectorAll('.step-row').forEach((r, i)=>{
               r.querySelector('.step-num').textContent = i+1;
               const ta = r.querySelector('textarea');
@@ -1841,7 +1847,9 @@ function makeProofTopic(title, lessonHTML, exampleHTML, problemBank){
                 ta.placeholder = `כתבו את שלב ${i+1}...`;
               }
             });
+            recomputeFactsFromText();
           };
+          attachInputListener(row.querySelector('textarea'));
           stepRows.appendChild(row);
         }
         addBtn.onclick = addStepRow;
@@ -1892,6 +1900,22 @@ topicDefs['parallelogram'] = makeProofTopic(
     </div>`,
   `
     <h3 style="margin-top:0">דוגמה: חפיפת משולשים באלכסונים</h3>
+    ${geomSVG({
+      viewBox:[0,0,11,8],
+      points:{ A:[2,2], B:[7,2], C:[8.5,6], D:[3.5,6], M:[5.25,4] },
+      labelOffsets:{ A:[-0.5,-0.2], B:[0.2,-0.2], C:[0.2,0.7], D:[-0.6,0.7], M:[0.2,-0.2] },
+      initial:[
+        { type:'polygon', vs:['A','B','C','D'] },
+        { type:'segment', from:'A', to:'C' },
+        { type:'segment', from:'B', to:'D' },
+      ],
+      facts:[
+        { id:'f1', draw:[
+          { type:'tick-marks', segments:[['A','M'],['M','C']], style:1 },
+          { type:'tick-marks', segments:[['B','M'],['M','D']], style:2 }
+        ]}
+      ]
+    }, new Set(['f1']))}
     <div class="example">
       <div class="step">במקבילית $ABCD$, $M$ היא נקודת חיתוך האלכסונים. הוכיחו: $\\triangle ABM \\cong \\triangle CDM$.</div>
       <div class="step">במקבילית האלכסונים חוצים זה את זה: $AM = CM$ ו-$BM = DM$.</div>
@@ -1921,6 +1945,21 @@ topicDefs['trapezoid'] = makeProofTopic(
     </div>`,
   `
     <h3 style="margin-top:0">דוגמה: דמיון משולשים בטרפז</h3>
+    ${geomSVG({
+      viewBox:[0,0,11,8],
+      points:{ A:[1,6], B:[3,2], C:[7,2], D:[9,6], M:[5,4] },
+      labelOffsets:{ A:[-0.6,0.0], B:[-0.2,-0.4], C:[0.0,-0.4], D:[0.2,0.0], M:[0.2,0.5] },
+      initial:[
+        { type:'polygon', vs:['A','B','C','D'] },
+        { type:'segment', from:'A', to:'C' },
+        { type:'segment', from:'B', to:'D' },
+      ],
+      facts:[
+        { id:'f1', draw:[
+          { type:'parallel-marks', segments:[['A','D'],['B','C']], style:1 }
+        ]}
+      ]
+    }, new Set(['f1']))}
     <div class="example">
       <div class="step">בטרפז $ABCD$ ($AD \\parallel BC$), $M$ נקודת חיתוך האלכסונים. הוכיחו: $\\triangle ADM \\sim \\triangle CBM$.</div>
       <div class="step">$\\angle AMD = \\angle CMB$ (זוויות קודקודיות).</div>
