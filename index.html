@@ -156,6 +156,22 @@
   .add-step-btn:hover{border-color:#f59e0b;background:#fef9c3}
   body.mode-mobile .geom-svg{max-width:100%}
   body.mode-mobile .step-row textarea{font-size:13px}
+  /* AI feedback panel */
+  .ai-feedback{margin-top:14px;background:linear-gradient(135deg,#faf5ff,#fdf4ff,#f0f9ff);border-radius:16px;padding:20px;border:2px solid #c4b5fd;display:flex;gap:20px;align-items:flex-start;box-shadow:0 4px 12px rgba(167,139,250,.15)}
+  .ai-feedback.hidden{display:none}
+  .score-box{flex-shrink:0;text-align:center;background:white;border-radius:14px;padding:14px 18px;border:2px solid #e9d5ff}
+  .score-num{font-size:46px;font-weight:800;background:linear-gradient(135deg,#7c3aed,#ec4899);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;line-height:1}
+  .score-label{font-size:13px;color:#64748b;margin-top:2px;font-weight:600}
+  .ai-analysis{flex:1}
+  .ai-message{font-size:17px;font-weight:700;margin:0 0 10px;color:#1e293b}
+  .ai-analysis ul{margin:6px 0;padding-right:20px}
+  .ai-analysis li{font-size:14px;color:#475569;line-height:1.7}
+  .ai-analysis .ok{color:#166534;font-weight:600}
+  .ai-analysis .miss{color:#991b1b;font-weight:600}
+  .btn-ai{background:linear-gradient(135deg,#a78bfa,#7c3aed);color:white}
+  .btn-ai:disabled, .btn-ai.disabled{background:#e2e8f0 !important;color:#94a3b8 !important;cursor:not-allowed;box-shadow:none !important;transform:none !important}
+  body.mode-mobile .ai-feedback{flex-direction:column;gap:12px;padding:16px}
+  body.mode-mobile .score-box{align-self:center}
 </style>
 </head>
 <body>
@@ -1487,7 +1503,8 @@ const parallelogramProblems = [
       '$\\angle ABM = \\angle ECM$ (זוויות מתחלפות), $AB = CE$ (הוכחנו).',
       'לפי ז.צ.ז: $\\triangle ABM \\cong \\triangle ECM$.',
       'מהחפיפה $BM = CM$, לכן $M$ אמצע $BC$.'
-    ]
+    ],
+    finalConclusion:{ name:'$\\triangle ABM \\cong \\triangle ECM$ ו-$M$ אמצע $BC$', triggers:['ABM≅ECM','חפיפה','חופפים','BM=CM','CM=BM','M אמצע BC','אמצע BC'] }
   },
   {
     title:'חוצי זוויות במקבילית',
@@ -1527,7 +1544,8 @@ const parallelogramProblems = [
       'מהשוויון של הזוויות המתחלפות: $BN \\parallel DK$.',
       'במרובע $BNDK$: $BK \\parallel DN$ (כי $AB \\parallel DC$) וגם $BN \\parallel DK$.',
       'שני זוגות צלעות מקבילות $\\Rightarrow$ $BNDK$ מקבילית $\\Rightarrow$ $BN = DK$.'
-    ]
+    ],
+    finalConclusion:{ name:'$BN = DK$ ו-$BN \\parallel DK$', triggers:['BN=DK','DK=BN','BN||DK','DK||BN','BNDK מקבילית'] }
   },
   {
     title:'מקבילית פנימית מחוצי זוויות',
@@ -1563,7 +1581,8 @@ const parallelogramProblems = [
       'במקבילית $AD \\parallel BC$, ולכן $AF \\parallel EC$ ($F \\in AD, E \\in BC$).',
       'מהזוויות השוות $\\angle EAF = \\angle ECF$ ומקבילות $AF \\parallel EC$, נובע $AE \\parallel CF$ (זוויות מתאימות).',
       'במרובע $AECF$ שני זוגות צלעות נגדיות מקבילות $\\Rightarrow$ מקבילית.'
-    ]
+    ],
+    finalConclusion:{ name:'$AECF$ מקבילית', triggers:['AECF מקבילית','AECF parallelogram','AE||CF','CF||AE','AECF הוא מקבילית'] }
   },
   {
     title:'זווית ישרה במקבילית',
@@ -1604,7 +1623,8 @@ const parallelogramProblems = [
       'על הישר $AD$: $\\angle AHB + \\angle BHC + \\angle DHC = 180°$.',
       'מציבים: $\\angle BHC = 180° - (90° - \\frac{\\angle A}{2}) - (90° - \\frac{\\angle D}{2}) = \\frac{\\angle A + \\angle D}{2}$.',
       'במקבילית $\\angle A + \\angle D = 180°$, אז $\\angle BHC = 90°$.'
-    ]
+    ],
+    finalConclusion:{ name:'$\\angle BHC = 90°$', triggers:['BHC=90','∠BHC=90','BHC=90°','זווית ישרה','90°'] }
   }
 ];
 
@@ -1639,7 +1659,8 @@ const trapezoidProblems = [
       'במרובע $PBCQ$: הצלעות $PQ$ ו-$BC$ מקבילות.',
       'הצלעות $PB$ ו-$QC$ אינן מקבילות (כי $AB$ ו-$CD$ אינן מקבילות בטרפז).',
       'מרובע עם זוג אחד בלבד של צלעות מקבילות הוא טרפז. לכן $PBCQ$ טרפז.'
-    ]
+    ],
+    finalConclusion:{ name:'$PBCQ$ הוא טרפז', triggers:['PBCQ טרפז','טרפז PBCQ','PBCQ הוא טרפז'] }
   },
   {
     title:'דמיון משולשים בטרפז',
@@ -1676,7 +1697,8 @@ const trapezoidProblems = [
       'לפי ז.ז שני המשולשים דומים: $\\triangle ADM \\sim \\triangle CBM$.',
       'לחישוב $\\angle CMD$: במשולש $CMD$ סכום הזוויות $180°$: $\\angle CMD + \\angle C_1 + \\angle D_1 = 180°$.',
       'מציבים: $\\angle CMD = 180° - 30° - 40° = 110°$.'
-    ]
+    ],
+    finalConclusion:{ name:'$\\triangle ADM \\sim \\triangle CBM$ ו-$\\angle CMD = 110°$', triggers:['ADM~CBM','דמיון','CMD=110','110°','∠CMD=110'] }
   },
   {
     title:'טרפז שווה שוקיים',
@@ -1712,7 +1734,8 @@ const trapezoidProblems = [
       'במקבילית $DCAE$: $DE = CA$ (צלעות נגדיות שוות).',
       'בטרפז שווה שוקיים האלכסונים שווים: $DB = CA$.',
       'מכאן $DE = CA = DB$, אז $\\triangle EDB$ שווה שוקיים ($DE = DB$).'
-    ]
+    ],
+    finalConclusion:{ name:'$DCAE$ מקבילית ו-$\\triangle EDB$ שווה שוקיים', triggers:['DCAE מקבילית','DCAE parallelogram','EDB שווה','DE=DB','DB=DE'] }
   },
   {
     title:'הוכחת מקבילות עם משפט תלס',
@@ -1744,7 +1767,8 @@ const trapezoidProblems = [
       'במקרה שלנו: $AB$ ו-$CD$ הן השוקיים, ו-$AD \\parallel BC$. אבל אנחנו מחלקים את השוקיים ביחסים שווים, אז $PQ$ מקביל לבסיסים.',
       'מכאן $PQ \\parallel AD$ (וגם $PQ \\parallel BC$).',
       'במרובע $APQD$: $AD \\parallel PQ$, וצלעות $AP, DQ$ אינן מקבילות. לכן זה טרפז.'
-    ]
+    ],
+    finalConclusion:{ name:'$PQ \\parallel AD$ (ולכן $APQD$ טרפז)', triggers:['PQ||AD','AD||PQ','PQ מקביל','APQD טרפז'] }
   }
 ];
 
@@ -1782,9 +1806,11 @@ function makeProofTopic(title, lessonHTML, exampleHTML, problemBank){
             </div>
             <div class="actions">
               <button class="btn btn-pink nx">🔄 שאלה אחרת</button>
+              <button class="btn btn-ai aibtn">🤖 משוב AI</button>
               <button class="btn btn-warn hint">💡 רמז הבא</button>
               <button class="btn btn-success show">📖 הצג הוכחה מלאה</button>
             </div>
+            <div class="ai-feedback hidden"></div>
             <div class="reveal sl"></div>
           </div>`;
 
@@ -1797,9 +1823,23 @@ function makeProofTopic(title, lessonHTML, exampleHTML, problemBank){
         }
         renderDiagram();
 
-        // Step rows + text-driven fact detection
         const stepRows = wrap.querySelector('.step-rows');
         const addBtn = wrap.querySelector('.add-step-btn');
+        const aiBtn = wrap.querySelector('.aibtn');
+        const aiFb = wrap.querySelector('.ai-feedback');
+
+        let hintsShown = 0;
+        let proofShown = false;
+        function isAIBlocked(){
+          return proofShown || (p.hints && hintsShown >= p.hints.length);
+        }
+        function updateAIBtnState(){
+          if(isAIBlocked()){
+            aiBtn.classList.add('disabled');
+            aiBtn.disabled = true;
+            aiBtn.title = 'אי אפשר לקבל משוב אחרי שהשתמשת בכל הרמזים או שראית את הפתרון המלא';
+          }
+        }
 
         function recomputeFactsFromText(){
           if(!p.diagram || !p.diagram.facts){ return; }
@@ -1817,7 +1857,6 @@ function makeProofTopic(title, lessonHTML, exampleHTML, problemBank){
               }
             }
           }
-          // only re-render if changed
           let changed = before.size !== activeFacts.size;
           if(!changed){
             for(const id of before){ if(!activeFacts.has(id)){ changed = true; break; } }
@@ -1854,18 +1893,76 @@ function makeProofTopic(title, lessonHTML, exampleHTML, problemBank){
         }
         addBtn.onclick = addStepRow;
 
-        let hintsShown = 0;
+        // AI scoring & feedback
+        function aiAnalyze(){
+          const allText = Array.from(stepRows.querySelectorAll('textarea')).map(t=>t.value).join('\n');
+          const norm = normalizeText(allText);
+          const facts = (p.diagram && p.diagram.facts) || [];
+          const found = [], missing = [];
+          for(const f of facts){
+            const hit = (f.triggers||[]).some(t => norm.includes(normalizeText(t)));
+            (hit ? found : missing).push(f);
+          }
+          const conclusion = p.finalConclusion || null;
+          const concHit = conclusion ? (conclusion.triggers||[]).some(t => norm.includes(normalizeText(t))) : false;
+
+          // Length score - encourages writing actual sentences
+          const wordCount = allText.trim().split(/\s+/).filter(Boolean).length;
+          const writingScore = wordCount < 5 ? 0 : (wordCount < 15 ? 5 : 10);
+
+          const conceptPart = facts.length > 0 ? (found.length / facts.length) * 60 : 0;
+          const conclusionPart = concHit ? 30 : 0;
+          const score = Math.min(100, Math.round(conceptPart + conclusionPart + writingScore));
+
+          let label, color;
+          if(wordCount < 3){ label = '🤔 לא כתבת כמעט כלום'; color = '#dc2626'; }
+          else if(score >= 90){ label = '🌟 מצוין! ההוכחה שלך מקיפה ומדויקת'; color = '#059669'; }
+          else if(score >= 70){ label = '👍 טוב מאוד, יש מקום לשיפור קטן'; color = '#0891b2'; }
+          else if(score >= 50){ label = '🙂 התקדמת יפה, יש עוד מה לעבוד'; color = '#f59e0b'; }
+          else if(score >= 25){ label = '✏️ התחלה טובה, אבל חסרים שלבים מרכזיים'; color = '#f97316'; }
+          else{ label = '📚 צריך עבודה נוספת. נסה לפרק את הבעיה צעד צעד'; color = '#dc2626'; }
+
+          const trigName = (f) => (f.triggers && f.triggers[0]) || f.id;
+          const foundList = found.length ? `<div><strong class="ok">✓ זיהית:</strong><ul>${found.map(f=>`<li>${trigName(f)}</li>`).join('')}</ul></div>` : '';
+          const missList = missing.length ? `<div><strong class="miss">✗ חסר:</strong><ul>${missing.map(f=>`<li>${trigName(f)}</li>`).join('')}</ul></div>` : '';
+          const conclMsg = conclusion ? (concHit ? `<div><strong class="ok">✓ הגעת למסקנה הסופית: ${conclusion.name}</strong></div>` : `<div><strong class="miss">✗ לא הזכרת את המסקנה הסופית: ${conclusion.name}</strong></div>`) : '';
+
+          aiFb.innerHTML = `
+            <div class="score-box">
+              <div class="score-num">${score}</div>
+              <div class="score-label">/ 100</div>
+            </div>
+            <div class="ai-analysis">
+              <p class="ai-message">${label}</p>
+              ${foundList}
+              ${missList}
+              ${conclMsg}
+            </div>`;
+          aiFb.classList.remove('hidden');
+          refmath();
+        }
+
+        aiBtn.onclick = ()=>{
+          if(isAIBlocked()){
+            return;
+          }
+          aiAnalyze();
+        };
+
         const sl = wrap.querySelector('.sl');
         wrap.querySelector('.hint').onclick = ()=>{
           if(hintsShown >= p.hints.length){ return; }
           hintsShown++;
           sl.classList.add('show');
           sl.innerHTML = '<h4>רמזים:</h4>' + p.hints.slice(0,hintsShown).map((h,i)=>`<div class="step">${i+1}. ${h}</div>`).join('');
+          updateAIBtnState();
           refmath();
         };
         wrap.querySelector('.show').onclick = ()=>{
+          proofShown = true;
           sl.classList.add('show');
           sl.innerHTML = '<h4>הוכחה מלאה:</h4>' + p.hints.map((h,i)=>`<div class="step">${i+1}. ${h}</div>`).join('');
+          updateAIBtnState();
           refmath();
         };
         wrap.querySelector('.nx').onclick = gen;
