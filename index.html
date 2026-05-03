@@ -62,6 +62,7 @@
   .feedback.show{display:block}
   .feedback.ok{background:#dcfce7;color:#166534;border:1px solid #86efac}
   .feedback.bad{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5}
+  .feedback.partial{background:#fef3c7;color:#92400e;border:1px solid #fcd34d}
   .reveal{margin-top:14px;background:#f8fafc;border-radius:12px;padding:18px;border:1px solid #e2e8f0;display:none}
   .reveal.show{display:block}
   .reveal h4{margin:0 0 10px;color:#1e40af}
@@ -193,6 +194,23 @@
   </div>
 </div>
 
+<div id="subject-modal" class="device-modal hidden">
+  <div class="device-modal-content">
+    <h2>מה תרצה ללמוד?</h2>
+    <p>אפשר לעבור בין מקצועות בכל זמן</p>
+    <div class="device-options">
+      <button class="device-btn" data-subject="math">
+        <span class="ic">📐</span>
+        מתמטיקה
+      </button>
+      <button class="device-btn" data-subject="english">
+        <span class="ic">🌎</span>
+        אנגלית
+      </button>
+    </div>
+  </div>
+</div>
+
 <div class="wrap" id="root"></div>
 
 <script>
@@ -211,7 +229,7 @@ function parseAns(s){
 function refmath(){ if(window.renderMathInElement) renderMathInElement(root(),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]}); }
 
 /* ====== Topics list ====== */
-const topics = [
+const mathTopics = [
   {id:'parab-vert',  emoji:'📈', title:'הזזה אנכית', desc:'$y=x^2+k$ קודקוד וחיתוכים'},
   {id:'parab-horiz', emoji:'📉', title:'הזזה אופקית', desc:'$y=(x-p)^2$ מציאת קודקוד ותחומים'},
   {id:'parab-comb',  emoji:'🎯', title:'הזזה משולבת', desc:'$y=(x-p)^2+k$ חקירה מלאה'},
@@ -225,16 +243,34 @@ const topics = [
   {id:'parallelogram', emoji:'⬛', title:'מקבילית', desc:'הוכחות וחישוב זוויות, מהעבודה'},
   {id:'trapezoid',   emoji:'🔷', title:'טרפז', desc:'הוכחות, חישוב זוויות ודמיון'},
 ];
+const englishTopics = [
+  {id:'vocab-en-he', emoji:'🇬🇧', title:'אוצר מילים — אנגלית לעברית', desc:'כל המילים מאותיות R, S, T, U בעבודה'},
+  {id:'fs-positive', emoji:'➕', title:'Future Simple — חיובי', desc:'I will play tomorrow'},
+  {id:'fs-negative', emoji:'➖', title:'Future Simple — שלילי', desc:"I will not / won't play"},
+  {id:'fs-question', emoji:'❓', title:'Future Simple — שאלה', desc:'Will you play?'},
+  {id:'fs-short',    emoji:'⚡', title:'Future Simple — קיצורים', desc:"I'll, You'll, won't ועוד"},
+];
+function currentTopics(){
+  const subject = (typeof window !== 'undefined' && window._learnSubject) || 'math';
+  return subject === 'english' ? englishTopics : mathTopics;
+}
 
 /* ====== Home ====== */
 function renderHome(){
   const cur = document.body.classList.contains('mode-mobile') ? 'mobile' : 'desktop';
-  const otherLabel = cur==='mobile' ? '💻 עבור למחשב' : '📱 עבור לטלפון';
+  const otherDeviceLabel = cur==='mobile' ? '💻 עבור למחשב' : '📱 עבור לטלפון';
+  const subject = window._learnSubject || 'math';
+  const otherSubjectLabel = subject==='math' ? '🌎 עבור לאנגלית' : '📐 עבור למתמטיקה';
+  const helloMsg = subject==='english' ? 'בחרו נושא באנגלית' : 'בחרו נושא במתמטיקה';
+  const topics = currentTopics();
   root().innerHTML = `
     <div class="hello">
       <h1>שלום</h1>
-      <p>בחרו נושא להתחיל לתרגל</p>
-      <button class="switch-mode" id="switchModeBtn">${otherLabel}</button>
+      <p>${helloMsg}</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center">
+        <button class="switch-mode" id="switchSubjectBtn">${otherSubjectLabel}</button>
+        <button class="switch-mode" id="switchModeBtn">${otherDeviceLabel}</button>
+      </div>
     </div>
     <div class="grid">
       ${topics.map(t=>`
@@ -246,6 +282,7 @@ function renderHome(){
     </div>`;
   document.querySelectorAll('.tile').forEach(el=>el.onclick=()=>openTopic(el.dataset.id));
   document.getElementById('switchModeBtn').onclick = ()=>showDevicePicker(false);
+  document.getElementById('switchSubjectBtn').onclick = ()=>showSubjectPicker(false);
   refmath();
 }
 
@@ -261,6 +298,35 @@ function showDevicePicker(initial){
   modal.querySelectorAll('.device-btn').forEach(btn=>{
     btn.onclick = ()=>{
       applyDeviceMode(btn.dataset.device);
+      modal.classList.add('hidden');
+      if(initial){
+        // After choosing device, show subject picker if not chosen yet
+        let savedSubject = null;
+        try { savedSubject = localStorage.getItem('learnMathSubject'); } catch(e){}
+        if(!savedSubject){
+          showSubjectPicker(true);
+        } else {
+          window._learnSubject = savedSubject;
+          renderHome();
+        }
+      } else {
+        renderHome();
+      }
+    };
+  });
+}
+
+/* ====== Subject (math/english) handling ====== */
+function applySubject(subject){
+  window._learnSubject = subject;
+  try { localStorage.setItem('learnMathSubject', subject); } catch(e){}
+}
+function showSubjectPicker(initial){
+  const modal = document.getElementById('subject-modal');
+  modal.classList.remove('hidden');
+  modal.querySelectorAll('.device-btn').forEach(btn=>{
+    btn.onclick = ()=>{
+      applySubject(btn.dataset.subject);
       modal.classList.add('hidden');
       renderHome();
     };
@@ -316,24 +382,55 @@ function makeQuestion({html, answers, solution, regenerate}){
     const lab = document.createElement('label'); lab.textContent = a.label; mq.appendChild(lab);
     const inp = document.createElement('input'); inp.dataset.key = a.key; inp.placeholder = a.placeholder||''; mq.appendChild(inp);
   });
-  wrap.querySelector('.ck').onclick = ()=>{
+  let hasChecked = false;
+  function runCheck(){
     const fb = wrap.querySelector('.fb');
-    let allOk = true; let report = [];
+    let correctCount = 0;
+    const wrongLabels = [];
+    let totalAnswered = 0;
     answers.forEach(a=>{
       const inp = mq.querySelector(`input[data-key="${a.key}"]`);
       const v = parseAns(inp.value);
+      const hasInput = (inp.value||'').trim() !== '';
       let ok = false;
       if(a.check){ ok = a.check(inp.value); }
       else if(typeof a.correct === 'number'){ ok = !isNaN(v) && isClose(v,a.correct); }
       else if(Array.isArray(a.correct)){ ok = !isNaN(v) && a.correct.some(c=>isClose(c,v)); }
       else if(typeof a.correct === 'string'){ ok = (inp.value||'').trim().replace(/\s/g,'') === a.correct.replace(/\s/g,''); }
-      if(!ok) allOk = false;
-      inp.style.borderColor = ok?'#10b981':'#ef4444';
-      report.push(`${a.label} ${ok?'✓':'✗'}`);
+      if(ok){ correctCount++; }
+      else { wrongLabels.push(a.label); }
+      if(hasInput){ totalAnswered++; }
+      // Color: green if correct, red if filled and wrong, neutral if empty
+      if(ok){ inp.style.borderColor = '#10b981'; }
+      else if(hasInput){ inp.style.borderColor = '#ef4444'; }
+      else { inp.style.borderColor = '#e2e8f0'; }
     });
-    fb.className = 'feedback show '+(allOk?'ok':'bad');
-    fb.textContent = allOk ? '🎉 כל הכבוד! כל התשובות נכונות.' : 'יש מה לשפר: '+report.join(' · ');
+    const total = answers.length;
+    if(correctCount === total){
+      fb.className = 'feedback show ok';
+      fb.textContent = '🎉 כל הכבוד! כל התשובות נכונות.';
+    } else if(correctCount === 0){
+      fb.className = 'feedback show bad';
+      fb.textContent = totalAnswered === 0 ? '🤔 עדיין לא ענית על שום שדה.' : '✗ אף תשובה לא נכונה. נסה שוב או הצץ ברמז.';
+    } else {
+      // Partial — encourage and only point out what's wrong
+      fb.className = 'feedback show partial';
+      const wrongMsg = wrongLabels.length === 1
+        ? `נשאר לתקן: <strong>${wrongLabels[0]}</strong>`
+        : `נשאר לתקן: <strong>${wrongLabels.join(' · ')}</strong>`;
+      fb.innerHTML = `✓ <strong>${correctCount} מתוך ${total}</strong> נכון. ${wrongMsg}`;
+    }
+  }
+  wrap.querySelector('.ck').onclick = ()=>{
+    hasChecked = true;
+    runCheck();
   };
+  // Live re-check on every input change after the first check
+  mq.querySelectorAll('input').forEach(inp=>{
+    inp.addEventListener('input', ()=>{
+      if(hasChecked){ runCheck(); }
+    });
+  });
   wrap.querySelector('.sol').onclick = ()=>{
     const sl = wrap.querySelector('.sl');
     sl.innerHTML = solution;
@@ -2066,17 +2163,536 @@ topicDefs['trapezoid'] = makeProofTopic(
   trapezoidProblems
 );
 
+/* =============================================================
+   ENGLISH TOPICS
+   ============================================================= */
+
+/* ---- Vocabulary list (R, S, T, U) ---- */
+const vocabList = [
+  // R
+  {en:'race', he:'מרוץ/גזע'},
+  {en:'railway', he:'פסי רכבת'},
+  {en:'railroad', he:'פסי רכבת'},
+  {en:'rain', he:'גשם/לרדת גשם'},
+  {en:'raise', he:'להרים/לגדל'},
+  {en:'rather', he:'למדי'},
+  {en:'rather than', he:'במקום'},
+  {en:'reach', he:'להגיע'},
+  {en:'realize', he:'להבין/לתפוס'},
+  {en:'reason', he:'סיבה'},
+  {en:'receive', he:'לקבל'},
+  {en:'recent', he:'שקרה לאחרונה'},
+  {en:'recognize', he:'לזהות'},
+  {en:'record', he:'להקליט'},
+  {en:'regular', he:'רגיל'},
+  {en:'relate', he:'להתייחס'},
+  {en:'relation', he:'יחס/קשר'},
+  {en:'relax', he:'להירגע'},
+  {en:'religion', he:'דת'},
+  {en:'religious', he:'דתי'},
+  {en:'remind', he:'להזכיר'},
+  {en:'repeat', he:'לחזור שנית'},
+  {en:'reply', he:'תשובה/לענות'},
+  {en:'report', he:'דוח/לדווח'},
+  {en:'request', he:'בקשה/לבקש'},
+  {en:'respect', he:'כבוד/לכבד'},
+  {en:'responsible', he:'אחראי'},
+  {en:'responsibility', he:'אחריות'},
+  {en:'the rest', he:'השאר'},
+  {en:'result', he:'תוצאה'},
+  {en:'as a result of', he:'כתוצאה מ'},
+  {en:'rice', he:'אורז'},
+  {en:'ride', he:'לרכב'},
+  {en:'ring', he:'לצלצל'},
+  {en:'rise', he:'לקום/לזרוח'},
+  {en:'risk', he:'סיכון'},
+  {en:'river', he:'נהר'},
+  {en:'role', he:'תפקיד'},
+  // S
+  {en:'safe', he:'בטוח/בטיחותי'},
+  {en:'sale', he:'מכירה'},
+  {en:'on sale', he:'במבצע'},
+  {en:'salt', he:'מלח'},
+  {en:'save', he:'לחסוך/להציל/לשמור'},
+  {en:'schedule', he:'לוח זמנים/מערכת שעות'},
+  {en:'science', he:'מדע'},
+  {en:'score', he:'תוצאה במשחק'},
+  {en:'sea', he:'ים'},
+  {en:'search', he:'חיפוש/לחפש'},
+  {en:'season', he:'עונה'},
+  {en:'seat', he:'מושב/מקום ישיבה'},
+  {en:'second', he:'שניה/שני'},
+  {en:'secret', he:'סוד'},
+  {en:'seem', he:'להיראות'},
+  {en:'self', he:'עצמי'},
+  {en:'sell', he:'למכור'},
+  {en:'serious', he:'רציני'},
+  {en:'serve', he:'להגיש/לשרת'},
+  {en:'service', he:'שירות'},
+  {en:'set', he:'מערכת/ערכה/לערוך'},
+  {en:'set up', he:'להקים'},
+  {en:'several', he:'אחדים'},
+  {en:'shape', he:'צורה'},
+  {en:'shirt', he:'חולצה'},
+  {en:'shoes', he:'נעליים'},
+  {en:'shop', he:'חנות'},
+  {en:'shopping', he:'קניות'},
+  {en:'go shopping', he:'ללכת לקניות'},
+  {en:'should', he:'צריך'},
+  {en:'shoot', he:'לירות'},
+  {en:'silent', he:'שקט/דומם'},
+  {en:'silence', he:'דממה'},
+  {en:'silly', he:'מטופש'},
+  {en:'silver', he:'כסף'},
+  {en:'similar', he:'דומה'},
+  {en:'since', he:'מאז'},
+  {en:'singer', he:'זמר'},
+  {en:'single', he:'בודד/יחיד/רווק'},
+  {en:'site', he:'אתר'},
+  {en:'smell', he:'להריח'},
+  {en:'smoke', he:'עשן'},
+  {en:'so that', he:'כדי ש'},
+  {en:'and so on', he:'וכן הלאה'},
+  {en:'social', he:'חברתי'},
+  {en:'society', he:'חברה'},
+  {en:'soft', he:'רך'},
+  {en:'solve', he:'לפתור'},
+  {en:'sort', he:'סוג/למיין'},
+  {en:'sort of', he:'סוג של'},
+  {en:'sort out', he:'לפתור בעיה'},
+  {en:'sound', he:'צליל/להישמע'},
+  {en:'south', he:'דרום'},
+  {en:'space', he:'מרווח/חלל'},
+  {en:'specific', he:'ספציפי/מסוים'},
+  {en:'speed', he:'מהירות'},
+  {en:'spend', he:'לבלות/להוציא כסף'},
+  {en:'spend money/time', he:'להוציא כסף/להקדיש זמן'},
+  {en:'in spite of', he:'למרות'},
+  {en:'stage', he:'במה/שלב'},
+  {en:'standard', he:'תקן/רמה'},
+  {en:'star', he:'כוכב'},
+  {en:'state', he:'מדינה/מצב/להצהיר'},
+  {en:'statement', he:'הצהרה'},
+  {en:'station', he:'תחנה'},
+  {en:'step', he:'מדרגה/צעד'},
+  {en:'stick', he:'לנעוץ/לתקוע'},
+  {en:'stay', he:'להישאר'},
+  {en:'store', he:'חנות'},
+  {en:'strange', he:'מוזר'},
+  {en:'strike', he:'שביתה'},
+  {en:'study', he:'ללמוד'},
+  {en:'stuff', he:'דברים/חפצים'},
+  {en:'stupid', he:'טיפש'},
+  {en:'subject', he:'נושא/מקצוע לימוד'},
+  {en:'succeed', he:'להצליח'},
+  {en:'suggest', he:'להציע'},
+  {en:'suggestion', he:'הצעה'},
+  {en:'suit', he:'להתאים'},
+  {en:'support', he:'לתמוך'},
+  {en:'suppose', he:'להניח/לשער'},
+  {en:'make sure', he:'לוודא'},
+  {en:'surprise', he:'הפתעה/להפתיע'},
+  {en:'sweet', he:'מתוק'},
+  {en:'switch off', he:'לכבות'},
+  {en:'switch on', he:'להדליק'},
+  // T
+  {en:'taste', he:'טעם/לטעום'},
+  {en:'team', he:'צוות'},
+  {en:'technology', he:'טכנולוגיה'},
+  {en:'teenager', he:'מתבגר'},
+  {en:'tend to', he:'נוטה ל'},
+  {en:'term', he:'מושג/סמסטר'},
+  {en:'terrible', he:'נורא'},
+  {en:'text', he:'טקסט'},
+  {en:'over there', he:'שם'},
+  {en:'theirs', he:'שלהם'},
+  {en:'therefore', he:'לכן'},
+  {en:'thick', he:'סמיך'},
+  {en:'thin', he:'רזה'},
+  {en:'thought', he:'מחשבה'},
+  {en:'through', he:'דרך/באמצעות'},
+  {en:'throw', he:'לזרוק'},
+  {en:'throw away', he:'להשליך'},
+  {en:'thousand', he:'אלף'},
+  {en:'ticket', he:'כרטיס כניסה'},
+  {en:'tidy', he:'מסודר'},
+  {en:'all the time', he:'כל הזמן'},
+  {en:'by the time', he:'עד ש'},
+  {en:'in time', he:'להספיק בזמן'},
+  {en:'on time', he:'בזמן'},
+  {en:'at the same time', he:'באותו הזמן'},
+  {en:'title', he:'כותרת'},
+  {en:'tool', he:'כלי עבודה'},
+  {en:'top', he:'פסגה'},
+  {en:'topic', he:'נושא'},
+  {en:'total', he:'סך הכול'},
+  {en:'touch', he:'לגעת'},
+  {en:'in touch with', he:'בקשר עם'},
+  {en:'tour', he:'סיור'},
+  {en:'toward', he:'לקראת'},
+  {en:'towards', he:'לקראת'},
+  {en:'tradition', he:'מסורת'},
+  {en:'traffic', he:'תנועה בדרכים'},
+  {en:'train', he:'רכבת'},
+  {en:'translate', he:'לתרגם'},
+  {en:'translation', he:'תרגום'},
+  {en:'transport', he:'תחבורה/להעביר'},
+  {en:'trash', he:'אשפה'},
+  {en:'travel', he:'לנסוע'},
+  {en:'treasure', he:'אוצר'},
+  {en:'treat', he:'לטפל/ממתק'},
+  {en:'trick', he:'תעלול'},
+  {en:'trouble', he:'צרות'},
+  {en:'trust', he:'לתת אמון/לבטוח'},
+  {en:'tune', he:'מנגינה'},
+  {en:'type', he:'להקליד/סוג'},
+  // U
+  {en:'ugly', he:'מכוער'},
+  {en:'unit', he:'יחידה'},
+  {en:'unless', he:'אלא אם כן'},
+  {en:'up to', he:'עד ל'},
+  {en:'used to', he:'היה בעבר'},
+  {en:'be used to', he:'להיות רגיל ל'},
+  {en:'useful', he:'שימושי'},
+  {en:'usual', he:'רגיל'},
+  {en:'as usual', he:'כרגיל'},
+];
+
+function normalizeHe(s){
+  return (s||'').replace(/\s+/g,'').replace(/[״"׳']/g,'').replace(/[()]/g,'').toLowerCase();
+}
+function normalizeEn(s){
+  return (s||'').trim().toLowerCase().replace(/\s+/g,' ');
+}
+function checkHebrewAnswer(userAns, correctHe){
+  const u = normalizeHe(userAns);
+  if(!u) return false;
+  const variants = correctHe.split(/[\/,]/).map(s=>normalizeHe(s)).filter(Boolean);
+  return variants.some(v => v === u || v.includes(u) || u.includes(v));
+}
+function checkEnglishAnswer(userAns, correctEn){
+  const u = normalizeEn(userAns);
+  if(!u) return false;
+  return u === normalizeEn(correctEn);
+}
+
+/* ---- Vocab: English to Hebrew ---- */
+topicDefs['vocab-en-he'] = {
+  title:'אוצר מילים — מאנגלית לעברית',
+  lesson:`
+    <h3 style="margin-top:0">תרגום מאנגלית לעברית</h3>
+    <div class="lesson">
+      <p>בכל שאלה תופיע מילה באנגלית, ועליכם לכתוב את התרגום לעברית.</p>
+      <p>אם יש כמה משמעויות (למשל "race" = "מרוץ" או "גזע"), מספיק לכתוב אחת מהן.</p>
+      <p>המאגר כולל את כל המילים מהעבודה: אותיות R, S, T, U.</p>
+    </div>`,
+  example:`
+    <h3 style="margin-top:0">דוגמה</h3>
+    <div class="example">
+      <div class="step">המילה: <strong>race</strong></div>
+      <div class="step">תשובה אפשרית: <strong>מרוץ</strong> או <strong>גזע</strong>. שתיהן נכונות.</div>
+      <div class="step">המילה: <strong>responsibility</strong></div>
+      <div class="step">תשובה: <strong>אחריות</strong></div>
+    </div>`,
+  makeQuestion:(slot)=>{
+    function gen(){
+      const word = pick(vocabList);
+      slot.innerHTML='';
+      slot.appendChild(makeQuestion({
+        html:`איך אומרים בעברית את המילה <strong style="font-size:24px;color:#7c3aed">${word.en}</strong>?`,
+        answers:[
+          {key:'he', label:'תרגום לעברית', check:v=>checkHebrewAnswer(v, word.he)}
+        ],
+        solution:`
+          <h4>פתרון</h4>
+          <div class="step">המילה <strong>${word.en}</strong> בעברית: <strong>${word.he}</strong>.</div>
+        `,
+        regenerate:gen
+      }));
+      refmath();
+    }
+    gen();
+  }
+};
+
+/* ---- Future Simple word bank ---- */
+const fsSubjects = [
+  {en:'I', he:'אני', short_yes:'I will', short_no:"I won't"},
+  {en:'You', he:'אתה/את', short_yes:'you will', short_no:"you won't"},
+  {en:'He', he:'הוא', short_yes:'he will', short_no:"he won't"},
+  {en:'She', he:'היא', short_yes:'she will', short_no:"she won't"},
+  {en:'We', he:'אנחנו', short_yes:'we will', short_no:"we won't"},
+  {en:'They', he:'הם/הן', short_yes:'they will', short_no:"they won't"},
+  {en:'It', he:'זה', short_yes:'it will', short_no:"it won't"},
+];
+const fsVerbsSimple = [
+  {en:'play', he:'לשחק', heFut:'אשחק/ישחק'},
+  {en:'come', he:'לבוא', heFut:'אבוא/יבוא'},
+  {en:'help', he:'לעזור', heFut:'אעזור/יעזור'},
+  {en:'go', he:'ללכת', heFut:'אלך/ילך'},
+  {en:'work', he:'לעבוד', heFut:'אעבוד/יעבוד'},
+  {en:'study', he:'ללמוד', heFut:'אלמד/ילמד'},
+  {en:'travel', he:'לנסוע', heFut:'אסע/יסע'},
+  {en:'visit', he:'לבקר', heFut:'אבקר/יבקר'},
+  {en:'eat', he:'לאכול', heFut:'אכל/יאכל'},
+  {en:'sleep', he:'לישון', heFut:'אישן/יישן'},
+];
+const fsTimes = ['tomorrow','next week','next year','later','soon','tonight'];
+
+/* ---- Future Simple: Positive ---- */
+topicDefs['fs-positive'] = {
+  title:'Future Simple — משפט חיובי',
+  lesson:`
+    <h3 style="margin-top:0">משפט חיובי בעתיד פשוט</h3>
+    <div class="lesson">
+      <p>הצורה: <strong>Subject + will + Verb (base form)</strong></p>
+      <p>דוגמאות:</p>
+      <ul>
+        <li><strong>I will play</strong> tomorrow. — אני אשחק מחר.</li>
+        <li><strong>She will come</strong> later. — היא תבוא מאוחר יותר.</li>
+        <li><strong>They will help</strong> us. — הם יעזרו לנו.</li>
+      </ul>
+      <p>שימו לב: הפועל תמיד נשאר בצורת הבסיס (infinitive ללא to). אומרים "will play", לא "will plays" או "will played".</p>
+      <p><strong>קיצור:</strong> $\\text{I will} = \\text{I'll}$, $\\text{You will} = \\text{You'll}$, וכו'.</p>
+    </div>`,
+  example:`
+    <h3 style="margin-top:0">דוגמה</h3>
+    <div class="example">
+      <div class="step">תרגמו: "אני אעזור לך מחר"</div>
+      <div class="step">Subject: I, Verb: help</div>
+      <div class="step">תשובה: <strong>I will help you tomorrow.</strong></div>
+    </div>`,
+  makeQuestion:(slot)=>{
+    function gen(){
+      const subj = pick(fsSubjects);
+      const verb = pick(fsVerbsSimple);
+      const time = pick(fsTimes);
+      const correct = `${subj.en} will ${verb.en} ${time}`;
+      const correctShort = `${subj.en}'ll ${verb.en} ${time}`;
+      slot.innerHTML='';
+      slot.appendChild(makeQuestion({
+        html:`השלימו את המשפט בצורת Future Simple:<br><strong style="font-size:20px">${subj.en} ___ ${verb.en} ${time}.</strong><br><em style="color:#64748b">(הקלידו את המשפט המלא, למשל: "${subj.en} will ${verb.en} ${time}")</em>`,
+        answers:[
+          {key:'sentence', label:'המשפט המלא', check:v=>{
+            const stripApos = s => s.replace(/['']/g,'');
+            const u = stripApos(normalizeEn(v).replace(/\.$/,''));
+            return u === stripApos(normalizeEn(correct)) || u === stripApos(normalizeEn(correctShort));
+          }}
+        ],
+        solution:`
+          <h4>פתרון</h4>
+          <div class="step">הצורה החיובית: <strong>${correct}</strong>.</div>
+          <div class="step">בקיצור: <strong>${correctShort}</strong>.</div>
+        `,
+        regenerate:gen
+      }));
+      refmath();
+    }
+    gen();
+  }
+};
+
+/* ---- Future Simple: Negative ---- */
+topicDefs['fs-negative'] = {
+  title:'Future Simple — משפט שלילי',
+  lesson:`
+    <h3 style="margin-top:0">משפט שלילי בעתיד פשוט</h3>
+    <div class="lesson">
+      <p>הצורה: <strong>Subject + will not + Verb</strong></p>
+      <p><strong>קיצור חשוב:</strong> $\\text{will not} = \\text{won't}$</p>
+      <p>דוגמאות:</p>
+      <ul>
+        <li><strong>I will not play</strong> tomorrow. = <strong>I won't play</strong> tomorrow.</li>
+        <li><strong>He will not come</strong> later. = <strong>He won't come</strong> later.</li>
+        <li><strong>They will not help.</strong> = <strong>They won't help.</strong></li>
+      </ul>
+    </div>`,
+  example:`
+    <h3 style="margin-top:0">דוגמה</h3>
+    <div class="example">
+      <div class="step">המשפט החיובי: "She will study tomorrow."</div>
+      <div class="step">המשפט השלילי: <strong>"She won't study tomorrow."</strong></div>
+      <div class="step">או בצורה המלאה: <strong>"She will not study tomorrow."</strong></div>
+    </div>`,
+  makeQuestion:(slot)=>{
+    function gen(){
+      const subj = pick(fsSubjects);
+      const verb = pick(fsVerbsSimple);
+      const time = pick(fsTimes);
+      const positive = `${subj.en} will ${verb.en} ${time}`;
+      const negFull = `${subj.en} will not ${verb.en} ${time}`;
+      const negShort = `${subj.en} won't ${verb.en} ${time}`;
+      slot.innerHTML='';
+      slot.appendChild(makeQuestion({
+        html:`הפכו את המשפט הבא לשלילי:<br><strong style="font-size:20px">${positive}.</strong>`,
+        answers:[
+          {key:'neg', label:'המשפט השלילי', check:v=>{
+            const stripApos = s => s.replace(/['']/g,'');
+            const u = stripApos(normalizeEn(v).replace(/\.$/,''));
+            const a = stripApos(normalizeEn(negFull));
+            const b = stripApos(normalizeEn(negShort));
+            return u === a || u === b;
+          }}
+        ],
+        solution:`
+          <h4>פתרון</h4>
+          <div class="step">הצורה השלילית המלאה: <strong>${negFull}</strong>.</div>
+          <div class="step">בקיצור (מומלץ): <strong>${negShort}</strong>.</div>
+          <div class="step">זכרו: $\\text{will not} = \\text{won't}$.</div>
+        `,
+        regenerate:gen
+      }));
+      refmath();
+    }
+    gen();
+  }
+};
+
+/* ---- Future Simple: Question ---- */
+topicDefs['fs-question'] = {
+  title:'Future Simple — משפט שאלה',
+  lesson:`
+    <h3 style="margin-top:0">משפט שאלה בעתיד פשוט</h3>
+    <div class="lesson">
+      <p>הצורה: <strong>Will + Subject + Verb?</strong></p>
+      <p>בשאלה ה-will עובר להתחלה לפני ה-subject (היפוך).</p>
+      <p>דוגמאות:</p>
+      <ul>
+        <li>חיובי: "You will help" $\\Rightarrow$ שאלה: <strong>"Will you help?"</strong></li>
+        <li>חיובי: "She will come" $\\Rightarrow$ שאלה: <strong>"Will she come?"</strong></li>
+        <li>חיובי: "They will travel" $\\Rightarrow$ שאלה: <strong>"Will they travel?"</strong></li>
+      </ul>
+    </div>`,
+  example:`
+    <h3 style="margin-top:0">דוגמה</h3>
+    <div class="example">
+      <div class="step">המשפט החיובי: "He will study tomorrow."</div>
+      <div class="step">השאלה: <strong>"Will he study tomorrow?"</strong></div>
+    </div>`,
+  makeQuestion:(slot)=>{
+    function gen(){
+      const subj = pick(fsSubjects);
+      const verb = pick(fsVerbsSimple);
+      const time = pick(fsTimes);
+      const positive = `${subj.en} will ${verb.en} ${time}`;
+      const question = `Will ${subj.en.toLowerCase()} ${verb.en} ${time}`;
+      slot.innerHTML='';
+      slot.appendChild(makeQuestion({
+        html:`הפכו את המשפט הבא לשאלה:<br><strong style="font-size:20px">${positive}.</strong>`,
+        answers:[
+          {key:'q', label:'השאלה (כולל סימן שאלה ?)', check:v=>{
+            const u = normalizeEn(v).replace(/[?.]/g,'');
+            return u === normalizeEn(question);
+          }}
+        ],
+        solution:`
+          <h4>פתרון</h4>
+          <div class="step">הצורה: <strong>Will + Subject + Verb?</strong></div>
+          <div class="step">השאלה: <strong>${question}?</strong></div>
+        `,
+        regenerate:gen
+      }));
+      refmath();
+    }
+    gen();
+  }
+};
+
+/* ---- Future Simple: Contractions (rewrite sentence using contraction) ---- */
+topicDefs['fs-short'] = {
+  title:'Future Simple — קיצורים',
+  lesson:`
+    <h3 style="margin-top:0">קיצורים ב-Future Simple</h3>
+    <div class="lesson">
+      <p>בזמן Future Simple יש שני סוגי קיצורים שחשוב להכיר ולדעת לכתוב:</p>
+      <p><strong>1. קיצור של "Subject + will":</strong></p>
+      <ul>
+        <li>I will = <strong>I'll</strong></li>
+        <li>You will = <strong>You'll</strong></li>
+        <li>He will = <strong>He'll</strong></li>
+        <li>She will = <strong>She'll</strong></li>
+        <li>We will = <strong>We'll</strong></li>
+        <li>They will = <strong>They'll</strong></li>
+        <li>It will = <strong>It'll</strong></li>
+      </ul>
+      <p><strong>2. קיצור של "will not":</strong></p>
+      <ul>
+        <li>will not = <strong>won't</strong></li>
+      </ul>
+      <p>הקיצור משמש בעיקר בדיבור ובכתיבה לא רשמית. במשפט שלילי הקיצור הוא תמיד <strong>won't</strong>, ללא תלות בנושא.</p>
+    </div>`,
+  example:`
+    <h3 style="margin-top:0">דוגמה</h3>
+    <div class="example">
+      <div class="step">המשפט המלא: "I will help you tomorrow."</div>
+      <div class="step">עם קיצור: <strong>"I'll help you tomorrow."</strong></div>
+      <div class="step">המשפט המלא: "She will not come."</div>
+      <div class="step">עם קיצור: <strong>"She won't come."</strong></div>
+    </div>`,
+  makeQuestion:(slot)=>{
+    function gen(){
+      const subj = pick(fsSubjects);
+      const verb = pick(fsVerbsSimple);
+      const time = pick(fsTimes);
+      const isNegative = Math.random() < 0.5;
+      let originalSentence, contractedSentence, hint;
+      if(isNegative){
+        originalSentence = `${subj.en} will not ${verb.en} ${time}.`;
+        contractedSentence = `${subj.en} won't ${verb.en} ${time}.`;
+        hint = `${subj.en} won't`;
+      } else {
+        originalSentence = `${subj.en} will ${verb.en} ${time}.`;
+        contractedSentence = `${subj.en}'ll ${verb.en} ${time}.`;
+        hint = `${subj.en}'ll`;
+      }
+      slot.innerHTML='';
+      slot.appendChild(makeQuestion({
+        html:`כתבו את המשפט הבא בצורה מקוצרת (השתמשו בקיצור):<br><strong style="font-size:20px">${originalSentence}</strong><br><em style="color:#64748b">(השתמשו ב-<strong>${hint}</strong>)</em>`,
+        answers:[
+          {key:'sentence', label:'המשפט המלא עם הקיצור', check:v=>{
+            const stripApos = s => s.replace(/['']/g,'');
+            const u = stripApos(normalizeEn(v).replace(/\.$/,''));
+            const correct = stripApos(normalizeEn(contractedSentence).replace(/\.$/,''));
+            return u === correct;
+          }}
+        ],
+        solution:`
+          <h4>פתרון</h4>
+          <div class="step">המשפט המלא: <strong>${originalSentence}</strong></div>
+          <div class="step">עם קיצור: <strong>${contractedSentence}</strong></div>
+          <div class="step">${isNegative ? "כלל: will not = won't (תמיד, לכל נושא)." : `כלל: ${subj.en} will = ${subj.en}'ll`}</div>
+        `,
+        regenerate:gen
+      }));
+      refmath();
+    }
+    gen();
+  }
+};
+
 /* ===== Init ===== */
 let savedMode = null;
+let savedSubject = null;
 try { savedMode = localStorage.getItem('learnMathDevice'); } catch(e){}
+try { savedSubject = localStorage.getItem('learnMathSubject'); } catch(e){}
+
+if(savedSubject === 'math' || savedSubject === 'english'){
+  window._learnSubject = savedSubject;
+} else {
+  window._learnSubject = 'math';
+}
+
 if(savedMode === 'mobile' || savedMode === 'desktop'){
   applyDeviceMode(savedMode);
-  renderHome();
+  if(!savedSubject){
+    showSubjectPicker(true);
+    renderHome();
+  } else {
+    renderHome();
+  }
 } else {
-  // Default to desktop class while picker is shown so layout doesn't break
   document.body.classList.add('mode-desktop');
   showDevicePicker(true);
-  // Render home in background so when modal closes, content is ready
   renderHome();
 }
 </script>
