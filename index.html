@@ -173,6 +173,23 @@
   .btn-ai:disabled, .btn-ai.disabled{background:#e2e8f0 !important;color:#94a3b8 !important;cursor:not-allowed;box-shadow:none !important;transform:none !important}
   body.mode-mobile .ai-feedback{flex-direction:column;gap:12px;padding:16px}
   body.mode-mobile .score-box{align-self:center}
+  /* Unseen reading passages */
+  .passage-box{background:#f8fafc;padding:20px 22px;border-radius:14px;border-right:4px solid #6366f1;margin:14px 0;line-height:1.85;font-size:16px;color:#334155;direction:ltr;text-align:left}
+  .passage-box .level-tag{display:inline-block;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;font-weight:700;padding:4px 12px;border-radius:999px;font-size:13px;margin-bottom:12px;direction:rtl}
+  .passage-box .passage-title{font-size:20px;font-weight:800;color:#1e293b;margin:0 0 14px}
+  .passage-box .passage-text{margin:0;white-space:pre-line}
+  .unseen-q{background:white;padding:14px 18px;border-radius:12px;border:1px solid #e2e8f0;margin:10px 0}
+  .unseen-q .q-text{font-size:15px;margin-bottom:10px;color:#1e293b;font-weight:600;line-height:1.6}
+  .q-options{display:flex;flex-direction:column;gap:6px}
+  .q-option{display:flex;align-items:flex-start;gap:10px;padding:9px 12px;border-radius:8px;border:1.5px solid #e2e8f0;cursor:pointer;transition:all .15s;background:white;direction:ltr;text-align:left}
+  .q-option:hover{background:#f8fafc;border-color:#a78bfa}
+  .q-option input[type="radio"]{margin-top:3px;flex-shrink:0}
+  .q-option span{font-size:14px;color:#334155;line-height:1.5;flex:1}
+  .q-option.correct{background:#dcfce7;border-color:#10b981}
+  .q-option.wrong{background:#fee2e2;border-color:#ef4444}
+  body.mode-mobile .passage-box{padding:14px;font-size:15px}
+  body.mode-mobile .passage-box .passage-title{font-size:17px}
+  body.mode-mobile .unseen-q{padding:12px}
 </style>
 </head>
 <body>
@@ -249,6 +266,7 @@ const englishTopics = [
   {id:'fs-negative', emoji:'➖', title:'Future Simple — שלילי', desc:"I will not / won't play"},
   {id:'fs-question', emoji:'❓', title:'Future Simple — שאלה', desc:'Will you play?'},
   {id:'fs-short',    emoji:'⚡', title:'Future Simple — קיצורים', desc:"I'll, You'll, won't ועוד"},
+  {id:'unseen',      emoji:'📖', title:'אנסינים — Unseens', desc:'הבנת הנקרא ברמות C, D, E'},
 ];
 function currentTopics(){
   const subject = (typeof window !== 'undefined' && window._learnSubject) || 'math';
@@ -2664,6 +2682,220 @@ topicDefs['fs-short'] = {
         `,
         regenerate:gen
       }));
+      refmath();
+    }
+    gen();
+  }
+};
+
+/* ===== Unseens (Reading Comprehension) ===== */
+const unseenPassages = [
+  /* ---- Module C ---- */
+  {
+    level: 'Module C',
+    title: 'Pets Make Us Happy',
+    text: `Many people around the world have pets at home. The most common pets are dogs and cats, but some people have rabbits, birds, or even fish. Pets are not only fun to play with — they also help us in many ways.\n\nDoctors say that people who have pets feel less stress. When you pet a dog or a cat, your body relaxes. Children who grow up with pets often learn to be kind and responsible. They feed the pet, take it for a walk, and clean its space. These small jobs teach them about taking care of others.\n\nDogs are also good for our health because they need to walk every day. Their owners walk with them, so the owners get more exercise too. Some dogs are trained to help blind people or to find lost people in the mountains.\n\nHaving a pet is not always easy. It costs money and takes time. But for most owners, the love they get from their pet is worth it.`,
+    questions: [
+      {q:'According to the text, what is one reason pets are good for us?', opts:['They are cheap to keep.','They help us feel less stress.','They can talk to us.','They like to watch TV.'], correct:1},
+      {q:'What do children learn when they take care of a pet?', opts:['How to cook food.','How to be responsible.','How to read books.','How to drive a car.'], correct:1},
+      {q:'Why are dogs good for their owners’ health?', opts:['Because they sleep a lot.','Because they are quiet.','Because owners walk with them.','Because they eat slowly.'], correct:2},
+      {q:'What is the main idea of the text?', opts:['Pets are expensive.','Only dogs are good pets.','Pets help people in many ways.','Cats are better than dogs.'], correct:2}
+    ]
+  },
+  {
+    level: 'Module C',
+    title: 'The Importance of Sleep',
+    text: `Sleep is one of the most important things we do every day. While we sleep, our body and brain rest and get ready for a new day. Doctors say that teenagers need about nine hours of sleep every night, but many of them sleep much less.\n\nWhen people don’t sleep enough, they feel tired during the day. It is harder for them to study, to remember things, and to listen in class. They also get angry more easily and feel sad more often. After a long time without enough sleep, people can even get sick.\n\nThere are some simple things you can do to sleep better. Try to go to bed at the same time every night. Don’t use your phone or computer in bed, because the light from the screen tells your brain to stay awake. A quiet, dark room is the best place to sleep.\n\nGood sleep is not a waste of time. It is a gift you give to your body and your mind.`,
+    questions: [
+      {q:'How many hours of sleep do teenagers need every night?', opts:['About five hours.','About seven hours.','About nine hours.','About twelve hours.'], correct:2},
+      {q:'What can happen to people who don’t sleep enough?', opts:['They become very tall.','They find it harder to remember things.','They eat less food.','They speak more languages.'], correct:1},
+      {q:'Why is using a phone in bed bad for sleep?', opts:['The phone is too heavy.','The light keeps the brain awake.','The phone makes loud noises.','The phone is too cold.'], correct:1},
+      {q:'What is the writer’s main message?', opts:['Sleep is a waste of time.','Sleep is important for body and mind.','Only adults need to sleep.','Phones are good for sleep.'], correct:1}
+    ]
+  },
+  /* ---- Module D ---- */
+  {
+    level: 'Module D',
+    title: 'The Rise of Online Learning',
+    text: `In the last few years, online learning has become much more popular all over the world. Students of all ages now study from home using computers or even mobile phones. Some people take full courses online, while others use videos and websites to help them with school subjects.\n\nThere are clear advantages to learning online. Students can study at their own pace, watch lessons again if they don’t understand, and choose courses from universities in other countries. Online classes are often cheaper than traditional ones, and they save the time that students used to spend on transport.\n\nHowever, online learning also has problems. Some students find it hard to stay focused at home. There are many things to distract them, like games, social media and family members. Without a teacher in the same room, students who don’t ask questions can fall behind quickly. Group work and friendships are also harder to build through a screen.\n\nMost experts agree that the best system mixes both worlds. Schools can use online tools for parts of the lesson and keep face-to-face meetings for discussions and projects. In this way, students get the freedom of online study together with the support and social life of a real classroom.`,
+    questions: [
+      {q:'What is one advantage of online learning mentioned in the text?', opts:['Students must wear a uniform.','Students can study at their own pace.','Students need to travel further.','Students don’t need a computer.'], correct:1},
+      {q:'According to the text, why do some students struggle with online learning?', opts:['The lessons are always too short.','There are many distractions at home.','The teachers shout at them.','They have to pay a lot of money.'], correct:1},
+      {q:'Which of the following is mentioned as a problem of online learning?', opts:['It is more expensive than regular school.','It makes group work and friendships harder.','It only works for very young children.','It is not allowed in most countries.'], correct:1},
+      {q:'What do most experts think is the best system?', opts:['Only online learning, with no classrooms.','Only traditional classes, with no computers.','A mix of online and face-to-face learning.','No school at all.'], correct:2},
+      {q:'The main purpose of the text is to:', opts:['warn against using the internet.','describe the good and bad sides of online learning.','tell the story of one student.','sell a new online course.'], correct:1}
+    ]
+  },
+  {
+    level: 'Module D',
+    title: 'The Future of Work',
+    text: `The way people work is changing very fast. In the past, most people went to an office every morning, sat at the same desk and went home at five o’clock. Today, many workers spend at least part of the week at home, connected to their company through a computer.\n\nOne reason for this change is technology. Fast internet and video calls make it possible to talk with people in other cities or even other countries without leaving the house. Another reason is the way young workers think about life. Many of them want more time for family, sport and travel, and not just a high salary.\n\nWorking from home has clear benefits. People save time on transport, they can prepare healthier meals, and they often feel less stressed. Companies can also save money on big offices. On the other hand, some workers feel lonely when they don’t see their team every day, and the line between work and free time can disappear. People sometimes answer emails late at night because their laptop is always next to them.\n\nIn the next few years, it seems that "hybrid" work will be common: a few days in the office and a few days at home. To make this work well, both companies and workers will need to learn new habits — clear plans, regular meetings, and a real time to stop working at the end of the day.`,
+    questions: [
+      {q:'According to the text, how was work different in the past?', opts:['People worked only at night.','People stayed in the same office all week.','People didn’t use computers at all.','People earned more money.'], correct:1},
+      {q:'What is one reason given for the change in work habits?', opts:['Companies pay much higher salaries today.','Young workers want more time for family and travel.','It is now illegal to go to an office.','Computers have become slower.'], correct:1},
+      {q:'Which of these is mentioned as a benefit of working from home?', opts:['Workers always meet new people.','Workers save time on transport.','Workers must wake up earlier.','Workers travel more for work.'], correct:1},
+      {q:'What is one problem of working from home, according to the text?', opts:['The internet is always too slow.','It is hard to find a laptop.','Some workers feel lonely.','Companies have to build bigger offices.'], correct:2},
+      {q:'What does the writer think about the future?', opts:['Everyone will work fully from home.','Nobody will work from home.','Most people will mix office and home work.','People will stop working completely.'], correct:2}
+    ]
+  },
+  /* ---- Module E ---- */
+  {
+    level: 'Module E',
+    title: 'The Paradox of Choice',
+    text: `Walk into any large supermarket and you will find dozens of types of bread, hundreds of brands of cereal, and an endless wall of yogurts. For most of human history, people had very few options. Today, in many parts of the world, choice is everywhere. Most of us think this is a good thing — but psychologists are not so sure.\n\nThe American researcher Barry Schwartz called this phenomenon "the paradox of choice". His main argument is that, beyond a certain point, more options do not make us happier. In fact, they often have the opposite effect. When we face many similar products, we spend more time deciding, we worry about making the wrong choice, and we feel guilty about the options we did not pick. Even after we choose, we keep wondering whether something else would have been better.\n\nThis is true not only for shopping but also for big life decisions. Where to study, what career to follow, where to live — modern people often face many possibilities, and this freedom can become a heavy weight. People who try to find "the best" option in every area of life tend to feel less satisfied than those who simply choose something "good enough".\n\nNone of this means that choice itself is bad. The freedom to choose a job, a partner or a religion is a real achievement of modern society. The problem starts when small daily decisions also become long, stressful processes. To live well, Schwartz suggests, we need to limit our choices on purpose, accept that no decision is perfect, and learn to enjoy what we already have.`,
+    questions: [
+      {q:'What does Barry Schwartz mean by "the paradox of choice"?', opts:['People who have no choice are unhappy.','More options usually mean a longer life.','After a point, more choice does not make us happier.','Choice has nothing to do with happiness.'], correct:2},
+      {q:'According to the text, how do people often feel after making a choice between many similar products?', opts:['Completely satisfied with their decision.','Unsure whether another option would have been better.','Angry at the shop for offering too few options.','Surprised at how easy the decision was.'], correct:1},
+      {q:'The writer mentions big life decisions in order to show that:', opts:['shopping is more stressful than choosing a job.','the problem of choice goes beyond the supermarket.','only rich people have important decisions to make.','young people don’t care about choices.'], correct:1},
+      {q:'According to the text, people who always look for "the best" option:', opts:['usually become very rich.','tend to be less satisfied than others.','always make better decisions.','never have any regrets.'], correct:1},
+      {q:'What does the writer suggest in the last paragraph?', opts:['That we should remove all choice from our lives.','That choice is always a bad thing.','That we should limit our choices and accept "good enough".','That technology will solve the problem of choice.'], correct:2}
+    ]
+  },
+  {
+    level: 'Module E',
+    title: 'The Resurgence of Local',
+    text: `For most of the twentieth century, people in rich countries believed that bigger always meant better. Huge supermarkets, international brands and global chains seemed to be the future of food, clothing and entertainment. In the last fifteen years, however, a clear movement in the opposite direction has appeared. More and more consumers want products that are local, small and personal.\n\nIn many cities, small bakeries, independent coffee shops and neighbourhood book stores are gaining popularity, even though they often charge higher prices than the big chains. Farmers’ markets, where customers buy directly from the people who grew their food, attract long lines on weekends. Restaurants proudly write the names of the farms they buy from on their menus.\n\nThere are several reasons for this change. Many people are worried about the environment and prefer products that are not transported across half the planet. Others want to support their own community and keep money in the area where they live. There is also a feeling that local products taste better, look more interesting, or carry a real story behind them — something that mass production cannot offer.\n\nOf course, "local" is not a magic word. A small business is not automatically more honest or more ethical than a big one, and local products are sometimes more expensive than what many families can afford. Still, the trend reflects a deep change in values. After decades of rapid globalisation, many consumers now want to know where their bread comes from, who made their shirt, and which musicians live on their own street.`,
+    questions: [
+      {q:'According to the text, what did most people in rich countries believe in the twentieth century?', opts:['That local shops were the future.','That bigger always meant better.','That food should always be cheap.','That globalisation was a mistake.'], correct:1},
+      {q:'Which of the following is mentioned as an example of the new "local" trend?', opts:['Huge international supermarkets.','Small bakeries and independent coffee shops.','Online shopping websites.','Cheap mass-produced clothing.'], correct:1},
+      {q:'Why are some customers willing to pay more at small local businesses?', opts:['They have no choice — there are no big shops.','They care about the environment and their community.','They believe local products are always healthier.','They want to copy famous people.'], correct:1},
+      {q:'What does the writer say about the word "local"?', opts:['It is the only thing that matters today.','It guarantees a better product.','It is not always honest or affordable.','It is no longer used by anyone.'], correct:2},
+      {q:'What is the main idea of the text?', opts:['Globalisation has completely failed.','Big chains are about to disappear.','There is a real shift back towards local products and producers.','Only food shopping is changing.'], correct:2}
+    ]
+  }
+];
+
+topicDefs['unseen'] = {
+  title:'אנסינים — הבנת הנקרא',
+  lesson:`
+    <h3 style="margin-top:0">אנסינים — Unseens (Modules C, D, E)</h3>
+    <div class="lesson">
+      <p>"אנסין" הוא קטע קריאה קצר באנגלית, שאתם רואים לראשונה. אחריו מופיעות שאלות אמריקאיות שבודקות עד כמה הבנתם את הקטע.</p>
+      <p>בעבודה הזו תתאמנו על שלוש רמות:</p>
+      <ul>
+        <li><strong>Module C</strong> — קטעים קצרים יותר, אוצר מילים בסיסי, שאלות ישירות.</li>
+        <li><strong>Module D</strong> — קטעים בינוניים, יותר אוצר מילים ושאלות מעמיקות.</li>
+        <li><strong>Module E</strong> — קטעים ארוכים יותר, נושאים מורכבים, שאלות שדורשות הסקה.</li>
+      </ul>
+      <p><strong>אסטרטגיה לפתרון אנסין:</strong></p>
+      <ol>
+        <li>קראו את הקטע פעם אחת בלי לעצור — תקבלו תמונה כללית.</li>
+        <li>קראו את השאלות לפני שאתם חוזרים לקטע.</li>
+        <li>חזרו לקטע וחפשו את החלק שעונה על כל שאלה.</li>
+        <li>היזהרו מ"מלכודות": לפעמים תשובה נראית נכונה אבל לא נכתבה בקטע.</li>
+      </ol>
+    </div>`,
+  example:`
+    <h3 style="margin-top:0">דוגמה</h3>
+    <div class="example">
+      <div class="step"><strong>קטע (Module C):</strong> "Many people read books before they go to sleep. Reading helps them relax and forget the problems of the day."</div>
+      <div class="step"><strong>שאלה:</strong> Why do people read before sleep?</div>
+      <div class="step">a) To learn new languages. &nbsp; b) To relax. &nbsp; c) To make money. &nbsp; d) To meet friends.</div>
+      <div class="step"><strong>תשובה נכונה:</strong> b — Reading helps them relax.</div>
+    </div>`,
+  makeQuestion:(slot)=>{
+    function gen(){
+      const passage = pick(unseenPassages);
+      slot.innerHTML='';
+      const wrap = document.createElement('div');
+      wrap.className = 'qbox';
+      const qsHtml = passage.questions.map((qObj, qi)=>{
+        const optsHtml = qObj.opts.map((opt, oi)=>`
+          <label class="q-option">
+            <input type="radio" name="unseen-q-${qi}" value="${oi}">
+            <span><strong>${String.fromCharCode(97+oi)}.</strong> ${opt}</span>
+          </label>
+        `).join('');
+        return `
+          <div class="unseen-q" data-qi="${qi}" data-correct="${qObj.correct}">
+            <div class="q-text">${qi+1}. ${qObj.q}</div>
+            <div class="q-options">${optsHtml}</div>
+          </div>
+        `;
+      }).join('');
+      wrap.innerHTML = `
+        <div class="qhead">📖 קטע קריאה</div>
+        <div class="passage-box">
+          <div class="level-tag">${passage.level}</div>
+          <div class="passage-title">${passage.title}</div>
+          <div class="passage-text">${passage.text}</div>
+        </div>
+        <div class="qhead" style="margin-top:18px">📝 שאלות</div>
+        <div class="unseen-questions">${qsHtml}</div>
+        <div class="actions" style="margin-top:14px">
+          <button class="btn btn-pink nx">🔄 קטע אחר</button>
+          <button class="btn btn-success ck">✓ בדוק תשובות</button>
+          <button class="btn btn-warn sol">💡 הצג פתרונות</button>
+        </div>
+        <div class="feedback fb"></div>
+        <div class="reveal sl"></div>
+      `;
+      slot.appendChild(wrap);
+
+      let hasChecked = false;
+      function runCheck(){
+        const fb = wrap.querySelector('.fb');
+        const qBlocks = wrap.querySelectorAll('.unseen-q');
+        let correct = 0, total = qBlocks.length, answered = 0;
+        const wrongList = [];
+        qBlocks.forEach(qb=>{
+          const correctIdx = parseInt(qb.dataset.correct, 10);
+          const qi = parseInt(qb.dataset.qi, 10);
+          const opts = qb.querySelectorAll('.q-option');
+          const checked = qb.querySelector('input[type="radio"]:checked');
+          // reset visual state
+          opts.forEach(o => o.classList.remove('correct','wrong'));
+          if(checked){
+            answered++;
+            const sel = parseInt(checked.value, 10);
+            if(sel === correctIdx){
+              correct++;
+              opts[sel].classList.add('correct');
+            } else {
+              opts[sel].classList.add('wrong');
+              opts[correctIdx].classList.add('correct');
+              wrongList.push(qi+1);
+            }
+          } else {
+            wrongList.push(qi+1);
+          }
+        });
+        if(correct === total){
+          fb.className = 'feedback show ok';
+          fb.textContent = `🎉 כל הכבוד! ענית נכון על כל ${total} השאלות.`;
+        } else if(answered === 0){
+          fb.className = 'feedback show bad';
+          fb.textContent = '🤔 עדיין לא סימנת תשובות. בחר תשובה לכל שאלה ולחץ "בדוק תשובות".';
+        } else if(correct === 0){
+          fb.className = 'feedback show bad';
+          fb.textContent = `✗ אף תשובה לא נכונה. נסה שוב — קרא שוב את הקטע ושים לב לפרטים.`;
+        } else {
+          fb.className = 'feedback show partial';
+          fb.innerHTML = `✓ <strong>${correct} מתוך ${total}</strong> נכון. נשאר לתקן: שאלות <strong>${wrongList.join(', ')}</strong>.`;
+        }
+      }
+      wrap.querySelector('.ck').onclick = ()=>{ hasChecked = true; runCheck(); };
+      // Live re-check on selection change after first check
+      wrap.querySelectorAll('input[type="radio"]').forEach(r=>{
+        r.addEventListener('change', ()=>{ if(hasChecked) runCheck(); });
+      });
+      wrap.querySelector('.sol').onclick = ()=>{
+        const sl = wrap.querySelector('.sl');
+        const solHtml = passage.questions.map((qObj, qi)=>{
+          const letter = String.fromCharCode(97 + qObj.correct);
+          return `<div class="step"><strong>${qi+1}.</strong> תשובה נכונה: <strong>${letter}</strong> — ${qObj.opts[qObj.correct]}</div>`;
+        }).join('');
+        sl.innerHTML = `<h4>פתרונות</h4>${solHtml}`;
+        sl.classList.add('show');
+        // also mark all correct answers visually
+        wrap.querySelectorAll('.unseen-q').forEach(qb=>{
+          const correctIdx = parseInt(qb.dataset.correct, 10);
+          const opts = qb.querySelectorAll('.q-option');
+          opts.forEach(o => o.classList.remove('correct','wrong'));
+          opts[correctIdx].classList.add('correct');
+        });
+      };
+      wrap.querySelector('.nx').onclick = ()=> gen();
       refmath();
     }
     gen();
