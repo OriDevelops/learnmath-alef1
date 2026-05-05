@@ -190,6 +190,19 @@
   body.mode-mobile .passage-box{padding:14px;font-size:15px}
   body.mode-mobile .passage-box .passage-title{font-size:17px}
   body.mode-mobile .unseen-q{padding:12px}
+  .unseen-open{background:white;padding:14px 18px;border-radius:12px;border:1px solid #e2e8f0;margin:10px 0}
+  .unseen-open .q-text{font-size:15px;margin-bottom:10px;color:#1e293b;font-weight:600;line-height:1.6}
+  .unseen-open .open-input{width:100%;min-height:80px;padding:10px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-family:inherit;font-size:14px;color:#1e293b;direction:ltr;text-align:left;line-height:1.5;resize:vertical;box-sizing:border-box;background:#fafbff}
+  .unseen-open .open-input:focus{outline:none;border-color:#a78bfa;background:white}
+  .unseen-open .open-hint{margin-top:8px;font-size:13px;color:#64748b;line-height:1.5;min-height:18px}
+  .unseen-open .ok-tag{display:inline-block;background:#dcfce7;color:#15803d;padding:2px 10px;border-radius:999px;font-weight:700;font-size:12px;margin-left:6px}
+  .unseen-open .bad-tag{display:inline-block;background:#fee2e2;color:#b91c1c;padding:2px 10px;border-radius:999px;font-weight:700;font-size:12px;margin-left:6px}
+  .unseen-open .partial-tag{display:inline-block;background:#fef3c7;color:#a16207;padding:2px 10px;border-radius:999px;font-weight:700;font-size:12px;margin-left:6px}
+  .unseen-open.open-ok{border-color:#10b981;background:#f0fdf4}
+  .unseen-open.open-bad{border-color:#ef4444;background:#fef2f2}
+  .unseen-open.open-partial{border-color:#f59e0b;background:#fffbeb}
+  body.mode-mobile .unseen-open{padding:12px}
+  body.mode-mobile .unseen-open .open-input{min-height:70px;font-size:13px}
 </style>
 </head>
 <body>
@@ -299,8 +312,16 @@ function renderHome(){
         </div>`).join('')}
     </div>`;
   document.querySelectorAll('.tile').forEach(el=>el.onclick=()=>openTopic(el.dataset.id));
-  document.getElementById('switchModeBtn').onclick = ()=>showDevicePicker(false);
-  document.getElementById('switchSubjectBtn').onclick = ()=>showSubjectPicker(false);
+  document.getElementById('switchModeBtn').onclick = ()=>{
+    const cur = document.body.classList.contains('mode-mobile') ? 'mobile' : 'desktop';
+    applyDeviceMode(cur === 'mobile' ? 'desktop' : 'mobile');
+    renderHome();
+  };
+  document.getElementById('switchSubjectBtn').onclick = ()=>{
+    const subj = window._learnSubject || 'math';
+    applySubject(subj === 'math' ? 'english' : 'math');
+    renderHome();
+  };
   refmath();
 }
 
@@ -2700,6 +2721,11 @@ const unseenPassages = [
       {q:'What do children learn when they take care of a pet?', opts:['How to cook food.','How to be responsible.','How to read books.','How to drive a car.'], correct:1},
       {q:'Why are dogs good for their owners’ health?', opts:['Because they sleep a lot.','Because they are quiet.','Because owners walk with them.','Because they eat slowly.'], correct:2},
       {q:'What is the main idea of the text?', opts:['Pets are expensive.','Only dogs are good pets.','Pets help people in many ways.','Cats are better than dogs.'], correct:2}
+    ],
+    openQs: [
+      {q:'Name TWO jobs children do when they take care of a pet.', keywords:[['feed','feeding'],['walk','walking'],['clean','cleaning']], minMatches:2, sample:'Children feed the pet and take it for a walk. They also clean its space.'},
+      {q:'According to the text, give ONE example of a special job that some dogs do.', keywords:[['help blind','blind people','guide'],['find lost','find people','mountains','rescue']], minMatches:1, sample:'Some dogs help blind people, and others find lost people in the mountains.'},
+      {q:'In your own opinion: would you like to have a pet? Why or why not? (Write 1–2 sentences in English.)', keywords:[['because','I think','I would','I want','I don’t']], minMatches:1, sample:'Yes, I would like to have a dog because dogs are friendly and they help me feel less stress.'}
     ]
   },
   {
@@ -2711,6 +2737,11 @@ const unseenPassages = [
       {q:'What can happen to people who don’t sleep enough?', opts:['They become very tall.','They find it harder to remember things.','They eat less food.','They speak more languages.'], correct:1},
       {q:'Why is using a phone in bed bad for sleep?', opts:['The phone is too heavy.','The light keeps the brain awake.','The phone makes loud noises.','The phone is too cold.'], correct:1},
       {q:'What is the writer’s main message?', opts:['Sleep is a waste of time.','Sleep is important for body and mind.','Only adults need to sleep.','Phones are good for sleep.'], correct:1}
+    ],
+    openQs: [
+      {q:'Give TWO problems of people who don’t sleep enough.', keywords:[['tired'],['study','remember','listen','class','focus','concentrate'],['angry','sad'],['sick','ill']], minMatches:2, sample:'They feel tired during the day and find it harder to study or remember things. They can also feel sad or angry.'},
+      {q:'List TWO things you can do to sleep better, according to the text.', keywords:[['same time','go to bed at','routine'],['phone','computer','screen'],['quiet','dark','dark room']], minMatches:2, sample:'Go to bed at the same time every night and don’t use your phone or computer in bed. Sleep in a quiet, dark room.'},
+      {q:'In your opinion, why is sleep important for students? (Write 1–2 sentences in English.)', keywords:[['because','I think','helps','important','study','remember','focus','concentrate']], minMatches:1, sample:'Sleep is important for students because it helps them focus in class and remember new things they learned.'}
     ]
   },
   /* ---- Module D ---- */
@@ -2724,6 +2755,12 @@ const unseenPassages = [
       {q:'Which of the following is mentioned as a problem of online learning?', opts:['It is more expensive than regular school.','It makes group work and friendships harder.','It only works for very young children.','It is not allowed in most countries.'], correct:1},
       {q:'What do most experts think is the best system?', opts:['Only online learning, with no classrooms.','Only traditional classes, with no computers.','A mix of online and face-to-face learning.','No school at all.'], correct:2},
       {q:'The main purpose of the text is to:', opts:['warn against using the internet.','describe the good and bad sides of online learning.','tell the story of one student.','sell a new online course.'], correct:1}
+    ],
+    openQs: [
+      {q:'Give TWO advantages of online learning, according to the text.', keywords:[['own pace','at their own pace','self-paced'],['watch','again','repeat','review'],['cheaper','less expensive','cost'],['save time','transport','travel'],['choose','courses','universities','other countries']], minMatches:2, sample:'Students can study at their own pace and watch lessons again. Online classes are also cheaper and save travel time.'},
+      {q:'Give TWO disadvantages of online learning that the writer mentions.', keywords:[['focus','concentrate','distract'],['games','social media','family'],['fall behind','behind','don’t ask','don\'t ask'],['group work','friendships','social','lonely']], minMatches:2, sample:'Some students find it hard to focus at home because of distractions, and group work and friendships are harder to build through a screen.'},
+      {q:'In your own words, explain what a "mixed" or "hybrid" system means in the text.', keywords:[['mix','combine','both'],['online'],['face','classroom','meetings','school','class']], minMatches:2, sample:'A hybrid system mixes both worlds: students do part of the lesson online and meet face-to-face in the classroom for discussions and projects.'},
+      {q:'Do you prefer online learning or learning in a classroom? Why? (Write 2 sentences in English.)', keywords:[['I prefer','I like','I think','because','I would']], minMatches:1, sample:'I prefer learning in a classroom because I can ask the teacher questions easily and I see my friends every day.'}
     ]
   },
   {
@@ -2736,6 +2773,12 @@ const unseenPassages = [
       {q:'Which of these is mentioned as a benefit of working from home?', opts:['Workers always meet new people.','Workers save time on transport.','Workers must wake up earlier.','Workers travel more for work.'], correct:1},
       {q:'What is one problem of working from home, according to the text?', opts:['The internet is always too slow.','It is hard to find a laptop.','Some workers feel lonely.','Companies have to build bigger offices.'], correct:2},
       {q:'What does the writer think about the future?', opts:['Everyone will work fully from home.','Nobody will work from home.','Most people will mix office and home work.','People will stop working completely.'], correct:2}
+    ],
+    openQs: [
+      {q:'Give TWO reasons why work has changed, according to the text.', keywords:[['technology','internet','video calls','computer'],['young workers','family','travel','sport','life','salary','time']], minMatches:2, sample:'Technology like fast internet and video calls makes remote work possible. Also, young workers want more time for family, sport and travel.'},
+      {q:'List TWO benefits and ONE problem of working from home.', keywords:[['transport','travel','save time'],['healthier','meals','food'],['less stressed','stress'],['save money','offices','companies'],['lonely','isolated','team'],['line','free time','work and free','laptop','late','emails']], minMatches:3, sample:'Benefits: workers save time on transport and feel less stressed. Problem: some workers feel lonely without their team.'},
+      {q:'In your own words, what is "hybrid" work?', keywords:[['few days','some days','part of'],['office'],['home']], minMatches:2, sample:'Hybrid work means working a few days in the office and a few days at home.'},
+      {q:'Would you like to work from home in the future? Why? (Write 2 sentences in English.)', keywords:[['I would','I want','I think','I prefer','because']], minMatches:1, sample:'I would like to work from home some days because I can save time on transport and feel less stressed.'}
     ]
   },
   /* ---- Module E ---- */
@@ -2749,6 +2792,12 @@ const unseenPassages = [
       {q:'The writer mentions big life decisions in order to show that:', opts:['shopping is more stressful than choosing a job.','the problem of choice goes beyond the supermarket.','only rich people have important decisions to make.','young people don’t care about choices.'], correct:1},
       {q:'According to the text, people who always look for "the best" option:', opts:['usually become very rich.','tend to be less satisfied than others.','always make better decisions.','never have any regrets.'], correct:1},
       {q:'What does the writer suggest in the last paragraph?', opts:['That we should remove all choice from our lives.','That choice is always a bad thing.','That we should limit our choices and accept "good enough".','That technology will solve the problem of choice.'], correct:2}
+    ],
+    openQs: [
+      {q:'According to the text, what are TWO negative effects of having too many options when shopping?', keywords:[['more time','spend more time','longer','time deciding'],['worry','wrong choice','guilty','stress'],['wonder','keep wondering','better','regret']], minMatches:2, sample:'People spend more time deciding and worry about making the wrong choice. Even after they choose, they keep wondering if another option would have been better.'},
+      {q:'Explain in your own words the difference between trying to find "the best" option and accepting "good enough".', keywords:[['best','perfect'],['good enough','satisfied','accept','happy'],['less','more']], minMatches:2, sample:'People who always look for "the best" option keep searching and feel less satisfied. People who accept "good enough" make a decision and feel happier with what they chose.'},
+      {q:'What does the writer suggest we do to live well? Mention TWO of his pieces of advice.', keywords:[['limit','fewer','reduce','on purpose'],['accept','no decision','perfect','not perfect'],['enjoy','happy','what we have','have already']], minMatches:2, sample:'The writer suggests that we should limit our choices on purpose, accept that no decision is perfect, and enjoy what we already have.'},
+      {q:'Do you agree that having more choice is not always a good thing? Explain your answer in 2–3 sentences in English.', keywords:[['I agree','I think','I believe','I don\'t agree','I disagree','because','for example']], minMatches:1, sample:'I agree that more choice is not always good. For example, when there are too many similar products, I spend too much time deciding and feel tired before I even buy anything.'}
     ]
   },
   {
@@ -2761,6 +2810,12 @@ const unseenPassages = [
       {q:'Why are some customers willing to pay more at small local businesses?', opts:['They have no choice — there are no big shops.','They care about the environment and their community.','They believe local products are always healthier.','They want to copy famous people.'], correct:1},
       {q:'What does the writer say about the word "local"?', opts:['It is the only thing that matters today.','It guarantees a better product.','It is not always honest or affordable.','It is no longer used by anyone.'], correct:2},
       {q:'What is the main idea of the text?', opts:['Globalisation has completely failed.','Big chains are about to disappear.','There is a real shift back towards local products and producers.','Only food shopping is changing.'], correct:2}
+    ],
+    openQs: [
+      {q:'Give TWO examples from the text of small local businesses that are gaining popularity.', keywords:[['bakeries','bakery'],['coffee shops','coffee shop','independent coffee'],['book stores','bookstore','book shop'],['farmers','farmers’ market','market'],['restaurants','restaurant']], minMatches:2, sample:'Small bakeries and independent coffee shops are gaining popularity. Farmers’ markets also attract long lines on weekends.'},
+      {q:'List TWO reasons given for the move towards local products.', keywords:[['environment','transport','planet','green'],['community','support','area','money'],['taste','interesting','story','look','quality','mass production']], minMatches:2, sample:'People care about the environment and don’t want products transported across the planet. They also want to support their own community and keep money in their area.'},
+      {q:'What does the writer mean when he says "local is not a magic word"? Explain in your own words.', keywords:[['not always','not automatically'],['honest','ethical','good','better'],['expensive','price','afford']], minMatches:2, sample:'The writer means that local is not automatically better. A small business is not always more honest than a big one, and local products are sometimes too expensive for many families.'},
+      {q:'In your opinion, is it important to buy local products? Why or why not? (Write 2–3 sentences in English.)', keywords:[['I think','I believe','in my opinion','because','I would']], minMatches:1, sample:'I think it is important to buy local products because it supports the people in my community. However, sometimes local products are too expensive, so I cannot always buy them.'}
     ]
   }
 ];
@@ -2789,9 +2844,12 @@ topicDefs['unseen'] = {
     <h3 style="margin-top:0">דוגמה</h3>
     <div class="example">
       <div class="step"><strong>קטע (Module C):</strong> "Many people read books before they go to sleep. Reading helps them relax and forget the problems of the day."</div>
-      <div class="step"><strong>שאלה:</strong> Why do people read before sleep?</div>
+      <div class="step"><strong>שאלה אמריקאית:</strong> Why do people read before sleep?</div>
       <div class="step">a) To learn new languages. &nbsp; b) To relax. &nbsp; c) To make money. &nbsp; d) To meet friends.</div>
       <div class="step"><strong>תשובה נכונה:</strong> b — Reading helps them relax.</div>
+      <div class="step" style="margin-top:10px"><strong>שאלה פתוחה:</strong> What do people forget when they read before sleep?</div>
+      <div class="step"><strong>תשובה לדוגמה:</strong> "They forget the problems of the day."</div>
+      <div class="step"><em>טיפ:</em> בשאלות פתוחות כתבו משפט שלם באנגלית והשתמשו במילות מפתח מהקטע.</div>
     </div>`,
   makeQuestion:(slot)=>{
     function gen(){
@@ -2799,7 +2857,7 @@ topicDefs['unseen'] = {
       slot.innerHTML='';
       const wrap = document.createElement('div');
       wrap.className = 'qbox';
-      const qsHtml = passage.questions.map((qObj, qi)=>{
+      const mcHtml = passage.questions.map((qObj, qi)=>{
         const optsHtml = qObj.opts.map((opt, oi)=>`
           <label class="q-option">
             <input type="radio" name="unseen-q-${qi}" value="${oi}">
@@ -2813,6 +2871,13 @@ topicDefs['unseen'] = {
           </div>
         `;
       }).join('');
+      const openHtml = (passage.openQs || []).map((oq, oi)=>`
+        <div class="unseen-open" data-oi="${oi}">
+          <div class="q-text">${oi+1}. ${oq.q}</div>
+          <textarea class="open-input" placeholder="כתבו את התשובה שלכם באנגלית כאן..."></textarea>
+          <div class="open-hint"></div>
+        </div>
+      `).join('');
       wrap.innerHTML = `
         <div class="qhead">📖 קטע קריאה</div>
         <div class="passage-box">
@@ -2820,8 +2885,12 @@ topicDefs['unseen'] = {
           <div class="passage-title">${passage.title}</div>
           <div class="passage-text">${passage.text}</div>
         </div>
-        <div class="qhead" style="margin-top:18px">📝 שאלות</div>
-        <div class="unseen-questions">${qsHtml}</div>
+        <div class="qhead" style="margin-top:18px">📝 שאלות אמריקאיות</div>
+        <div class="unseen-questions">${mcHtml}</div>
+        ${(passage.openQs && passage.openQs.length) ? `
+          <div class="qhead" style="margin-top:18px">✍️ שאלות פתוחות (Open Questions)</div>
+          <div class="unseen-open-questions">${openHtml}</div>
+        ` : ''}
         <div class="actions" style="margin-top:14px">
           <button class="btn btn-pink nx">🔄 קטע אחר</button>
           <button class="btn btn-success ck">✓ בדוק תשובות</button>
@@ -2832,46 +2901,97 @@ topicDefs['unseen'] = {
       `;
       slot.appendChild(wrap);
 
+      // Helper: normalize English text (lowercase, strip punctuation)
+      function normEn(s){
+        return (s||'').toLowerCase().replace(/['']/g,"'").replace(/[.,!?;:"()\-—]/g,' ').replace(/\s+/g,' ').trim();
+      }
+      // Check open question: returns {ok, score, hits, total, hasText, wordCount}
+      function checkOpen(oq, text){
+        const norm = normEn(text);
+        const wordCount = norm ? norm.split(' ').filter(Boolean).length : 0;
+        const hasText = wordCount >= 3;
+        const groups = oq.keywords || [];
+        let hits = 0;
+        groups.forEach(group=>{
+          if(group.some(kw => norm.includes(normEn(kw)))) hits++;
+        });
+        const need = oq.minMatches || 1;
+        const ok = hasText && hits >= need;
+        return {ok, hits, total:groups.length, need, hasText, wordCount};
+      }
+
       let hasChecked = false;
       function runCheck(){
         const fb = wrap.querySelector('.fb');
         const qBlocks = wrap.querySelectorAll('.unseen-q');
-        let correct = 0, total = qBlocks.length, answered = 0;
-        const wrongList = [];
+        let mcCorrect = 0; const mcTotal = qBlocks.length; let mcAnswered = 0;
+        const mcWrong = [];
         qBlocks.forEach(qb=>{
           const correctIdx = parseInt(qb.dataset.correct, 10);
           const qi = parseInt(qb.dataset.qi, 10);
           const opts = qb.querySelectorAll('.q-option');
           const checked = qb.querySelector('input[type="radio"]:checked');
-          // reset visual state
           opts.forEach(o => o.classList.remove('correct','wrong'));
           if(checked){
-            answered++;
+            mcAnswered++;
             const sel = parseInt(checked.value, 10);
             if(sel === correctIdx){
-              correct++;
+              mcCorrect++;
               opts[sel].classList.add('correct');
             } else {
               opts[sel].classList.add('wrong');
               opts[correctIdx].classList.add('correct');
-              wrongList.push(qi+1);
+              mcWrong.push(qi+1);
             }
           } else {
-            wrongList.push(qi+1);
+            mcWrong.push(qi+1);
           }
         });
+        // Open questions
+        const openBlocks = wrap.querySelectorAll('.unseen-open');
+        let openOk = 0; const openTotal = openBlocks.length; let openAnswered = 0;
+        const openIssues = [];
+        openBlocks.forEach(ob=>{
+          const oi = parseInt(ob.dataset.oi, 10);
+          const oq = passage.openQs[oi];
+          const ta = ob.querySelector('.open-input');
+          const hint = ob.querySelector('.open-hint');
+          ob.classList.remove('open-ok','open-bad','open-partial');
+          const r = checkOpen(oq, ta.value);
+          if(r.hasText) openAnswered++;
+          if(r.ok){
+            openOk++;
+            ob.classList.add('open-ok');
+            hint.innerHTML = `<span class="ok-tag">✓ תשובה טובה</span> זיהינו את הרעיון המרכזי בתשובה שלך.`;
+          } else if(!r.hasText){
+            ob.classList.add('open-bad');
+            hint.innerHTML = `<span class="bad-tag">חסרה תשובה</span> כתוב/כתבי משפט שלם באנגלית.`;
+            openIssues.push(oi+1);
+          } else {
+            ob.classList.add('open-partial');
+            hint.innerHTML = `<span class="partial-tag">כמעט שם</span> זיהינו <strong>${r.hits}</strong> מהרעיונות הדרושים, צריך לפחות <strong>${r.need}</strong>. נסה/י להוסיף פרטים מהקטע.`;
+            openIssues.push(oi+1);
+          }
+        });
+        // Combined feedback
+        const total = mcTotal + openTotal;
+        const correct = mcCorrect + openOk;
+        const answered = mcAnswered + openAnswered;
         if(correct === total){
           fb.className = 'feedback show ok';
-          fb.textContent = `🎉 כל הכבוד! ענית נכון על כל ${total} השאלות.`;
+          fb.textContent = `🎉 כל הכבוד! ענית נכון על כל ${total} השאלות (${mcCorrect}/${mcTotal} אמריקאיות + ${openOk}/${openTotal} פתוחות).`;
         } else if(answered === 0){
           fb.className = 'feedback show bad';
-          fb.textContent = '🤔 עדיין לא סימנת תשובות. בחר תשובה לכל שאלה ולחץ "בדוק תשובות".';
+          fb.textContent = '🤔 עדיין לא ענית על שאלות. בחר/י תשובות וכתב/י תשובות פתוחות.';
         } else if(correct === 0){
           fb.className = 'feedback show bad';
-          fb.textContent = `✗ אף תשובה לא נכונה. נסה שוב — קרא שוב את הקטע ושים לב לפרטים.`;
+          fb.textContent = `✗ אף תשובה לא נכונה עדיין. חזרו לקטע ונסו שוב.`;
         } else {
           fb.className = 'feedback show partial';
-          fb.innerHTML = `✓ <strong>${correct} מתוך ${total}</strong> נכון. נשאר לתקן: שאלות <strong>${wrongList.join(', ')}</strong>.`;
+          const parts = [];
+          if(mcWrong.length) parts.push(`אמריקאיות: ${mcWrong.join(', ')}`);
+          if(openIssues.length) parts.push(`פתוחות: ${openIssues.join(', ')}`);
+          fb.innerHTML = `✓ <strong>${correct} מתוך ${total}</strong> נכון. נשאר לתקן — ${parts.join(' · ')}.`;
         }
       }
       wrap.querySelector('.ck').onclick = ()=>{ hasChecked = true; runCheck(); };
@@ -2879,15 +2999,24 @@ topicDefs['unseen'] = {
       wrap.querySelectorAll('input[type="radio"]').forEach(r=>{
         r.addEventListener('change', ()=>{ if(hasChecked) runCheck(); });
       });
+      wrap.querySelectorAll('.open-input').forEach(ta=>{
+        ta.addEventListener('input', ()=>{ if(hasChecked) runCheck(); });
+      });
       wrap.querySelector('.sol').onclick = ()=>{
         const sl = wrap.querySelector('.sl');
-        const solHtml = passage.questions.map((qObj, qi)=>{
+        const mcSol = passage.questions.map((qObj, qi)=>{
           const letter = String.fromCharCode(97 + qObj.correct);
           return `<div class="step"><strong>${qi+1}.</strong> תשובה נכונה: <strong>${letter}</strong> — ${qObj.opts[qObj.correct]}</div>`;
         }).join('');
-        sl.innerHTML = `<h4>פתרונות</h4>${solHtml}`;
+        const openSol = (passage.openQs || []).map((oq, oi)=>{
+          return `<div class="step"><strong>${oi+1}.</strong> תשובה לדוגמה: <em>"${oq.sample}"</em></div>`;
+        }).join('');
+        sl.innerHTML = `
+          <h4>פתרונות — שאלות אמריקאיות</h4>${mcSol}
+          ${openSol ? `<h4 style="margin-top:14px">פתרונות — שאלות פתוחות</h4>${openSol}` : ''}
+        `;
         sl.classList.add('show');
-        // also mark all correct answers visually
+        // Mark correct answers
         wrap.querySelectorAll('.unseen-q').forEach(qb=>{
           const correctIdx = parseInt(qb.dataset.correct, 10);
           const opts = qb.querySelectorAll('.q-option');
