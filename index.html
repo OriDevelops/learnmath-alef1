@@ -424,14 +424,11 @@ function openTopic(id){
       ${def.example}
     </div>
     <div class="card">
-      <button class="btn btn-primary big" id="genBtn">✨ צור שאלה</button>
+      <span class="pill">שאלה</span>
       <div id="qSlot"></div>
     </div>`;
-  document.getElementById('genBtn').onclick = ()=>{
-    document.getElementById('qSlot').innerHTML = '';
-    def.makeQuestion(document.getElementById('qSlot'));
-    refmath();
-  };
+  // Auto-generate the first question — no "create question" button
+  def.makeQuestion(document.getElementById('qSlot'));
   refmath();
 }
 
