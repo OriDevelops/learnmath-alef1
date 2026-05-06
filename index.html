@@ -2466,6 +2466,8 @@ topicDefs['vocab-en-he'] = {
     </div>`,
   makeQuestion:(slot)=>{
     const queue = {words: [], idx: 0};
+    // Track recent correct positions to avoid streaks
+    const lastCorrect = [];
     function refill(){
       const pool = vocabList.slice();
       for(let i = pool.length - 1; i > 0; i--){
@@ -2511,11 +2513,32 @@ topicDefs['vocab-en-he'] = {
         if(distractors.length === 3) break;
       }
       const options = [correctHe, ...distractors];
+      // Fisher-Yates shuffle
       for(let i = options.length - 1; i > 0; i--){
         const j = Math.floor(Math.random() * (i+1));
         [options[i], options[j]] = [options[j], options[i]];
       }
-      const correctIdx = options.indexOf(correctHe);
+      // Anti-streak: choose a target position for the correct answer that
+      // (1) is NOT the same as the immediately previous correct position, and
+      // (2) is NOT the same as the last 2 if the last 2 already match.
+      // This prevents long visual runs without breaking randomness overall.
+      const N = options.length;
+      const allowed = [];
+      for(let p = 0; p < N; p++){
+        const last = lastCorrect[lastCorrect.length-1];
+        const prev = lastCorrect[lastCorrect.length-2];
+        if(last === p) continue; // never two in a row
+        if(prev === p && last === p) continue;
+        allowed.push(p);
+      }
+      const target = allowed[Math.floor(Math.random() * allowed.length)];
+      const currentIdx = options.indexOf(correctHe);
+      if(currentIdx !== target){
+        [options[currentIdx], options[target]] = [options[target], options[currentIdx]];
+      }
+      const correctIdx = target;
+      lastCorrect.push(correctIdx);
+      if(lastCorrect.length > 5) lastCorrect.shift();
 
       const optsHtml = options.map((he, i)=>`
         <button class="vocab-opt" data-idx="${i}">
