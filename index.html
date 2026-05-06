@@ -212,8 +212,19 @@
   .vocab-card .vocab-bar.current{background:linear-gradient(90deg,#10b981 50%,rgba(148,163,184,.25) 50%)}
   .vocab-card .vocab-bar.current .vocab-bullet{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:24px;height:24px;border-radius:50%;background:#10b981;color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px}
   .vocab-card .vocab-score{background:rgba(148,163,184,.18);color:#cbd5e1;border-radius:999px;padding:4px 12px;font-weight:700;font-size:14px;min-width:42px;text-align:center}
+  .vocab-card .vocab-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:12px}
+  .vocab-card .vocab-streak{display:flex;align-items:center;gap:8px;background:rgba(249,115,22,.18);color:#fdba74;padding:6px 14px;border-radius:999px;font-weight:700;font-size:14px;border:1.5px solid rgba(249,115,22,.35)}
+  .vocab-card .vocab-streak.zero{background:rgba(148,163,184,.15);color:#94a3b8;border-color:rgba(148,163,184,.25)}
+  .vocab-card .vocab-streak .streak-icon{font-size:16px}
+  .vocab-card .vocab-streak .streak-num{font-size:15px}
+  .vocab-card .vocab-streak .streak-label{font-size:12px;font-weight:500;opacity:.85}
   .vocab-card .vocab-term-label{color:#94a3b8;font-size:13px;font-weight:600;letter-spacing:.5px;margin-bottom:6px;direction:ltr;text-align:left}
-  .vocab-card .vocab-term{font-size:38px;font-weight:600;color:#f8fafc;margin:6px 0 32px;direction:ltr;text-align:left}
+  .vocab-card .vocab-term-row{display:flex;align-items:baseline;gap:14px;margin:6px 0 32px;flex-wrap:wrap;direction:ltr}
+  .vocab-card .vocab-term{font-size:38px;font-weight:600;color:#f8fafc;direction:ltr;text-align:left;line-height:1.1}
+  .vocab-card .vocab-pos{display:inline-block;background:rgba(99,102,241,.25);color:#c7d2fe;border:1px solid rgba(99,102,241,.5);padding:4px 12px;border-radius:999px;font-size:13px;font-weight:600;direction:ltr}
+  .vocab-card .vocab-pos.noun{background:rgba(34,197,94,.18);color:#bbf7d0;border-color:rgba(34,197,94,.4)}
+  .vocab-card .vocab-pos.verb{background:rgba(168,85,247,.2);color:#e9d5ff;border-color:rgba(168,85,247,.45)}
+  body.mode-mobile .vocab-card .vocab-term{font-size:30px}
   .vocab-card .vocab-prompt{color:#cbd5e1;font-size:14px;margin-bottom:14px;font-weight:600}
   .vocab-card .vocab-options{display:grid;grid-template-columns:1fr 1fr;gap:14px}
   .vocab-card .vocab-opt{display:flex;align-items:center;gap:14px;background:rgba(30,27,75,.5);border:1.5px solid rgba(148,163,184,.25);border-radius:12px;padding:18px 20px;cursor:pointer;transition:all .15s;font-family:inherit;text-align:right;color:#e2e8f0}
@@ -2244,7 +2255,8 @@ const vocabList = [
   {en:'race', he:'מרוץ/גזע'},
   {en:'railway', he:'פסי רכבת'},
   {en:'railroad', he:'פסי רכבת'},
-  {en:'rain', he:'גשם/לרדת גשם'},
+  {en:'rain', he:'גשם', pos:'noun'},
+  {en:'rain', he:'לרדת גשם', pos:'verb'},
   {en:'raise', he:'להרים/לגדל'},
   {en:'rather', he:'למדי'},
   {en:'rather than', he:'במקום'},
@@ -2263,10 +2275,14 @@ const vocabList = [
   {en:'religious', he:'דתי'},
   {en:'remind', he:'להזכיר'},
   {en:'repeat', he:'לחזור שנית'},
-  {en:'reply', he:'תשובה/לענות'},
-  {en:'report', he:'דוח/לדווח'},
-  {en:'request', he:'בקשה/לבקש'},
-  {en:'respect', he:'כבוד/לכבד'},
+  {en:'reply', he:'תשובה', pos:'noun'},
+  {en:'reply', he:'לענות', pos:'verb'},
+  {en:'report', he:'דוח', pos:'noun'},
+  {en:'report', he:'לדווח', pos:'verb'},
+  {en:'request', he:'בקשה', pos:'noun'},
+  {en:'request', he:'לבקש', pos:'verb'},
+  {en:'respect', he:'כבוד', pos:'noun'},
+  {en:'respect', he:'לכבד', pos:'verb'},
   {en:'responsible', he:'אחראי'},
   {en:'responsibility', he:'אחריות'},
   {en:'the rest', he:'השאר'},
@@ -2289,7 +2305,8 @@ const vocabList = [
   {en:'science', he:'מדע'},
   {en:'score', he:'תוצאה במשחק'},
   {en:'sea', he:'ים'},
-  {en:'search', he:'חיפוש/לחפש'},
+  {en:'search', he:'חיפוש', pos:'noun'},
+  {en:'search', he:'לחפש', pos:'verb'},
   {en:'season', he:'עונה'},
   {en:'seat', he:'מושב/מקום ישיבה'},
   {en:'second', he:'שניה/שני'},
@@ -2300,7 +2317,8 @@ const vocabList = [
   {en:'serious', he:'רציני'},
   {en:'serve', he:'להגיש/לשרת'},
   {en:'service', he:'שירות'},
-  {en:'set', he:'מערכת/ערכה/לערוך'},
+  {en:'set', he:'מערכת / ערכה', pos:'noun'},
+  {en:'set', he:'לערוך', pos:'verb'},
   {en:'set up', he:'להקים'},
   {en:'several', he:'אחדים'},
   {en:'shape', he:'צורה'},
@@ -2328,10 +2346,12 @@ const vocabList = [
   {en:'society', he:'חברה'},
   {en:'soft', he:'רך'},
   {en:'solve', he:'לפתור'},
-  {en:'sort', he:'סוג/למיין'},
+  {en:'sort', he:'סוג', pos:'noun'},
+  {en:'sort', he:'למיין', pos:'verb'},
   {en:'sort of', he:'סוג של'},
   {en:'sort out', he:'לפתור בעיה'},
-  {en:'sound', he:'צליל/להישמע'},
+  {en:'sound', he:'צליל', pos:'noun'},
+  {en:'sound', he:'להישמע', pos:'verb'},
   {en:'south', he:'דרום'},
   {en:'space', he:'מרווח/חלל'},
   {en:'specific', he:'ספציפי/מסוים'},
@@ -2342,7 +2362,8 @@ const vocabList = [
   {en:'stage', he:'במה/שלב'},
   {en:'standard', he:'תקן/רמה'},
   {en:'star', he:'כוכב'},
-  {en:'state', he:'מדינה/מצב/להצהיר'},
+  {en:'state', he:'מדינה / מצב', pos:'noun'},
+  {en:'state', he:'להצהיר', pos:'verb'},
   {en:'statement', he:'הצהרה'},
   {en:'station', he:'תחנה'},
   {en:'step', he:'מדרגה/צעד'},
@@ -2362,12 +2383,14 @@ const vocabList = [
   {en:'support', he:'לתמוך'},
   {en:'suppose', he:'להניח/לשער'},
   {en:'make sure', he:'לוודא'},
-  {en:'surprise', he:'הפתעה/להפתיע'},
+  {en:'surprise', he:'הפתעה', pos:'noun'},
+  {en:'surprise', he:'להפתיע', pos:'verb'},
   {en:'sweet', he:'מתוק'},
   {en:'switch off', he:'לכבות'},
   {en:'switch on', he:'להדליק'},
   // T
-  {en:'taste', he:'טעם/לטעום'},
+  {en:'taste', he:'טעם', pos:'noun'},
+  {en:'taste', he:'לטעום', pos:'verb'},
   {en:'team', he:'צוות'},
   {en:'technology', he:'טכנולוגיה'},
   {en:'teenager', he:'מתבגר'},
@@ -2407,16 +2430,19 @@ const vocabList = [
   {en:'train', he:'רכבת'},
   {en:'translate', he:'לתרגם'},
   {en:'translation', he:'תרגום'},
-  {en:'transport', he:'תחבורה/להעביר'},
+  {en:'transport', he:'תחבורה', pos:'noun'},
+  {en:'transport', he:'להעביר', pos:'verb'},
   {en:'trash', he:'אשפה'},
   {en:'travel', he:'לנסוע'},
   {en:'treasure', he:'אוצר'},
-  {en:'treat', he:'לטפל/ממתק'},
+  {en:'treat', he:'ממתק', pos:'noun'},
+  {en:'treat', he:'לטפל', pos:'verb'},
   {en:'trick', he:'תעלול'},
   {en:'trouble', he:'צרות'},
   {en:'trust', he:'לתת אמון/לבטוח'},
   {en:'tune', he:'מנגינה'},
-  {en:'type', he:'להקליד/סוג'},
+  {en:'type', he:'סוג', pos:'noun'},
+  {en:'type', he:'להקליד', pos:'verb'},
   // U
   {en:'ugly', he:'מכוער'},
   {en:'unit', he:'יחידה'},
@@ -2468,6 +2494,8 @@ topicDefs['vocab-en-he'] = {
     const queue = {words: [], idx: 0};
     // Track recent correct positions to avoid streaks
     const lastCorrect = [];
+    // Streak counter — consecutive correct answers
+    const streak = {current: 0, best: 0};
     function refill(){
       const pool = vocabList.slice();
       for(let i = pool.length - 1; i > 0; i--){
@@ -2547,11 +2575,25 @@ topicDefs['vocab-en-he'] = {
         </button>
       `).join('');
 
+      const posLabelMap = {noun:'noun · שם עצם', verb:'verb · פועל', adj:'adj · שם תואר', adv:'adv · תואר הפועל'};
+      const posHtml = word.pos ? `<span class="vocab-pos ${word.pos}">${posLabelMap[word.pos] || word.pos}</span>` : '';
+      const streakClass = streak.current > 0 ? '' : 'zero';
+      const streakIcon = streak.current >= 5 ? '🔥' : streak.current >= 3 ? '⚡' : streak.current > 0 ? '✨' : '○';
       const card = document.createElement('div');
       card.className = 'vocab-card';
       card.innerHTML = `
+        <div class="vocab-header">
+          <div class="vocab-streak ${streakClass}" title="ברצף">
+            <span class="streak-icon">${streakIcon}</span>
+            <span class="streak-num">${streak.current}</span>
+            <span class="streak-label">ברצף${streak.best > streak.current ? ` · שיא ${streak.best}` : ''}</span>
+          </div>
+        </div>
         <div class="vocab-term-label">Term</div>
-        <div class="vocab-term">${word.en}</div>
+        <div class="vocab-term-row">
+          <span class="vocab-term">${word.en}</span>
+          ${posHtml}
+        </div>
         <div class="vocab-prompt">בחרו את התרגום לעברית <span style="color:#94a3b8;font-weight:500">(אפשר גם להקליד 1-4)</span></div>
         <div class="vocab-options">${optsHtml}</div>
         <div class="vocab-foot">
@@ -2582,12 +2624,22 @@ topicDefs['vocab-en-he'] = {
         if(!btn) return;
         if(i === correctIdx){
           btn.classList.add('correct');
+          streak.current++;
+          if(streak.current > streak.best) streak.best = streak.current;
           fb.className = 'vocab-fb ok';
-          fb.textContent = `✓ נכון!`;
+          let bonusMsg = '';
+          if(streak.current === 3) bonusMsg = ' · 3 ברצף ⚡';
+          else if(streak.current === 5) bonusMsg = ' · 5 ברצף 🔥';
+          else if(streak.current === 10) bonusMsg = ' · 10 ברצף 🚀';
+          else if(streak.current > 0 && streak.current % 5 === 0) bonusMsg = ` · ${streak.current} ברצף 🔥`;
+          fb.textContent = `✓ נכון!${bonusMsg}`;
         } else {
           btn.classList.add('wrong');
+          const lostStreak = streak.current;
+          streak.current = 0;
           fb.className = 'vocab-fb bad';
-          fb.textContent = `✗ לא נכון. התרגום הנכון: ${correctHe}`;
+          const lostMsg = lostStreak >= 3 ? ` (איבדת רצף של ${lostStreak})` : '';
+          fb.textContent = `✗ לא נכון. התרגום הנכון: ${correctHe}${lostMsg}`;
         }
         lockAndAdvance(true);
       }
@@ -2609,8 +2661,11 @@ topicDefs['vocab-en-he'] = {
       document.addEventListener('keydown', keyHandler);
       card.querySelector('.vocab-dont-know').addEventListener('click', ()=>{
         if(answered) return;
+        const lostStreak = streak.current;
+        streak.current = 0;
         fb.className = 'vocab-fb bad';
-        fb.textContent = `התרגום הנכון: ${correctHe}`;
+        const lostMsg = lostStreak >= 3 ? ` (איבדת רצף של ${lostStreak})` : '';
+        fb.textContent = `התרגום הנכון: ${correctHe}${lostMsg}`;
         lockAndAdvance(true);
       });
       refmath();
