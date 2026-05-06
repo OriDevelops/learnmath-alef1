@@ -212,12 +212,14 @@
   .vocab-card .vocab-bar.current{background:linear-gradient(90deg,#10b981 50%,rgba(148,163,184,.25) 50%)}
   .vocab-card .vocab-bar.current .vocab-bullet{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:24px;height:24px;border-radius:50%;background:#10b981;color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px}
   .vocab-card .vocab-score{background:rgba(148,163,184,.18);color:#cbd5e1;border-radius:999px;padding:4px 12px;font-weight:700;font-size:14px;min-width:42px;text-align:center}
-  .vocab-card .vocab-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:12px}
-  .vocab-card .vocab-streak{display:flex;align-items:center;gap:8px;background:rgba(249,115,22,.18);color:#fdba74;padding:6px 14px;border-radius:999px;font-weight:700;font-size:14px;border:1.5px solid rgba(249,115,22,.35)}
+  .vocab-card .vocab-header{display:flex;justify-content:flex-start;align-items:center;margin-bottom:12px;gap:10px;flex-wrap:wrap}
+  .vocab-card .vocab-streak,.vocab-card .vocab-best{display:flex;align-items:center;gap:8px;padding:6px 14px;border-radius:999px;font-weight:700;font-size:14px;border:1.5px solid}
+  .vocab-card .vocab-streak{background:rgba(249,115,22,.18);color:#fdba74;border-color:rgba(249,115,22,.35)}
   .vocab-card .vocab-streak.zero{background:rgba(148,163,184,.15);color:#94a3b8;border-color:rgba(148,163,184,.25)}
-  .vocab-card .vocab-streak .streak-icon{font-size:16px}
-  .vocab-card .vocab-streak .streak-num{font-size:15px}
-  .vocab-card .vocab-streak .streak-label{font-size:12px;font-weight:500;opacity:.85}
+  .vocab-card .vocab-best{background:rgba(234,179,8,.18);color:#fde68a;border-color:rgba(234,179,8,.4)}
+  .vocab-card .vocab-streak .streak-icon,.vocab-card .vocab-best .streak-icon{font-size:16px}
+  .vocab-card .vocab-streak .streak-num,.vocab-card .vocab-best .streak-num{font-size:15px}
+  .vocab-card .vocab-streak .streak-label,.vocab-card .vocab-best .streak-label{font-size:12px;font-weight:500;opacity:.85}
   .vocab-card .vocab-term-label{color:#94a3b8;font-size:13px;font-weight:600;letter-spacing:.5px;margin-bottom:6px;direction:ltr;text-align:left}
   .vocab-card .vocab-term-row{display:flex;align-items:baseline;gap:14px;margin:6px 0 32px;flex-wrap:wrap;direction:ltr}
   .vocab-card .vocab-term{font-size:38px;font-weight:600;color:#f8fafc;direction:ltr;text-align:left;line-height:1.1}
@@ -2494,8 +2496,15 @@ topicDefs['vocab-en-he'] = {
     const queue = {words: [], idx: 0};
     // Track recent correct positions to avoid streaks
     const lastCorrect = [];
-    // Streak counter — consecutive correct answers
+    // Streak counter — consecutive correct answers (persisted best across sessions)
     const streak = {current: 0, best: 0};
+    try {
+      const stored = parseInt(localStorage.getItem('vocabBestStreak') || '0', 10);
+      if(!isNaN(stored)) streak.best = stored;
+    } catch(e){}
+    function saveBest(){
+      try { localStorage.setItem('vocabBestStreak', String(streak.best)); } catch(e){}
+    }
     function refill(){
       const pool = vocabList.slice();
       for(let i = pool.length - 1; i > 0; i--){
@@ -2583,10 +2592,15 @@ topicDefs['vocab-en-he'] = {
       card.className = 'vocab-card';
       card.innerHTML = `
         <div class="vocab-header">
-          <div class="vocab-streak ${streakClass}" title="ברצף">
+          <div class="vocab-streak ${streakClass}" title="ברצף נוכחי">
             <span class="streak-icon">${streakIcon}</span>
             <span class="streak-num">${streak.current}</span>
-            <span class="streak-label">ברצף${streak.best > streak.current ? ` · שיא ${streak.best}` : ''}</span>
+            <span class="streak-label">ברצף</span>
+          </div>
+          <div class="vocab-best" title="הרצף הגבוה ביותר">
+            <span class="streak-icon">🏆</span>
+            <span class="streak-num">${streak.best}</span>
+            <span class="streak-label">שיא</span>
           </div>
         </div>
         <div class="vocab-term-label">Term</div>
@@ -2625,7 +2639,7 @@ topicDefs['vocab-en-he'] = {
         if(i === correctIdx){
           btn.classList.add('correct');
           streak.current++;
-          if(streak.current > streak.best) streak.best = streak.current;
+          if(streak.current > streak.best){ streak.best = streak.current; saveBest(); }
           fb.className = 'vocab-fb ok';
           let bonusMsg = '';
           if(streak.current === 3) bonusMsg = ' · 3 ברצף ⚡';
