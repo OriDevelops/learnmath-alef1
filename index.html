@@ -203,6 +203,41 @@
   .unseen-open.open-partial{border-color:#f59e0b;background:#fffbeb}
   body.mode-mobile .unseen-open{padding:12px}
   body.mode-mobile .unseen-open .open-input{min-height:70px;font-size:13px}
+  /* ---- Quizlet-style vocab card ---- */
+  .vocab-card{background:linear-gradient(180deg,#0f172a,#1e1b4b);color:#e2e8f0;border-radius:18px;padding:30px 32px;box-shadow:0 20px 50px rgba(15,23,42,.25)}
+  .vocab-card .vocab-progress{display:flex;align-items:center;gap:8px;margin-bottom:24px}
+  .vocab-card .vocab-bars{display:flex;gap:6px;flex:1}
+  .vocab-card .vocab-bar{height:8px;flex:1;background:rgba(148,163,184,.25);border-radius:999px;overflow:hidden;position:relative}
+  .vocab-card .vocab-bar.done{background:#10b981}
+  .vocab-card .vocab-bar.current{background:linear-gradient(90deg,#10b981 50%,rgba(148,163,184,.25) 50%)}
+  .vocab-card .vocab-bar.current .vocab-bullet{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:24px;height:24px;border-radius:50%;background:#10b981;color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px}
+  .vocab-card .vocab-score{background:rgba(148,163,184,.18);color:#cbd5e1;border-radius:999px;padding:4px 12px;font-weight:700;font-size:14px;min-width:42px;text-align:center}
+  .vocab-card .vocab-term-label{color:#94a3b8;font-size:13px;font-weight:600;letter-spacing:.5px;margin-bottom:6px;direction:ltr;text-align:left}
+  .vocab-card .vocab-term{font-size:38px;font-weight:600;color:#f8fafc;margin:6px 0 32px;direction:ltr;text-align:left}
+  .vocab-card .vocab-prompt{color:#cbd5e1;font-size:14px;margin-bottom:14px;font-weight:600}
+  .vocab-card .vocab-options{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .vocab-card .vocab-opt{display:flex;align-items:center;gap:14px;background:rgba(30,27,75,.5);border:1.5px solid rgba(148,163,184,.25);border-radius:12px;padding:18px 20px;cursor:pointer;transition:all .15s;font-family:inherit;text-align:right;color:#e2e8f0}
+  .vocab-card .vocab-opt:hover:not(:disabled){background:rgba(99,102,241,.18);border-color:#818cf8}
+  .vocab-card .vocab-opt:disabled{cursor:default;opacity:.85}
+  .vocab-card .vocab-opt .num{color:#94a3b8;font-weight:700;font-size:15px;min-width:18px;text-align:left}
+  .vocab-card .vocab-opt .he{flex:1;font-size:18px;font-weight:600;color:#f1f5f9;text-align:right}
+  .vocab-card .vocab-opt.correct{background:rgba(16,185,129,.22);border-color:#10b981;color:#bbf7d0}
+  .vocab-card .vocab-opt.correct .he{color:#bbf7d0}
+  .vocab-card .vocab-opt.wrong{background:rgba(239,68,68,.22);border-color:#ef4444;color:#fecaca}
+  .vocab-card .vocab-opt.wrong .he{color:#fecaca}
+  .vocab-card .vocab-foot{display:flex;justify-content:space-between;align-items:center;margin-top:22px;flex-wrap:wrap;gap:10px}
+  .vocab-card .vocab-fb{font-size:14px;color:#cbd5e1;font-weight:600;min-height:18px;flex:1}
+  .vocab-card .vocab-fb.ok{color:#86efac}
+  .vocab-card .vocab-fb.bad{color:#fca5a5}
+  .vocab-card .vocab-actions{display:flex;gap:10px;flex-wrap:wrap}
+  .vocab-card .vocab-actions .btn{font-size:13px;padding:8px 14px}
+  .vocab-card .vocab-dont-know{background:none;border:none;color:#a5b4fc;font-weight:600;cursor:pointer;font-size:14px;font-family:inherit;padding:0}
+  .vocab-card .vocab-dont-know:hover{color:#c7d2fe;text-decoration:underline}
+  body.mode-mobile .vocab-card{padding:22px 18px}
+  body.mode-mobile .vocab-card .vocab-term{font-size:30px;margin-bottom:24px}
+  body.mode-mobile .vocab-card .vocab-options{grid-template-columns:1fr;gap:10px}
+  body.mode-mobile .vocab-card .vocab-opt{padding:14px 16px}
+  body.mode-mobile .vocab-card .vocab-opt .he{font-size:16px}
 </style>
 </head>
 <body>
@@ -2415,42 +2450,170 @@ function checkEnglishAnswer(userAns, correctEn){
   return u === normalizeEn(correctEn);
 }
 
-/* ---- Vocab: English to Hebrew ---- */
+/* ---- Vocab: English to Hebrew (Quizlet-style multiple choice) ---- */
 topicDefs['vocab-en-he'] = {
   title:'אוצר מילים — מאנגלית לעברית',
   lesson:`
     <h3 style="margin-top:0">תרגום מאנגלית לעברית</h3>
     <div class="lesson">
-      <p>בכל שאלה תופיע מילה באנגלית, ועליכם לכתוב את התרגום לעברית.</p>
-      <p>אם יש כמה משמעויות (למשל "race" = "מרוץ" או "גזע"), מספיק לכתוב אחת מהן.</p>
+      <p>בכל שאלה תופיע מילה באנגלית. עליכם לבחור את התרגום הנכון לעברית מתוך 4 אפשרויות.</p>
       <p>המאגר כולל את כל המילים מהעבודה: אותיות R, S, T, U.</p>
+      <p>הסבב כולל 8 שאלות, וניתן צבירת ניקוד עבור כל תשובה נכונה.</p>
     </div>`,
   example:`
     <h3 style="margin-top:0">דוגמה</h3>
     <div class="example">
-      <div class="step">המילה: <strong>race</strong></div>
-      <div class="step">תשובה אפשרית: <strong>מרוץ</strong> או <strong>גזע</strong>. שתיהן נכונות.</div>
-      <div class="step">המילה: <strong>responsibility</strong></div>
-      <div class="step">תשובה: <strong>אחריות</strong></div>
+      <div class="step">המילה באנגלית: <strong>reason</strong></div>
+      <div class="step">אפשרויות: 1) רגיל &nbsp; 2) סיבה &nbsp; 3) מכירה &nbsp; 4) להקים</div>
+      <div class="step">תשובה נכונה: <strong>2 — סיבה</strong></div>
     </div>`,
   makeQuestion:(slot)=>{
-    function gen(){
-      const word = pick(vocabList);
+    const ROUND_SIZE = 8;
+    const POINTS_PER = 50;
+    const round = {idx: 0, score: 0, words: []};
+    function startRound(){
+      // Shuffle vocab list & pick ROUND_SIZE
+      const pool = vocabList.slice();
+      for(let i = pool.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i+1));
+        [pool[i], pool[j]] = [pool[j], pool[i]];
+      }
+      round.idx = 0; round.score = 0; round.words = pool.slice(0, ROUND_SIZE);
+      renderQuestion();
+    }
+    function shortHe(he){
+      // Take first variant (split by / or ,) for cleaner display
+      return he.split(/[\/,]/)[0].trim();
+    }
+    function renderQuestion(){
       slot.innerHTML='';
-      slot.appendChild(makeQuestion({
-        html:`איך אומרים בעברית את המילה <strong style="font-size:24px;color:#7c3aed">${word.en}</strong>?`,
-        answers:[
-          {key:'he', label:'תרגום לעברית', check:v=>checkHebrewAnswer(v, word.he)}
-        ],
-        solution:`
-          <h4>פתרון</h4>
-          <div class="step">המילה <strong>${word.en}</strong> בעברית: <strong>${word.he}</strong>.</div>
-        `,
-        regenerate:gen
-      }));
+      if(round.idx >= round.words.length){
+        renderSummary();
+        return;
+      }
+      const word = round.words[round.idx];
+      const correctHe = shortHe(word.he);
+      // Build distractors from other vocab words (different he)
+      const distractorPool = vocabList.filter(w => w.en !== word.en && shortHe(w.he) !== correctHe);
+      // Shuffle and take 3 unique by Hebrew display
+      const seen = new Set([correctHe]);
+      const distractors = [];
+      const dShuffled = distractorPool.slice();
+      for(let i = dShuffled.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i+1));
+        [dShuffled[i], dShuffled[j]] = [dShuffled[j], dShuffled[i]];
+      }
+      for(const w of dShuffled){
+        const h = shortHe(w.he);
+        if(!seen.has(h)){ seen.add(h); distractors.push(h); }
+        if(distractors.length === 3) break;
+      }
+      const options = [correctHe, ...distractors];
+      // Shuffle options
+      for(let i = options.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i+1));
+        [options[i], options[j]] = [options[j], options[i]];
+      }
+      const correctIdx = options.indexOf(correctHe);
+
+      // Build progress bars
+      const totalBars = round.words.length;
+      const barsHtml = Array.from({length: totalBars}).map((_, i)=>{
+        if(i < round.idx) return `<div class="vocab-bar done"></div>`;
+        if(i === round.idx) return `<div class="vocab-bar current"><div class="vocab-bullet">${round.idx+1}</div></div>`;
+        return `<div class="vocab-bar"></div>`;
+      }).join('');
+
+      const optsHtml = options.map((he, i)=>`
+        <button class="vocab-opt" data-idx="${i}">
+          <span class="num">${i+1}</span>
+          <span class="he">${he}</span>
+        </button>
+      `).join('');
+
+      const card = document.createElement('div');
+      card.className = 'vocab-card';
+      card.innerHTML = `
+        <div class="vocab-progress">
+          <div class="vocab-bars">${barsHtml}</div>
+          <div class="vocab-score">${round.score}</div>
+        </div>
+        <div class="vocab-term-label">Term</div>
+        <div class="vocab-term">${word.en}</div>
+        <div class="vocab-prompt">בחרו את התרגום לעברית</div>
+        <div class="vocab-options">${optsHtml}</div>
+        <div class="vocab-foot">
+          <div class="vocab-fb"></div>
+          <div class="vocab-actions">
+            <button class="btn btn-pink restart">🔄 סבב חדש</button>
+            <button class="vocab-dont-know">לא יודע/ת?</button>
+          </div>
+        </div>
+      `;
+      slot.appendChild(card);
+
+      const fb = card.querySelector('.vocab-fb');
+      const optBtns = card.querySelectorAll('.vocab-opt');
+      let answered = false;
+      function lockAndAdvance(showCorrect){
+        answered = true;
+        optBtns.forEach((b, i)=>{
+          b.disabled = true;
+          if(showCorrect && i === correctIdx) b.classList.add('correct');
+        });
+        setTimeout(()=>{ round.idx++; renderQuestion(); }, 1200);
+      }
+      optBtns.forEach((btn, i)=>{
+        btn.addEventListener('click', ()=>{
+          if(answered) return;
+          if(i === correctIdx){
+            btn.classList.add('correct');
+            round.score += POINTS_PER;
+            fb.className = 'vocab-fb ok';
+            fb.textContent = `✓ נכון! +${POINTS_PER} נקודות`;
+          } else {
+            btn.classList.add('wrong');
+            fb.className = 'vocab-fb bad';
+            fb.textContent = `✗ לא נכון. התרגום הנכון: ${correctHe}`;
+          }
+          lockAndAdvance(true);
+        });
+      });
+      card.querySelector('.vocab-dont-know').addEventListener('click', ()=>{
+        if(answered) return;
+        fb.className = 'vocab-fb bad';
+        fb.textContent = `התרגום הנכון: ${correctHe}`;
+        lockAndAdvance(true);
+      });
+      card.querySelector('.restart').addEventListener('click', startRound);
       refmath();
     }
-    gen();
+    function renderSummary(){
+      const max = round.words.length * POINTS_PER;
+      const pct = Math.round((round.score / max) * 100);
+      let msg = '🎉 כל הכבוד!';
+      if(pct < 60) msg = '💪 נסה שוב — אתה משתפר!';
+      else if(pct < 90) msg = '👍 יפה מאוד!';
+      const card = document.createElement('div');
+      card.className = 'vocab-card';
+      card.innerHTML = `
+        <div class="vocab-term-label">Round Complete</div>
+        <div class="vocab-term" style="font-size:30px">${msg}</div>
+        <div class="vocab-prompt">הציון שלך</div>
+        <div style="font-size:48px;font-weight:800;color:#86efac;margin:8px 0 4px;direction:ltr;text-align:left">${round.score} / ${max}</div>
+        <div style="color:#cbd5e1;font-size:16px;margin-bottom:24px;direction:ltr;text-align:left">${pct}% תשובות נכונות</div>
+        <div class="vocab-foot">
+          <div class="vocab-fb"></div>
+          <div class="vocab-actions">
+            <button class="btn btn-success restart">🔄 סבב חדש</button>
+          </div>
+        </div>
+      `;
+      slot.innerHTML = '';
+      slot.appendChild(card);
+      card.querySelector('.restart').addEventListener('click', startRound);
+    }
+    startRound();
   }
 };
 
