@@ -2457,33 +2457,31 @@ topicDefs['vocab-en-he'] = {
     <h3 style="margin-top:0">תרגום מאנגלית לעברית</h3>
     <div class="lesson">
       <p>בכל שאלה תופיע מילה באנגלית. עליכם לבחור את התרגום הנכון לעברית מתוך 4 אפשרויות.</p>
+      <p>אם למילה יש כמה משמעויות (כמו "race" = מרוץ / גזע), כל המשמעויות יופיעו באותה אפשרות.</p>
       <p>המאגר כולל את כל המילים מהעבודה: אותיות R, S, T, U.</p>
-      <p>הסבב כולל 8 שאלות, וניתן צבירת ניקוד עבור כל תשובה נכונה.</p>
     </div>`,
   example:`
     <h3 style="margin-top:0">דוגמה</h3>
     <div class="example">
-      <div class="step">המילה באנגלית: <strong>reason</strong></div>
-      <div class="step">אפשרויות: 1) רגיל &nbsp; 2) סיבה &nbsp; 3) מכירה &nbsp; 4) להקים</div>
-      <div class="step">תשובה נכונה: <strong>2 — סיבה</strong></div>
+      <div class="step">המילה באנגלית: <strong>race</strong></div>
+      <div class="step">אפשרויות: 1) רגיל &nbsp; 2) מרוץ / גזע &nbsp; 3) מכירה &nbsp; 4) להקים</div>
+      <div class="step">תשובה נכונה: <strong>2 — מרוץ / גזע</strong> (גם וגם)</div>
     </div>`,
   makeQuestion:(slot)=>{
     const ROUND_SIZE = 8;
-    const POINTS_PER = 50;
-    const round = {idx: 0, score: 0, words: []};
+    const round = {idx: 0, words: []};
     function startRound(){
-      // Shuffle vocab list & pick ROUND_SIZE
       const pool = vocabList.slice();
       for(let i = pool.length - 1; i > 0; i--){
         const j = Math.floor(Math.random() * (i+1));
         [pool[i], pool[j]] = [pool[j], pool[i]];
       }
-      round.idx = 0; round.score = 0; round.words = pool.slice(0, ROUND_SIZE);
+      round.idx = 0; round.words = pool.slice(0, ROUND_SIZE);
       renderQuestion();
     }
-    function shortHe(he){
-      // Take first variant (split by / or ,) for cleaner display
-      return he.split(/[\/,]/)[0].trim();
+    // Show all meanings, separated by " / "
+    function fullHe(he){
+      return he.split(/[\/,]/).map(s=>s.trim()).filter(Boolean).join(' / ');
     }
     function renderQuestion(){
       slot.innerHTML='';
@@ -2492,10 +2490,8 @@ topicDefs['vocab-en-he'] = {
         return;
       }
       const word = round.words[round.idx];
-      const correctHe = shortHe(word.he);
-      // Build distractors from other vocab words (different he)
-      const distractorPool = vocabList.filter(w => w.en !== word.en && shortHe(w.he) !== correctHe);
-      // Shuffle and take 3 unique by Hebrew display
+      const correctHe = fullHe(word.he);
+      const distractorPool = vocabList.filter(w => w.en !== word.en && fullHe(w.he) !== correctHe);
       const seen = new Set([correctHe]);
       const distractors = [];
       const dShuffled = distractorPool.slice();
@@ -2504,19 +2500,17 @@ topicDefs['vocab-en-he'] = {
         [dShuffled[i], dShuffled[j]] = [dShuffled[j], dShuffled[i]];
       }
       for(const w of dShuffled){
-        const h = shortHe(w.he);
+        const h = fullHe(w.he);
         if(!seen.has(h)){ seen.add(h); distractors.push(h); }
         if(distractors.length === 3) break;
       }
       const options = [correctHe, ...distractors];
-      // Shuffle options
       for(let i = options.length - 1; i > 0; i--){
         const j = Math.floor(Math.random() * (i+1));
         [options[i], options[j]] = [options[j], options[i]];
       }
       const correctIdx = options.indexOf(correctHe);
 
-      // Build progress bars
       const totalBars = round.words.length;
       const barsHtml = Array.from({length: totalBars}).map((_, i)=>{
         if(i < round.idx) return `<div class="vocab-bar done"></div>`;
@@ -2536,7 +2530,6 @@ topicDefs['vocab-en-he'] = {
       card.innerHTML = `
         <div class="vocab-progress">
           <div class="vocab-bars">${barsHtml}</div>
-          <div class="vocab-score">${round.score}</div>
         </div>
         <div class="vocab-term-label">Term</div>
         <div class="vocab-term">${word.en}</div>
@@ -2568,9 +2561,8 @@ topicDefs['vocab-en-he'] = {
           if(answered) return;
           if(i === correctIdx){
             btn.classList.add('correct');
-            round.score += POINTS_PER;
             fb.className = 'vocab-fb ok';
-            fb.textContent = `✓ נכון! +${POINTS_PER} נקודות`;
+            fb.textContent = `✓ נכון!`;
           } else {
             btn.classList.add('wrong');
             fb.className = 'vocab-fb bad';
@@ -2589,19 +2581,12 @@ topicDefs['vocab-en-he'] = {
       refmath();
     }
     function renderSummary(){
-      const max = round.words.length * POINTS_PER;
-      const pct = Math.round((round.score / max) * 100);
-      let msg = '🎉 כל הכבוד!';
-      if(pct < 60) msg = '💪 נסה שוב — אתה משתפר!';
-      else if(pct < 90) msg = '👍 יפה מאוד!';
       const card = document.createElement('div');
       card.className = 'vocab-card';
       card.innerHTML = `
         <div class="vocab-term-label">Round Complete</div>
-        <div class="vocab-term" style="font-size:30px">${msg}</div>
-        <div class="vocab-prompt">הציון שלך</div>
-        <div style="font-size:48px;font-weight:800;color:#86efac;margin:8px 0 4px;direction:ltr;text-align:left">${round.score} / ${max}</div>
-        <div style="color:#cbd5e1;font-size:16px;margin-bottom:24px;direction:ltr;text-align:left">${pct}% תשובות נכונות</div>
+        <div class="vocab-term" style="font-size:30px">🎉 סיימת את הסבב!</div>
+        <div class="vocab-prompt" style="margin-bottom:24px">לחץ/י "סבב חדש" כדי להמשיך לתרגל מילים נוספות.</div>
         <div class="vocab-foot">
           <div class="vocab-fb"></div>
           <div class="vocab-actions">
