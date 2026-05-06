@@ -2468,15 +2468,24 @@ topicDefs['vocab-en-he'] = {
       <div class="step">תשובה נכונה: <strong>2 — מרוץ / גזע</strong> (גם וגם)</div>
     </div>`,
   makeQuestion:(slot)=>{
-    const ROUND_SIZE = 8;
-    const round = {idx: 0, words: []};
-    function startRound(){
+    const queue = {words: [], idx: 0};
+    function refill(){
       const pool = vocabList.slice();
       for(let i = pool.length - 1; i > 0; i--){
         const j = Math.floor(Math.random() * (i+1));
         [pool[i], pool[j]] = [pool[j], pool[i]];
       }
-      round.idx = 0; round.words = pool.slice(0, ROUND_SIZE);
+      // Avoid an immediate repeat of the last word when refilling
+      const lastEn = queue.words.length ? queue.words[queue.words.length-1].en : null;
+      if(lastEn && pool.length > 1 && pool[0].en === lastEn){
+        const swap = Math.floor(Math.random() * (pool.length - 1)) + 1;
+        [pool[0], pool[swap]] = [pool[swap], pool[0]];
+      }
+      queue.words = pool;
+      queue.idx = 0;
+    }
+    function startRound(){
+      refill();
       renderQuestion();
     }
     // Show all meanings, separated by " / "
@@ -2485,11 +2494,11 @@ topicDefs['vocab-en-he'] = {
     }
     function renderQuestion(){
       slot.innerHTML='';
-      if(round.idx >= round.words.length){
-        renderSummary();
-        return;
+      if(queue.idx >= queue.words.length){
+        // Loop forever — just reshuffle and continue
+        refill();
       }
-      const word = round.words[round.idx];
+      const word = queue.words[queue.idx];
       const correctHe = fullHe(word.he);
       const distractorPool = vocabList.filter(w => w.en !== word.en && fullHe(w.he) !== correctHe);
       const seen = new Set([correctHe]);
@@ -2528,7 +2537,6 @@ topicDefs['vocab-en-he'] = {
         <div class="vocab-foot">
           <div class="vocab-fb"></div>
           <div class="vocab-actions">
-            <button class="btn btn-pink restart">🔄 סבב חדש</button>
             <button class="vocab-dont-know">לא יודע/ת?</button>
           </div>
         </div>
@@ -2544,7 +2552,7 @@ topicDefs['vocab-en-he'] = {
           b.disabled = true;
           if(showCorrect && i === correctIdx) b.classList.add('correct');
         });
-        setTimeout(()=>{ round.idx++; renderQuestion(); }, 1200);
+        setTimeout(()=>{ queue.idx++; renderQuestion(); }, 1200);
       }
       optBtns.forEach((btn, i)=>{
         btn.addEventListener('click', ()=>{
@@ -2567,26 +2575,7 @@ topicDefs['vocab-en-he'] = {
         fb.textContent = `התרגום הנכון: ${correctHe}`;
         lockAndAdvance(true);
       });
-      card.querySelector('.restart').addEventListener('click', startRound);
       refmath();
-    }
-    function renderSummary(){
-      const card = document.createElement('div');
-      card.className = 'vocab-card';
-      card.innerHTML = `
-        <div class="vocab-term-label">Round Complete</div>
-        <div class="vocab-term" style="font-size:30px">🎉 סיימת את הסבב!</div>
-        <div class="vocab-prompt" style="margin-bottom:24px">לחץ/י "סבב חדש" כדי להמשיך לתרגל מילים נוספות.</div>
-        <div class="vocab-foot">
-          <div class="vocab-fb"></div>
-          <div class="vocab-actions">
-            <button class="btn btn-success restart">🔄 סבב חדש</button>
-          </div>
-        </div>
-      `;
-      slot.innerHTML = '';
-      slot.appendChild(card);
-      card.querySelector('.restart').addEventListener('click', startRound);
     }
     startRound();
   }
