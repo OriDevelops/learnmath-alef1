@@ -2529,7 +2529,7 @@ topicDefs['vocab-en-he'] = {
       card.innerHTML = `
         <div class="vocab-term-label">Term</div>
         <div class="vocab-term">${word.en}</div>
-        <div class="vocab-prompt">בחרו את התרגום לעברית</div>
+        <div class="vocab-prompt">בחרו את התרגום לעברית <span style="color:#94a3b8;font-weight:500">(אפשר גם להקליד 1-4)</span></div>
         <div class="vocab-options">${optsHtml}</div>
         <div class="vocab-foot">
           <div class="vocab-fb"></div>
@@ -2549,23 +2549,41 @@ topicDefs['vocab-en-he'] = {
           b.disabled = true;
           if(showCorrect && i === correctIdx) b.classList.add('correct');
         });
+        // Remove keyboard handler before moving on
+        document.removeEventListener('keydown', keyHandler);
         setTimeout(()=>{ queue.idx++; renderQuestion(); }, 1200);
       }
+      function pickAnswer(i){
+        if(answered) return;
+        const btn = optBtns[i];
+        if(!btn) return;
+        if(i === correctIdx){
+          btn.classList.add('correct');
+          fb.className = 'vocab-fb ok';
+          fb.textContent = `✓ נכון!`;
+        } else {
+          btn.classList.add('wrong');
+          fb.className = 'vocab-fb bad';
+          fb.textContent = `✗ לא נכון. התרגום הנכון: ${correctHe}`;
+        }
+        lockAndAdvance(true);
+      }
       optBtns.forEach((btn, i)=>{
-        btn.addEventListener('click', ()=>{
-          if(answered) return;
-          if(i === correctIdx){
-            btn.classList.add('correct');
-            fb.className = 'vocab-fb ok';
-            fb.textContent = `✓ נכון!`;
-          } else {
-            btn.classList.add('wrong');
-            fb.className = 'vocab-fb bad';
-            fb.textContent = `✗ לא נכון. התרגום הנכון: ${correctHe}`;
-          }
-          lockAndAdvance(true);
-        });
+        btn.addEventListener('click', ()=> pickAnswer(i));
       });
+      // Keyboard: 1–4 picks an answer
+      function keyHandler(e){
+        if(answered) return;
+        // Don't trigger when typing inside text inputs/textareas
+        const t = e.target;
+        if(t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+        const n = parseInt(e.key, 10);
+        if(n >= 1 && n <= optBtns.length){
+          e.preventDefault();
+          pickAnswer(n - 1);
+        }
+      }
+      document.addEventListener('keydown', keyHandler);
       card.querySelector('.vocab-dont-know').addEventListener('click', ()=>{
         if(answered) return;
         fb.className = 'vocab-fb bad';
