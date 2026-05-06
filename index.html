@@ -2511,13 +2511,6 @@ topicDefs['vocab-en-he'] = {
       }
       const correctIdx = options.indexOf(correctHe);
 
-      const totalBars = round.words.length;
-      const barsHtml = Array.from({length: totalBars}).map((_, i)=>{
-        if(i < round.idx) return `<div class="vocab-bar done"></div>`;
-        if(i === round.idx) return `<div class="vocab-bar current"><div class="vocab-bullet">${round.idx+1}</div></div>`;
-        return `<div class="vocab-bar"></div>`;
-      }).join('');
-
       const optsHtml = options.map((he, i)=>`
         <button class="vocab-opt" data-idx="${i}">
           <span class="num">${i+1}</span>
@@ -2528,9 +2521,6 @@ topicDefs['vocab-en-he'] = {
       const card = document.createElement('div');
       card.className = 'vocab-card';
       card.innerHTML = `
-        <div class="vocab-progress">
-          <div class="vocab-bars">${barsHtml}</div>
-        </div>
         <div class="vocab-term-label">Term</div>
         <div class="vocab-term">${word.en}</div>
         <div class="vocab-prompt">בחרו את התרגום לעברית</div>
