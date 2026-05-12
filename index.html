@@ -251,6 +251,50 @@
   body.mode-mobile .vocab-card .vocab-options{grid-template-columns:1fr;gap:10px}
   body.mode-mobile .vocab-card .vocab-opt{padding:14px 16px}
   body.mode-mobile .vocab-card .vocab-opt .he{font-size:16px}
+  /* ---- Hebrew language exercise styles ---- */
+  .he-sentence{background:#f8fafc;padding:18px 22px;border-radius:12px;border-right:4px solid #6366f1;margin:14px 0;font-size:20px;line-height:1.75;color:#1e293b;font-weight:500}
+  .he-sentence .target{background:#fef3c7;color:#a16207;padding:2px 10px;border-radius:6px;font-weight:700;border:1.5px solid #fbbf24}
+  .he-sentence .target.noun{background:#dcfce7;color:#15803d;border-color:#86efac}
+  .he-sentence .target.verb{background:#ede9fe;color:#6d28d9;border-color:#c4b5fd}
+  .he-sentence .target.adj{background:#fce7f3;color:#be185d;border-color:#f9a8d4}
+  .he-sentence .target.adv{background:#cffafe;color:#0e7490;border-color:#67e8f9}
+  .he-sentence .target.prep{background:#fed7aa;color:#9a3412;border-color:#fb923c}
+  .he-sentence .target.pron{background:#e0e7ff;color:#3730a3;border-color:#a5b4fc}
+  .he-sentence .target.num{background:#fef9c3;color:#a16207;border-color:#facc15}
+  .he-options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+  body.mode-mobile .he-options{grid-template-columns:1fr}
+  .he-opt{display:flex;align-items:center;gap:12px;padding:14px 18px;border-radius:10px;border:1.5px solid #e2e8f0;background:white;cursor:pointer;transition:all .15s;font-family:inherit;font-size:16px;color:#1e293b;font-weight:600;text-align:right}
+  .he-opt:hover:not(:disabled){background:#f8fafc;border-color:#a78bfa}
+  .he-opt:disabled{cursor:default;opacity:.9}
+  .he-opt .num{color:#94a3b8;font-weight:700;font-size:14px;min-width:18px;text-align:left}
+  .he-opt.correct{background:#dcfce7;border-color:#10b981;color:#15803d}
+  .he-opt.wrong{background:#fee2e2;border-color:#ef4444;color:#b91c1c}
+  .he-fb{margin-top:14px;font-size:15px;font-weight:600;min-height:22px;color:#64748b}
+  .he-fb.ok{color:#15803d}
+  .he-fb.bad{color:#b91c1c}
+  .he-input{width:100%;padding:14px 18px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:inherit;font-size:18px;color:#1e293b;text-align:right;box-sizing:border-box;background:#fafbff;font-weight:500}
+  .he-input:focus{outline:none;border-color:#a78bfa;background:white}
+  .he-input.correct{border-color:#10b981;background:#f0fdf4}
+  .he-input.wrong{border-color:#ef4444;background:#fef2f2}
+  .he-pair{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:12px 0;font-size:18px}
+  .he-pair .label{font-weight:700;color:#475569;min-width:90px}
+  .he-pair input{flex:1;min-width:180px}
+  .he-table{border-collapse:collapse;margin:14px 0;width:100%;font-size:15px}
+  .he-table th,.he-table td{border:1px solid #e2e8f0;padding:8px 12px;text-align:right}
+  .he-table th{background:#f1f5f9;font-weight:700;color:#334155}
+  .he-passage{background:#fffbeb;padding:18px 22px;border-radius:12px;border-right:4px solid #f59e0b;margin:14px 0;line-height:1.85;font-size:16px;color:#1e293b;white-space:pre-line}
+  .he-passage h4{margin:0 0 10px;font-size:18px;color:#92400e}
+  .he-textarea{width:100%;min-height:140px;padding:14px 18px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:inherit;font-size:16px;line-height:1.7;color:#1e293b;text-align:right;box-sizing:border-box;background:#fafbff;resize:vertical;font-weight:500}
+  .he-textarea:focus{outline:none;border-color:#a78bfa;background:white}
+  .he-points{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+  .he-point{display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:8px;font-size:14px;background:#f1f5f9;color:#475569;font-weight:500}
+  .he-point.hit{background:#dcfce7;color:#15803d}
+  .he-point.miss{background:#fef3c7;color:#a16207}
+  .he-tag{display:inline-block;padding:3px 12px;border-radius:999px;font-size:13px;font-weight:700;margin-left:6px}
+  .he-tag.he-tag-z{background:#dbeafe;color:#1d4ed8}
+  .he-tag.he-tag-n{background:#fce7f3;color:#be185d}
+  .he-tag.he-tag-y{background:#dcfce7;color:#15803d}
+  .he-tag.he-tag-r{background:#fed7aa;color:#c2410c}
 </style>
 </head>
 <body>
@@ -284,6 +328,10 @@
       <button class="device-btn" data-subject="english">
         <span class="ic">🌎</span>
         אנגלית
+      </button>
+      <button class="device-btn" data-subject="hebrew">
+        <span class="ic">📖</span>
+        שפה (עברית)
       </button>
     </div>
   </div>
@@ -329,18 +377,39 @@ const englishTopics = [
   {id:'fs-short',    emoji:'⚡', title:'Future Simple — קיצורים', desc:"I'll, You'll, won't ועוד"},
   {id:'unseen',      emoji:'📖', title:'אנסינים — Unseens', desc:'הבנת הנקרא ברמות C, D, E'},
 ];
+const hebrewTopics = [
+  {id:'he-text',     emoji:'📚', title:'הבנת הנקרא', desc:'קריאת טקסטים ושאלות הבנה'},
+  {id:'he-summary',  emoji:'✍️', title:'כתיבת סיכום', desc:'תרגול סיכום של פסקה'},
+  {id:'he-parts',    emoji:'🔤', title:'חלקי הדיבר', desc:'שם עצם, פועל, שם תואר ועוד'},
+  {id:'he-number',   emoji:'🔢', title:'שם המספר', desc:'זכר ונקבה, סמיכות במספרים'},
+  {id:'he-smichut',  emoji:'🔗', title:'צירוף סמיכות', desc:'נסמך וסומך, מיודע/לא מיודע'},
+  {id:'he-toar',     emoji:'🏷️', title:'שם ותוארו', desc:'התאמה בין שם עצם לשם תואר'},
+];
 function currentTopics(){
   const subject = (typeof window !== 'undefined' && window._learnSubject) || 'math';
-  return subject === 'english' ? englishTopics : mathTopics;
+  if(subject === 'english') return englishTopics;
+  if(subject === 'hebrew')  return hebrewTopics;
+  return mathTopics;
 }
 
 /* ====== Home ====== */
+const SUBJECT_ORDER = ['math','english','hebrew'];
+const SUBJECT_INFO = {
+  math:    {label:'📐 מתמטיקה', hello:'בחרו נושא במתמטיקה'},
+  english: {label:'🌎 אנגלית',   hello:'בחרו נושא באנגלית'},
+  hebrew:  {label:'📖 שפה',      hello:'בחרו נושא בשפה (עברית)'},
+};
+function nextSubject(s){
+  const i = SUBJECT_ORDER.indexOf(s);
+  return SUBJECT_ORDER[(i+1) % SUBJECT_ORDER.length];
+}
 function renderHome(){
   const cur = document.body.classList.contains('mode-mobile') ? 'mobile' : 'desktop';
   const otherDeviceLabel = cur==='mobile' ? '💻 עבור למחשב' : '📱 עבור לטלפון';
   const subject = window._learnSubject || 'math';
-  const otherSubjectLabel = subject==='math' ? '🌎 עבור לאנגלית' : '📐 עבור למתמטיקה';
-  const helloMsg = subject==='english' ? 'בחרו נושא באנגלית' : 'בחרו נושא במתמטיקה';
+  const next = nextSubject(subject);
+  const otherSubjectLabel = `${SUBJECT_INFO[next].label} ↻`;
+  const helloMsg = SUBJECT_INFO[subject].hello;
   const topics = currentTopics();
   root().innerHTML = `
     <div class="hello">
@@ -367,7 +436,7 @@ function renderHome(){
   };
   document.getElementById('switchSubjectBtn').onclick = ()=>{
     const subj = window._learnSubject || 'math';
-    applySubject(subj === 'math' ? 'english' : 'math');
+    applySubject(nextSubject(subj));
     renderHome();
   };
   refmath();
@@ -2943,6 +3012,685 @@ topicDefs['fs-short'] = {
   }
 };
 
+/* ===== Hebrew language exercises ===== */
+
+/* ---- Generic Hebrew multiple-choice card helper ---- */
+function makeHeChoiceCard(slot, opts){
+  // opts: { sentence (HTML), prompt, options:[{label, correct, explain}], onNext }
+  slot.innerHTML='';
+  const wrap = document.createElement('div');
+  wrap.className = 'qbox';
+  const optsHtml = opts.options.map((o,i)=>`
+    <button class="he-opt" data-i="${i}">
+      <span class="num">${i+1}.</span>
+      <span>${o.label}</span>
+    </button>
+  `).join('');
+  wrap.innerHTML = `
+    ${opts.sentence ? `<div class="he-sentence">${opts.sentence}</div>` : ''}
+    ${opts.prompt ? `<div style="margin:8px 0 6px;color:#475569;font-weight:600">${opts.prompt}</div>` : ''}
+    <div class="he-options">${optsHtml}</div>
+    <div class="he-fb"></div>
+    <div class="actions" style="margin-top:14px">
+      <button class="btn btn-pink nx">🔄 שאלה אחרת</button>
+    </div>
+  `;
+  slot.appendChild(wrap);
+  const fb = wrap.querySelector('.he-fb');
+  const btns = wrap.querySelectorAll('.he-opt');
+  let answered = false;
+  const correctIdx = opts.options.findIndex(o=>o.correct);
+  function pick(i){
+    if(answered) return;
+    answered = true;
+    const o = opts.options[i];
+    btns.forEach((b, j)=>{
+      b.disabled = true;
+      if(j === correctIdx) b.classList.add('correct');
+      if(j === i && !o.correct) b.classList.add('wrong');
+    });
+    if(o.correct){
+      fb.className = 'he-fb ok';
+      fb.innerHTML = `✓ נכון! ${o.explain || opts.options[correctIdx].explain || ''}`;
+    } else {
+      fb.className = 'he-fb bad';
+      fb.innerHTML = `✗ לא נכון. <strong>${opts.options[correctIdx].label}</strong> — ${opts.options[correctIdx].explain || ''}`;
+    }
+  }
+  btns.forEach((b,i)=> b.addEventListener('click', ()=> pick(i)));
+  // Keyboard 1-4
+  function keyHandler(e){
+    if(answered) return;
+    const t = e.target;
+    if(t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+    const n = parseInt(e.key, 10);
+    if(n >= 1 && n <= btns.length){ e.preventDefault(); pick(n - 1); }
+  }
+  document.addEventListener('keydown', keyHandler);
+  wrap.querySelector('.nx').onclick = ()=>{
+    document.removeEventListener('keydown', keyHandler);
+    if(opts.onNext) opts.onNext();
+  };
+}
+
+/* ---- Topic: חלקי הדיבר (Parts of Speech) ---- */
+const partsOfSpeechBank = [
+  {sent:'הילדה <T>קוראת</T> ספר מעניין.', word:'קוראת', pos:'verb', explain:'"קוראת" היא פעולה בהווה — פועל.'},
+  {sent:'<T>הספר</T> נמצא על השולחן.', word:'הספר', pos:'noun', explain:'"הספר" מציין חפץ — שם עצם.'},
+  {sent:'הילד <T>הקטן</T> שיחק בחצר.', word:'הקטן', pos:'adj', explain:'"הקטן" מתאר את הילד — שם תואר.'},
+  {sent:'הוא הלך <T>מהר</T> לבית הספר.', word:'מהר', pos:'adv', explain:'"מהר" מתאר את אופן ההליכה — תואר הפועל.'},
+  {sent:'הספר נמצא <T>על</T> השולחן.', word:'על', pos:'prep', explain:'"על" מקשרת בין הספר לשולחן — מילת יחס.'},
+  {sent:'<T>אני</T> אוהב לקרוא.', word:'אני', pos:'pron', explain:'"אני" מחליפה את שם הדובר — כינוי גוף.'},
+  {sent:'בכיתה יש <T>שלושים</T> תלמידים.', word:'שלושים', pos:'num', explain:'"שלושים" מציין כמות — שם מספר.'},
+  {sent:'התלמידים <T>למדו</T> בכיתה.', word:'למדו', pos:'verb', explain:'"למדו" היא פעולה בעבר — פועל.'},
+  {sent:'<T>הכלב</T> רץ במהירות.', word:'הכלב', pos:'noun', explain:'"הכלב" הוא בעל חיים — שם עצם.'},
+  {sent:'היא לבשה שמלה <T>אדומה</T>.', word:'אדומה', pos:'adj', explain:'"אדומה" מתארת את השמלה — שם תואר.'},
+  {sent:'הוא ענה <T>בשקט</T> על השאלה.', word:'בשקט', pos:'adv', explain:'"בשקט" מתאר איך הוא ענה — תואר הפועל.'},
+  {sent:'הספר נמצא <T>מתחת</T> לשולחן.', word:'מתחת', pos:'prep', explain:'"מתחת" מציינת מיקום ביחס לשולחן — מילת יחס.'},
+  {sent:'<T>הם</T> הלכו הביתה.', word:'הם', pos:'pron', explain:'"הם" מחליפה שמות של אנשים — כינוי גוף.'},
+  {sent:'קניתי <T>חמישה</T> תפוחים.', word:'חמישה', pos:'num', explain:'"חמישה" מציין כמות — שם מספר.'},
+  {sent:'הילדים <T>שיחקו</T> בפארק כל היום.', word:'שיחקו', pos:'verb', explain:'"שיחקו" היא פעולה בעבר — פועל.'},
+  {sent:'<T>השמש</T> זרחה בבוקר.', word:'השמש', pos:'noun', explain:'"השמש" היא דבר טבע — שם עצם.'},
+  {sent:'ראיתי בית <T>גדול</T> ויפה.', word:'גדול', pos:'adj', explain:'"גדול" מתאר את הבית — שם תואר.'},
+  {sent:'הוא דיבר <T>בחוכמה</T> רבה.', word:'בחוכמה', pos:'adv', explain:'"בחוכמה" מתאר איך הוא דיבר — תואר הפועל.'},
+  {sent:'הספר <T>של</T> דנה אבד.', word:'של', pos:'prep', explain:'"של" מציינת שייכות — מילת יחס.'},
+  {sent:'<T>אתם</T> מוזמנים למסיבה.', word:'אתם', pos:'pron', explain:'"אתם" מחליפה את שמות הנמענים — כינוי גוף.'},
+];
+const posLabels = {
+  noun: 'שם עצם',
+  verb: 'פועל',
+  adj:  'שם תואר',
+  adv:  'תואר הפועל',
+  prep: 'מילת יחס',
+  pron: 'כינוי גוף',
+  num:  'שם מספר',
+};
+topicDefs['he-parts'] = {
+  title:'חלקי הדיבר',
+  lesson:`
+    <h3 style="margin-top:0">חלקי הדיבר בעברית</h3>
+    <div class="lesson">
+      <p>"חלקי הדיבר" הם הקבוצות שאליהן משייכים את המילים בעברית. הקבוצות העיקריות:</p>
+      <ul>
+        <li><strong>שם עצם</strong> — שם של אדם, חפץ, מקום או רעיון. דוגמאות: ספר, ילדה, חוכמה, בית הספר.</li>
+        <li><strong>פועל</strong> — מילה שמציינת פעולה או מצב. דוגמאות: רץ, אוהבת, ישנו, יישב.</li>
+        <li><strong>שם תואר</strong> — מילה שמתארת שם עצם. דוגמאות: גדול, יפה, אדומה, מעניין.</li>
+        <li><strong>תואר הפועל</strong> — מילה שמתארת את הפועל (איך/מתי/איפה). דוגמאות: מהר, בשקט, מחר, פה.</li>
+        <li><strong>מילת יחס</strong> — מילה שמקשרת בין מילים. דוגמאות: של, על, אל, מתחת, ל-, ב-.</li>
+        <li><strong>כינוי גוף</strong> — מחליף שם עצם. דוגמאות: אני, אתה, היא, אנחנו, הם.</li>
+        <li><strong>שם מספר</strong> — מציין כמות או סדר. דוגמאות: אחד, חמש, שלושים, ראשון.</li>
+      </ul>
+      <p><strong>איך לזהות:</strong> שאלו את עצמכם — "מה זה?" (שם עצם), "מה הוא עושה?" (פועל), "איך הוא?" (תואר/תואר הפועל).</p>
+    </div>`,
+  example:`
+    <h3 style="margin-top:0">דוגמה</h3>
+    <div class="example">
+      <div class="step">המשפט: <em>"הילד הקטן רץ מהר בפארק."</em></div>
+      <div class="step"><strong>הילד</strong> — שם עצם (מי?). <strong>הקטן</strong> — שם תואר (איך הוא?). <strong>רץ</strong> — פועל (מה הוא עושה?). <strong>מהר</strong> — תואר הפועל (איך הוא רץ?). <strong>ב-</strong> — מילת יחס. <strong>פארק</strong> — שם עצם.</div>
+    </div>`,
+  makeQuestion:(slot)=>{
+    function gen(){
+      const q = pick(partsOfSpeechBank);
+      const sentence = q.sent.replace(/<T>(.+?)<\/T>/, (_,w)=> `<span class="target ${q.pos}">${w}</span>`);
+      const allPos = ['noun','verb','adj','adv','prep','pron','num'];
+      const distractors = allPos.filter(p => p !== q.pos);
+      // shuffle distractors
+      for(let i = distractors.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i+1));
+        [distractors[i], distractors[j]] = [distractors[j], distractors[i]];
+      }
+      const chosen = [q.pos, ...distractors.slice(0, 3)];
+      // shuffle final options
+      for(let i = chosen.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i+1));
+        [chosen[i], chosen[j]] = [chosen[j], chosen[i]];
+      }
+      const options = chosen.map(p => ({label: posLabels[p], correct: p === q.pos, explain: p === q.pos ? q.explain : ''}));
+      makeHeChoiceCard(slot, {
+        sentence,
+        prompt: `איזה חלק דיבר הוא המילה <strong>"${q.word}"</strong>?`,
+        options,
+        onNext: gen,
+      });
+    }
+    gen();
+  }
+};
+
+/* ---- Topic: שם המספר (Numerals) ---- */
+const numeralBank = [
+  // {n, gender, items, correct, expl}
+  {sent:'בכיתה יש ___ ילדים.', n:5, gender:'m', items:'ילדים', form:'numform', correct:'חמישה', distractors:['חמש','חמשה','חמישית'], expl:'"ילדים" זכר → "חמישה" (מספר זכר).'},
+  {sent:'על השולחן ___ ספרים.', n:3, gender:'m', items:'ספרים', form:'numform', correct:'שלושה', distractors:['שלוש','שלשת','שלישי'], expl:'"ספרים" זכר → "שלושה".'},
+  {sent:'בחנות יש ___ בנות.', n:4, gender:'f', items:'בנות', form:'numform', correct:'ארבע', distractors:['ארבעה','ארבעת','רביעית'], expl:'"בנות" נקבה → "ארבע".'},
+  {sent:'ראיתי ___ ציפורים בעץ.', n:7, gender:'f', items:'ציפורים', form:'numform', correct:'שבע', distractors:['שבעה','שבעת','שביעית'], expl:'"ציפורים" נקבה → "שבע".'},
+  {sent:'הוא קנה ___ עפרונות.', n:6, gender:'m', items:'עפרונות', form:'numform', correct:'שישה', distractors:['שש','ששת','שישית'], expl:'"עפרונות" זכר → "שישה".'},
+  {sent:'נכחו ___ תלמידות בכיתה.', n:8, gender:'f', items:'תלמידות', form:'numform', correct:'שמונה', distractors:['שמונה (זכר)','שמונת','שמיני'], expl:'"תלמידות" נקבה → "שמונה" (אותה צורה גם בכתיבה, אך הניקוד שונה).'},
+  {sent:'יש ___ אנשים בחדר.', n:2, gender:'m', items:'אנשים', form:'numform', correct:'שני', distractors:['שתי','שניים','שנייה'], expl:'"אנשים" זכר ובסמיכות → "שני".'},
+  {sent:'קניתי ___ חולצות חדשות.', n:2, gender:'f', items:'חולצות', form:'numform', correct:'שתי', distractors:['שני','שתיים','שניה'], expl:'"חולצות" נקבה ובסמיכות → "שתי".'},
+  {sent:'בקבוצה ___ שחקנים.', n:9, gender:'m', items:'שחקנים', form:'numform', correct:'תשעה', distractors:['תשע','תשעת','תשיעי'], expl:'"שחקנים" זכר → "תשעה".'},
+  {sent:'ראיתי ___ עגלות בחנות.', n:5, gender:'f', items:'עגלות', form:'numform', correct:'חמש', distractors:['חמישה','חמשת','חמישית'], expl:'"עגלות" נקבה → "חמש".'},
+  {sent:'הוא הזמין ___ כיסאות.', n:10, gender:'m', items:'כיסאות', form:'numform', correct:'עשרה', distractors:['עשר','עשרת','עשירי'], expl:'"כיסאות" זכר → "עשרה".'},
+  {sent:'בדף יש ___ שורות.', n:10, gender:'f', items:'שורות', form:'numform', correct:'עשר', distractors:['עשרה','עשרת','עשירית'], expl:'"שורות" נקבה → "עשר".'},
+];
+topicDefs['he-number'] = {
+  title:'שם המספר',
+  lesson:`
+    <h3 style="margin-top:0">שם המספר בעברית</h3>
+    <div class="lesson">
+      <p>בעברית למספרים יש שתי צורות: <strong>זכר</strong> ו<strong>נקבה</strong>, והם חייבים להתאים למין של שם העצם שאחריהם.</p>
+      <p><strong>חשוב לזכור:</strong> דווקא המספרים <em>הזכריים</em> הם אלה שמסתיימים ב־ה' (חמיש<u>ה</u>, שיש<u>ה</u>), והמספרים <em>הנקביים</em> הם הקצרים יותר (חמש, שש).</p>
+      <table class="he-table">
+        <tr><th>מספר</th><th>זכר</th><th>נקבה</th><th>סמיכות זכר</th><th>סמיכות נקבה</th></tr>
+        <tr><td>2</td><td>שניים</td><td>שתיים</td><td>שני</td><td>שתי</td></tr>
+        <tr><td>3</td><td>שלושה</td><td>שלוש</td><td>שלושת</td><td>שלוש</td></tr>
+        <tr><td>4</td><td>ארבעה</td><td>ארבע</td><td>ארבעת</td><td>ארבע</td></tr>
+        <tr><td>5</td><td>חמישה</td><td>חמש</td><td>חמשת</td><td>חמש</td></tr>
+        <tr><td>6</td><td>שישה</td><td>שש</td><td>ששת</td><td>שש</td></tr>
+        <tr><td>10</td><td>עשרה</td><td>עשר</td><td>עשרת</td><td>עשר</td></tr>
+      </table>
+      <p>בצירוף עם ה' הידיעה משתמשים בצורת סמיכות: "<strong>שלושת</strong> הילדים", "<strong>חמש</strong> הבנות".</p>
+    </div>`,
+  example:`
+    <h3 style="margin-top:0">דוגמה</h3>
+    <div class="example">
+      <div class="step">המשפט: "בכיתה יש ___ ילדים."</div>
+      <div class="step">"ילדים" זה זכר רבים → המספר חייב להיות בזכר: <strong>חמישה</strong>.</div>
+      <div class="step">המשפט: "על העץ יש ___ ציפורים."</div>
+      <div class="step">"ציפורים" זה נקבה רבים → המספר בנקבה: <strong>חמש</strong>.</div>
+    </div>`,
+  makeQuestion:(slot)=>{
+    function gen(){
+      const q = pick(numeralBank);
+      const sentence = q.sent.replace('___', '<span class="target num">___</span>');
+      const opts = [q.correct, ...q.distractors];
+      // shuffle
+      for(let i = opts.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i+1));
+        [opts[i], opts[j]] = [opts[j], opts[i]];
+      }
+      const options = opts.map(t => ({label: t, correct: t === q.correct, explain: t === q.correct ? q.expl : ''}));
+      makeHeChoiceCard(slot, {
+        sentence,
+        prompt: `איזו צורה של המספר ${q.n} מתאימה?`,
+        options,
+        onNext: gen,
+      });
+    }
+    gen();
+  }
+};
+
+/* ---- Topic: צירוף סמיכות ---- */
+const smichutBank = [
+  {phrase:'ספר הילדים', n:'ספר', s:'הילדים', defined:true, expl:'"ספר" נסמך · "הילדים" סומך (מיודע) — לכן הצירוף מיודע.'},
+  {phrase:'בית ספר', n:'בית', s:'ספר', defined:false, expl:'"בית" נסמך · "ספר" סומך (לא מיודע) — צירוף לא מיודע.'},
+  {phrase:'דלת החדר', n:'דלת', s:'החדר', defined:true, expl:'"דלת" נסמך · "החדר" סומך מיודע — כל הצירוף מיודע.'},
+  {phrase:'תיק הספר', n:'תיק', s:'הספר', defined:true, expl:'"תיק" נסמך · "הספר" סומך מיודע.'},
+  {phrase:'חדר כושר', n:'חדר', s:'כושר', defined:false, expl:'"חדר" נסמך · "כושר" סומך לא מיודע.'},
+  {phrase:'גן הילדים', n:'גן', s:'הילדים', defined:true, expl:'"גן" נסמך · "הילדים" סומך מיודע.'},
+  {phrase:'מורה כיתה', n:'מורה', s:'כיתה', defined:false, expl:'"מורה" נסמך · "כיתה" סומך לא מיודע.'},
+  {phrase:'מפת העולם', n:'מפת', s:'העולם', defined:true, expl:'"מפת" צורת סמיכות של "מפה" · "העולם" סומך מיודע.'},
+  {phrase:'אופני ילדים', n:'אופני', s:'ילדים', defined:false, expl:'"אופני" צורת סמיכות של "אופניים" · "ילדים" סומך לא מיודע.'},
+  {phrase:'דברי הסופר', n:'דברי', s:'הסופר', defined:true, expl:'"דברי" צורת סמיכות של "דברים" · "הסופר" סומך מיודע.'},
+];
+topicDefs['he-smichut'] = {
+  title:'צירוף סמיכות',
+  lesson:`
+    <h3 style="margin-top:0">צירוף סמיכות</h3>
+    <div class="lesson">
+      <p>צירוף סמיכות הוא צירוף של שני שמות עצם, שיוצרים מושג אחד. לדוגמה: <strong>בית ספר</strong>, <strong>חדר אוכל</strong>.</p>
+      <p>בכל צירוף יש:</p>
+      <ul>
+        <li><span class="he-tag he-tag-z">נסמך</span> — המילה הראשונה, היא ה"גרעין" של הצירוף.</li>
+        <li><span class="he-tag he-tag-n">סומך</span> — המילה השנייה, היא משלימה את הראשונה.</li>
+      </ul>
+      <p><strong>שאלת בדיקה:</strong> "של מה / של מי?" — התשובה היא הסומך.</p>
+      <p><strong>יידוע:</strong> בצירוף סמיכות, ה' הידיעה תמיד מתקבעת על ה<u>סומך</u>, ולא על הנסמך. אומרים "בית הספר", לא "הבית ספר".</p>
+      <p><strong>צורת הנסמך:</strong> לעיתים הנסמך משנה צורה בסמיכות. דוגמה: "בית" → "בֵּית" (בית ספר), "מפה" → "מַפַּת" (מפת העולם), "ילדים" → "ילדי".</p>
+    </div>`,
+  example:`
+    <h3 style="margin-top:0">דוגמה</h3>
+    <div class="example">
+      <div class="step">הצירוף: <strong>"ספר הילדים"</strong></div>
+      <div class="step">"ספר" — נסמך (הגרעין). "הילדים" — סומך (של מי? של הילדים).</div>
+      <div class="step">היידוע: "הילדים" מיודע ב־ה' → כל הצירוף מיודע ("ספר הילדים" = "the children's book").</div>
+    </div>`,
+  makeQuestion:(slot)=>{
+    function gen(){
+      const q = pick(smichutBank);
+      // Random sub-question: identify nismach OR somech OR יידוע
+      const type = pick(['nismach','somech','defined']);
+      let prompt, options;
+      if(type === 'nismach'){
+        const others = smichutBank.filter(x => x.n !== q.n).map(x => x.n);
+        const shuf = others.sort(()=>Math.random()-0.5).slice(0,3);
+        const opts = [q.n, ...shuf];
+        for(let i = opts.length - 1; i > 0; i--){
+          const j = Math.floor(Math.random() * (i+1));
+          [opts[i], opts[j]] = [opts[j], opts[i]];
+        }
+        prompt = `בצירוף "<strong>${q.phrase}</strong>" — מהי המילה הנסמכת?`;
+        options = opts.map(t => ({label: t, correct: t === q.n, explain: t === q.n ? q.expl : ''}));
+      } else if(type === 'somech'){
+        const others = smichutBank.filter(x => x.s !== q.s).map(x => x.s);
+        const shuf = others.sort(()=>Math.random()-0.5).slice(0,3);
+        const opts = [q.s, ...shuf];
+        for(let i = opts.length - 1; i > 0; i--){
+          const j = Math.floor(Math.random() * (i+1));
+          [opts[i], opts[j]] = [opts[j], opts[i]];
+        }
+        prompt = `בצירוף "<strong>${q.phrase}</strong>" — מהו הסומך?`;
+        options = opts.map(t => ({label: t, correct: t === q.s, explain: t === q.s ? q.expl : ''}));
+      } else {
+        prompt = `האם הצירוף "<strong>${q.phrase}</strong>" מיודע?`;
+        options = [
+          {label: 'מיודע (יש ה' + "'" + ' הידיעה על הסומך)', correct: q.defined, explain: q.expl},
+          {label: 'לא מיודע', correct: !q.defined, explain: q.expl},
+        ];
+      }
+      makeHeChoiceCard(slot, { prompt, options, onNext: gen });
+    }
+    gen();
+  }
+};
+
+/* ---- Topic: שם ותוארו ---- */
+const toarBank = [
+  {phrase:'הילד הקטן', n:'הילד', t:'הקטן', g:'m', num:'s', def:true, expl:'"הילד" — זכר יחיד מיודע; "הקטן" — מתאים לזכר יחיד מיודע.'},
+  {phrase:'ילדה חכמה', n:'ילדה', t:'חכמה', g:'f', num:'s', def:false, expl:'"ילדה" — נקבה יחידה; "חכמה" — נקבה יחידה. שניהם לא מיודעים.'},
+  {phrase:'הספרים החדשים', n:'הספרים', t:'החדשים', g:'m', num:'p', def:true, expl:'"הספרים" — זכר רבים מיודעים; "החדשים" — תואם.'},
+  {phrase:'מכוניות יפות', n:'מכוניות', t:'יפות', g:'f', num:'p', def:false, expl:'"מכוניות" — נקבה רבות; "יפות" — תואם.'},
+  {phrase:'הבית הגדול', n:'הבית', t:'הגדול', g:'m', num:'s', def:true, expl:'"הבית" — זכר יחיד מיודע; "הגדול" — תואם.'},
+  {phrase:'תפוחים אדומים', n:'תפוחים', t:'אדומים', g:'m', num:'p', def:false, expl:'"תפוחים" — זכר רבים; "אדומים" — תואם.'},
+  {phrase:'החולצה הכחולה', n:'החולצה', t:'הכחולה', g:'f', num:'s', def:true, expl:'"החולצה" — נקבה יחידה מיודעת; "הכחולה" — תואם.'},
+  {phrase:'תלמידות חרוצות', n:'תלמידות', t:'חרוצות', g:'f', num:'p', def:false, expl:'"תלמידות" — נקבה רבות; "חרוצות" — תואם.'},
+];
+const adjectiveForms = {
+  big: {m_s:'גדול', f_s:'גדולה', m_p:'גדולים', f_p:'גדולות'},
+  small: {m_s:'קטן', f_s:'קטנה', m_p:'קטנים', f_p:'קטנות'},
+  good: {m_s:'טוב', f_s:'טובה', m_p:'טובים', f_p:'טובות'},
+  red: {m_s:'אדום', f_s:'אדומה', m_p:'אדומים', f_p:'אדומות'},
+  beautiful: {m_s:'יפה', f_s:'יפה', m_p:'יפים', f_p:'יפות'},
+  smart: {m_s:'חכם', f_s:'חכמה', m_p:'חכמים', f_p:'חכמות'},
+  new: {m_s:'חדש', f_s:'חדשה', m_p:'חדשים', f_p:'חדשות'},
+  old: {m_s:'ישן', f_s:'ישנה', m_p:'ישנים', f_p:'ישנות'},
+};
+const nounsByGenderNum = [
+  {n:'ילד', def:'הילד', g:'m', num:'s'},
+  {n:'ילדה', def:'הילדה', g:'f', num:'s'},
+  {n:'ילדים', def:'הילדים', g:'m', num:'p'},
+  {n:'ילדות', def:'הילדות', g:'f', num:'p'},
+  {n:'ספר', def:'הספר', g:'m', num:'s'},
+  {n:'תמונה', def:'התמונה', g:'f', num:'s'},
+  {n:'בתים', def:'הבתים', g:'m', num:'p'},
+  {n:'דלתות', def:'הדלתות', g:'f', num:'p'},
+  {n:'תלמיד', def:'התלמיד', g:'m', num:'s'},
+  {n:'תלמידה', def:'התלמידה', g:'f', num:'s'},
+  {n:'תלמידים', def:'התלמידים', g:'m', num:'p'},
+  {n:'תלמידות', def:'התלמידות', g:'f', num:'p'},
+];
+topicDefs['he-toar'] = {
+  title:'שם ותוארו',
+  lesson:`
+    <h3 style="margin-top:0">צירוף שם ותוארו</h3>
+    <div class="lesson">
+      <p>בצירוף "שם ותוארו" יש שם עצם ושם תואר שמתאר אותו. שם התואר חייב להתאים לשם העצם ב<strong>שלושה דברים</strong>:</p>
+      <ul>
+        <li><span class="he-tag he-tag-z">מין</span> — זכר/נקבה.</li>
+        <li><span class="he-tag he-tag-n">מספר</span> — יחיד/רבים.</li>
+        <li><span class="he-tag he-tag-y">יידוע</span> — שניהם מיודעים או שניהם לא מיודעים.</li>
+      </ul>
+      <p><strong>סדר המילים:</strong> בעברית התואר בא <em>אחרי</em> שם העצם (להבדיל מאנגלית). אומרים "הילד הקטן", לא "הקטן הילד".</p>
+      <table class="he-table">
+        <tr><th>שם עצם</th><th>תואר זכר יחיד</th><th>תואר נקבה יחידה</th><th>תואר זכר רבים</th><th>תואר נקבה רבות</th></tr>
+        <tr><td>גדול</td><td>גדול</td><td>גדולה</td><td>גדולים</td><td>גדולות</td></tr>
+        <tr><td>אדום</td><td>אדום</td><td>אדומה</td><td>אדומים</td><td>אדומות</td></tr>
+        <tr><td>חכם</td><td>חכם</td><td>חכמה</td><td>חכמים</td><td>חכמות</td></tr>
+      </table>
+    </div>`,
+  example:`
+    <h3 style="margin-top:0">דוגמה</h3>
+    <div class="example">
+      <div class="step">שם עצם: "הילדה" (נקבה, יחידה, מיודעת)</div>
+      <div class="step">איזה תואר יתאים לו מהאפשרויות "גדול / גדולה / הגדולה / הגדולים"?</div>
+      <div class="step">תשובה: <strong>"הגדולה"</strong> — נקבה, יחידה, מיודעת. הצירוף: "הילדה הגדולה".</div>
+    </div>`,
+  makeQuestion:(slot)=>{
+    function gen(){
+      // pick a noun and an adjective; ask user to choose the matching form
+      const noun = pick(nounsByGenderNum);
+      const wantDef = Math.random() < 0.5;
+      const nounWord = wantDef ? noun.def : noun.n;
+      const adjKey = pick(Object.keys(adjectiveForms));
+      const forms = adjectiveForms[adjKey];
+      const key = `${noun.g}_${noun.num}`;
+      const correctBase = forms[key];
+      const correct = wantDef ? ('ה' + correctBase) : correctBase;
+      // distractors — other form combos
+      const allKeys = ['m_s','f_s','m_p','f_p'];
+      const distractorBases = allKeys.filter(k => k !== key).map(k => forms[k]);
+      // mix defined/undefined
+      const distractors = [];
+      distractorBases.forEach(b => {
+        // pick the opposite definiteness for variety
+        distractors.push(Math.random() < 0.5 ? b : ('ה' + b));
+      });
+      const opts = [correct, ...distractors];
+      // dedup
+      const seen = new Set();
+      const dedup = opts.filter(o => { if(seen.has(o)) return false; seen.add(o); return true; });
+      // fill if too few
+      while(dedup.length < 4){
+        const extra = wantDef ? distractorBases[dedup.length % distractorBases.length] : ('ה' + distractorBases[dedup.length % distractorBases.length]);
+        if(!seen.has(extra)){ seen.add(extra); dedup.push(extra); }
+      }
+      const final = dedup.slice(0, 4);
+      for(let i = final.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i+1));
+        [final[i], final[j]] = [final[j], final[i]];
+      }
+      const expl = `"${nounWord}" — ${noun.g === 'm' ? 'זכר' : 'נקבה'} ${noun.num === 's' ? 'יחיד' : 'רבים'}${wantDef ? ', מיודע' : ', לא מיודע'} → התואר חייב להתאים → <strong>"${correct}"</strong>.`;
+      const options = final.map(t => ({label: t, correct: t === correct, explain: t === correct ? expl : ''}));
+      makeHeChoiceCard(slot, {
+        prompt: `איזו צורת התואר מתאימה לשם "<strong>${nounWord}</strong>"?`,
+        options,
+        onNext: gen,
+      });
+    }
+    gen();
+  }
+};
+
+/* ---- Topic: הבנת הנקרא (Hebrew reading comprehension) ---- */
+const hebrewPassages = [
+  {
+    title: 'הקריאה — חוויה שלא נגמרת',
+    text: `הקריאה היא אחת ההרגלים החשובים ביותר שאפשר לפתח בגיל צעיר. מי שקורא הרבה לומד מילים חדשות, מכיר עולמות שונים ומפתח דמיון עשיר. גם בעידן של מסכים והרשתות החברתיות, הספר ממשיך להוות כלי חשוב להעמקת ידע ולהפעלת מחשבה.\nחוקרים גילו שילדים שקוראים באופן קבוע מקבלים ציונים גבוהים יותר בבית הספר, ולא רק בעברית. הקריאה משפיעה גם על יכולת הריכוז, על כתיבת חיבורים ועל הבנת טקסטים מסובכים יותר. מעבר לכך, הקריאה גם מרגיעה: היא מאפשרת לקורא להתנתק לרגעים ספורים מהלחץ של היומיום ולהיכנס לסיפור.\nמומלץ לכל אחד למצוא ז'אנר שמתאים לו — סיפורי הרפתקאות, מדע בדיוני, ביוגרפיות, פנטזיה, או ספרי עיון. ההנאה היא המנוע: כשנהנים מספר, חוזרים אליו שוב ושוב, ובסופו של דבר ההרגל הופך לחלק בלתי נפרד מהחיים.`,
+    questions: [
+      {q:'איזו תועלת מרכזית של הקריאה מציין הכתב?', opts:['חיסכון בכסף','הרחבת אוצר המילים והדמיון','שיפור הכושר הגופני','עזרה במלאכת היד'], correct:1},
+      {q:'מה אומר המחקר על ילדים שקוראים באופן קבוע?', opts:['הם רואים יותר טלוויזיה','הם מקבלים ציונים נמוכים','הם מצליחים יותר בבית הספר','הם ישנים פחות שעות'], correct:2},
+      {q:'מהי, על פי הכתב, התרומה הרגשית של הקריאה?', opts:['היא מעוררת לחץ','היא מנתקת לרגעים מהיומיום ומרגיעה','היא גורמת לכאבי ראש','היא מחליפה ספורט'], correct:1},
+      {q:'מה הטיפ שנותן הכתב לסיום הכתבה?', opts:['לקרוא רק ספרי לימוד','להתחיל לכתוב ספר משלך','למצוא ז\'אנר שמתאים לך וליהנות ממנו','להתחיל לקרוא רק באנגלית'], correct:2},
+    ]
+  },
+  {
+    title: 'התנדבות בקהילה',
+    text: `התנדבות היא פעולה שאדם עושה מרצונו החופשי, בלי לקבל תמורה כספית, במטרה לעזור לאחרים או לשפר את הסביבה שבה הוא חי. בישראל פועלים אלפי ארגוני התנדבות בתחומים שונים: סיוע לקשישים, ליווי לילדים בחינוך, הצלת חיים, איכות הסביבה, שמירה על בעלי חיים, ועוד.\nההתנדבות נותנת ערך כפול: גם המתנדב וגם הזקוק לסיוע מרוויחים ממנה. המתנדב לומד אחריות, מפתח אמפתיה ומכיר אנשים חדשים. המקבל את הסיוע מרגיש שיש מי שדואג לו, וזה מחזק אותו רגשית ולא רק חומרית.\nבני נוער שמתנדבים בקהילה מדווחים שהם חשים סיפוק רב ושההתנדבות נותנת להם כיוון ומשמעות. גם המעסיקים מעריכים מועמדים לעבודה שהתנדבו בעבר, כי זה מעיד על תכונות כמו אחריות, מחויבות ועבודת צוות.\nלמרות היתרונות הברורים, חשוב לזכור שההתנדבות צריכה להיות מתוך רצון אמיתי. כשעושים אותה רק "כדי להיראות טוב", היא מאבדת חלק מערכה.`,
+    questions: [
+      {q:'מהי, לפי הכתב, ההגדרה של התנדבות?', opts:['עבודה בשכר נמוך','פעולה מרצון, ללא תמורה כספית, לעזרת אחרים','חובה חוקית של אזרחי המדינה','שירות שאדם נדרש לבצע בעבודתו'], correct:1},
+      {q:'מהי "התועלת הכפולה" של ההתנדבות?', opts:['החיסכון בכסף לשני הצדדים','גם המתנדב וגם המקבל מרוויחים ממנה','אפשר לעזור לשני אנשים בו זמנית','המתנדב מקבל פעמיים תעודת הצטיינות'], correct:1},
+      {q:'מדוע מעסיקים מעריכים מועמדים שהתנדבו?', opts:['כי ההתנדבות מחליפה תעודת תיכון','כי זה מעיד על תכונות כמו אחריות ומחויבות','כי המתנדבים מסכימים לעבוד בחינם','כי כך אפשר לחסוך בהדרכה'], correct:1},
+      {q:'מהי האזהרה שמשמיע הכתב בסוף הכתבה?', opts:['אסור להתנדב יותר מדי שעות','אסור להתנדב לפני גיל 18','חשוב שההתנדבות תהיה מרצון אמיתי ולא רק להצטיינות','עדיף להתנדב רק בארגונים גדולים'], correct:2},
+    ]
+  },
+  {
+    title: 'התרבות הדיגיטלית ובני הנוער',
+    text: `הדור הצעיר של היום גדל עם הטלפונים החכמים בידיו ועם הרשתות החברתיות כחלק מהיום־יום. בני נוער מבלים בממוצע יותר משלוש שעות ביום מול מסכי המכשירים, צופים בסרטונים, מתכתבים עם חברים ומעלים תכנים משלהם. מצד אחד, המציאות הזו פותחת חלון לעולם רחב: לימוד עצמי, היכרות עם תרבויות, ופלטפורמה להבעת יצירתיות.\nמצד שני, החוקרים מתריעים שהשהייה הממושכת ברשת אינה חפה מסיכונים. ראשית, היא משפיעה על איכות השינה, מפני שהאור הכחול הבוקע מהמסך מבלבל את השעון הביולוגי. שנית, החשיפה המתמדת ל"חיים המושלמים" של אחרים — תמונות מטופלות, חופשות חלום, גופים מעוצבים — עלולה לעורר תחושות של חוסר ערך עצמי או דיכאון. שלישית, התלות במכשיר מקשה לעיתים על שיחות פנים אל פנים ועל יצירת קשרים עמוקים.\nהמומחים ממליצים לשמור על איזון: לקבוע שעות "כיבוי", להימנע מהמסך לפחות שעה לפני השינה, לעקוב אחר חשבונות שמעודדים ולא משפילים, ובעיקר — לא להחליף את הקשר האנושי החי בתקשורת מסך בלבד.`,
+    questions: [
+      {q:'מהי תופעת המפתח שעליה מדבר הכתב?', opts:['ירידה במכירות של ספרים מודפסים','שימוש מוגבר של בני נוער ברשתות חברתיות ובסמארטפונים','ביטול מערכת החינוך הקלאסית','עלייה במחירי המכשירים החכמים'], correct:1},
+      {q:'מהן שלוש הבעיות העיקריות שמציינים החוקרים?', opts:['בעיות עין, יוקר מחיה ובדידות','עומס יתר, איכות שינה ולחץ נפשי','השפעה על שינה, תחושת חוסר ערך עצמי ופגיעה בקשרים אמיתיים','קושי בלימודים, חוסר זמן וירידה ביצירתיות'], correct:2},
+      {q:'מדוע האור הכחול של המסך נחשב מזיק?', opts:['כי הוא פוגע בעיניים לאורך זמן','כי הוא צובע את הקירות','כי הוא מבלבל את השעון הביולוגי ומקשה על השינה','כי הוא מעלה את חשבון החשמל'], correct:2},
+      {q:'מהי ההמלצה החשובה ביותר של המומחים, לפי הכתב?', opts:['להפסיק לחלוטין שימוש בסמארטפון','להחליף את כל החברים שלך','לשמור על איזון ולא להחליף את הקשר האנושי הישיר במסך','לקרוא רק חשבונות של ידוענים'], correct:2},
+      {q:'מהי הזווית החיובית של התופעה, לפי הכתב?', opts:['חיסכון במחירי חופשות','אפשרות ללמוד, להכיר תרבויות ולהביע יצירתיות','קבלת הנחות בקניית מכשירים','כתיבת ספרים בעברית'], correct:1},
+    ]
+  },
+];
+topicDefs['he-text'] = {
+  title:'הבנת הנקרא',
+  lesson:`
+    <h3 style="margin-top:0">הבנת הנקרא — אסטרטגיות</h3>
+    <div class="lesson">
+      <p>"הבנת הנקרא" היא היכולת לקרוא טקסט ולהבין את התכנים והמסרים שבו. במבחנים בעברית מציגים בדרך כלל שני טקסטים, ואחריהם שאלות.</p>
+      <p><strong>שלבי קריאה מומלצים:</strong></p>
+      <ol>
+        <li><strong>קריאה ראשונה</strong> — קראו את הטקסט עד הסוף, בלי לעצור על כל מילה לא מוכרת. מטרת הקריאה: להבין את המסר הכללי.</li>
+        <li><strong>קריאת השאלות</strong> — קראו את כל השאלות לפני שאתם חוזרים לטקסט. כך תדעו מה אתם מחפשים.</li>
+        <li><strong>קריאה שנייה</strong> — חזרו לטקסט וחפשו את הקטעים שעונים על השאלות.</li>
+        <li><strong>בדיקה</strong> — וודאו שהתשובה שבחרתם <em>נכתבה</em> בטקסט. הימנעו מתשובות שנשמעות הגיוניות אבל לא מופיעות בכתב.</li>
+      </ol>
+      <p><strong>סוגי שאלות שכיחות:</strong></p>
+      <ul>
+        <li>שאלות מידע — "לפי הכתב, מה...?"</li>
+        <li>שאלות הסקה — "מה הכתב התכוון ב...?"</li>
+        <li>שאלות רעיון מרכזי — "מהי המטרה של הכתבה?"</li>
+        <li>שאלות אוצר מילים — "מה פירוש המילה X בהקשר?"</li>
+      </ul>
+    </div>`,
+  example:`
+    <h3 style="margin-top:0">דוגמה</h3>
+    <div class="example">
+      <div class="step"><strong>קטע:</strong> "מומלץ לקרוא ספרים מסוגים שונים. הקריאה מרחיבה את אוצר המילים ומפעילה את הדמיון."</div>
+      <div class="step"><strong>שאלה:</strong> מה הסיבה שמומלץ לקרוא?</div>
+      <div class="step">תשובה: כדי להרחיב את אוצר המילים ולהפעיל את הדמיון.</div>
+    </div>`,
+  makeQuestion:(slot)=>{
+    function gen(){
+      const p = pick(hebrewPassages);
+      slot.innerHTML='';
+      const qsHtml = p.questions.map((qObj, qi)=>{
+        const optsHtml = qObj.opts.map((opt, oi)=>`
+          <label class="q-option">
+            <input type="radio" name="he-passage-q-${qi}" value="${oi}">
+            <span><strong>${oi+1}.</strong> ${opt}</span>
+          </label>
+        `).join('');
+        return `
+          <div class="unseen-q" data-qi="${qi}" data-correct="${qObj.correct}">
+            <div class="q-text">${qi+1}. ${qObj.q}</div>
+            <div class="q-options" style="direction:rtl;text-align:right">${optsHtml}</div>
+          </div>
+        `;
+      }).join('');
+      const wrap = document.createElement('div');
+      wrap.className = 'qbox';
+      wrap.innerHTML = `
+        <div class="he-passage">
+          <h4>${p.title}</h4>
+          ${p.text}
+        </div>
+        <div style="margin:14px 0 6px;color:#475569;font-weight:600">שאלות:</div>
+        <div class="he-passage-questions">${qsHtml}</div>
+        <div class="actions" style="margin-top:14px">
+          <button class="btn btn-pink nx">🔄 קטע אחר</button>
+          <button class="btn btn-success ck">✓ בדוק תשובות</button>
+          <button class="btn btn-warn sol">💡 הצג פתרונות</button>
+        </div>
+        <div class="feedback fb"></div>
+        <div class="reveal sl"></div>
+      `;
+      // Override q-option direction to RTL for Hebrew
+      slot.appendChild(wrap);
+      let hasChecked = false;
+      function runCheck(){
+        const fb = wrap.querySelector('.fb');
+        const qBlocks = wrap.querySelectorAll('.unseen-q');
+        let correct = 0; const total = qBlocks.length; let answered = 0;
+        const wrong = [];
+        qBlocks.forEach(qb=>{
+          const correctIdx = parseInt(qb.dataset.correct, 10);
+          const qi = parseInt(qb.dataset.qi, 10);
+          const opts = qb.querySelectorAll('.q-option');
+          opts.forEach(o => o.classList.remove('correct','wrong'));
+          const checked = qb.querySelector('input[type="radio"]:checked');
+          if(checked){
+            answered++;
+            const sel = parseInt(checked.value, 10);
+            if(sel === correctIdx){
+              correct++;
+              opts[sel].classList.add('correct');
+            } else {
+              opts[sel].classList.add('wrong');
+              opts[correctIdx].classList.add('correct');
+              wrong.push(qi+1);
+            }
+          } else {
+            wrong.push(qi+1);
+          }
+        });
+        if(correct === total){
+          fb.className = 'feedback show ok';
+          fb.textContent = `🎉 כל הכבוד! ענית נכון על כל ${total} השאלות.`;
+        } else if(answered === 0){
+          fb.className = 'feedback show bad';
+          fb.textContent = '🤔 עדיין לא סימנת תשובות.';
+        } else if(correct === 0){
+          fb.className = 'feedback show bad';
+          fb.textContent = '✗ אף תשובה לא נכונה. חזור לקטע ונסה שוב.';
+        } else {
+          fb.className = 'feedback show partial';
+          fb.innerHTML = `✓ <strong>${correct} מתוך ${total}</strong> נכון. נשאר לתקן: שאלות <strong>${wrong.join(', ')}</strong>.`;
+        }
+      }
+      wrap.querySelector('.ck').onclick = ()=>{ hasChecked = true; runCheck(); };
+      wrap.querySelectorAll('input[type="radio"]').forEach(r=>{
+        r.addEventListener('change', ()=>{ if(hasChecked) runCheck(); });
+      });
+      wrap.querySelector('.sol').onclick = ()=>{
+        const sl = wrap.querySelector('.sl');
+        const solHtml = p.questions.map((qObj, qi)=>`<div class="step"><strong>${qi+1}.</strong> תשובה: <strong>${qObj.correct+1}</strong> — ${qObj.opts[qObj.correct]}</div>`).join('');
+        sl.innerHTML = `<h4>פתרונות</h4>${solHtml}`;
+        sl.classList.add('show');
+        wrap.querySelectorAll('.unseen-q').forEach(qb=>{
+          const correctIdx = parseInt(qb.dataset.correct, 10);
+          const opts = qb.querySelectorAll('.q-option');
+          opts.forEach(o => o.classList.remove('correct','wrong'));
+          opts[correctIdx].classList.add('correct');
+        });
+      };
+      wrap.querySelector('.nx').onclick = gen;
+    }
+    gen();
+  }
+};
+
+/* ---- Topic: כתיבת סיכום ---- */
+const summaryTasks = [
+  {
+    title:'עזרה הדדית במשפחה',
+    text:`במשפחה כל אחד תורם את חלקו לחיים המשותפים: ההורים יוצאים לעבודה ומפרנסים את הבית, הילדים לומדים ועוזרים בעבודות הבית, וגם הסבים והסבתות נוטלים חלק — לעיתים בעצות, לעיתים בעזרה מעשית. כל תרומה, גדולה כקטנה, היא חוליה חשובה בשרשרת המשפחתית. כאשר כל בני המשפחה מתחלקים במשימות, האווירה בבית נעימה יותר, יש פחות מתח, ואיש לא מרגיש שהמשא נופל רק עליו. דווקא בגלל זה, חשוב ללמד את הילדים מגיל צעיר להתנדב בבית: לפנות מהשולחן, לסדר את החדר, לעזור לאחים הקטנים. אלה לא רק "מטלות", אלא הזדמנות לטפח אחריות וערכים.`,
+    points:[
+      {kw:['כל אחד','בני המשפחה','חלוקה','מתחלקים','תורם','תרומה'], label:'התרומה של כל אחד לבית'},
+      {kw:['פחות מתח','אווירה','נעימה','משא','איש לא','לבד'], label:'התועלת — אווירה נעימה / פחות לחץ'},
+      {kw:['ילדים','מגיל צעיר','לסדר','לפנות','עוזרים','אחריות'], label:'חשיבות שיתוף הילדים במטלות'},
+      {kw:['ערכים','אחריות','חינוך','לטפח'], label:'הקניית ערכים ואחריות'},
+    ]
+  },
+  {
+    title:'הנאה מקריאה',
+    text:`קריאה היא לא רק כלי ללימוד, אלא גם מקור הנאה אמיתי. מי שמוצא ספר שמעניין אותו — בין אם זה ספר הרפתקאות, פנטזיה, סיפור היסטורי או ספר מדע — מקבל איתו עולם שלם של דמיון. הקריאה מאפשרת לקורא להתנתק לכמה רגעים מהמציאות, להיכנס לחיי הגיבורים ולחוש אמפתיה אליהם. בנוסף, היא משפרת את אוצר המילים, את הריכוז ואת היכולת לכתוב טוב יותר. גם כשעייפים, ספר טוב יכול להרגיע ולעזור להירדם. הסוד הוא למצוא את הז'אנר המתאים לכל אחד — וברגע שמוצאים, ההרגל הופך לחלק טבעי מהיום.`,
+    points:[
+      {kw:['הנאה','מקור','מעניין','מהנה','חוויה'], label:'הקריאה כמקור הנאה'},
+      {kw:['ז\'אנר','סוגים','הרפתקאות','פנטזיה','מדע','היסטורי','מתאים'], label:'מציאת ז\'אנר מתאים'},
+      {kw:['דמיון','עולם','להתנתק','גיבורים','אמפתיה'], label:'הפעלת דמיון והזדהות עם הגיבורים'},
+      {kw:['אוצר מילים','ריכוז','לכתוב','כתיבה','שפה'], label:'יתרונות לימודיים — אוצר מילים, ריכוז וכתיבה'},
+    ]
+  },
+];
+topicDefs['he-summary'] = {
+  title:'כתיבת סיכום',
+  lesson:`
+    <h3 style="margin-top:0">איך כותבים סיכום טוב?</h3>
+    <div class="lesson">
+      <p>סיכום הוא טקסט קצר שמציג את <strong>הרעיונות המרכזיים</strong> של טקסט אחר, במילים שלך, וללא פרטים מיותרים או ציטוטים ארוכים.</p>
+      <p><strong>שלבים לכתיבת סיכום:</strong></p>
+      <ol>
+        <li>קראו את הטקסט המקורי קריאה מעמיקה.</li>
+        <li>סמנו את המשפטים החשובים — אלה שמציגים את הרעיון המרכזי של כל פסקה.</li>
+        <li>כתבו ברשימה את הנקודות העיקריות, במילים שלכם.</li>
+        <li>חברו את הנקודות לטקסט רץ, עם משפט פתיחה ומשפט סיום.</li>
+        <li>קראו את הסיכום ובדקו: האם כיסיתי את כל הנקודות? האם נשארה משהו מיותר?</li>
+      </ol>
+      <p><strong>מה <u>לא</u> כדאי לעשות בסיכום:</strong></p>
+      <ul>
+        <li>לכתוב את דעתך האישית או רגשות.</li>
+        <li>להעתיק משפטים שלמים מהמקור.</li>
+        <li>להוסיף פרטים שלא נמצאים בכתב המקורי.</li>
+      </ul>
+      <p><strong>אורך מומלץ:</strong> בדרך כלל 25%-30% מאורך המקור.</p>
+    </div>`,
+  example:`
+    <h3 style="margin-top:0">דוגמה</h3>
+    <div class="example">
+      <div class="step"><strong>טקסט מקור (קצר):</strong> "השמש זרחה בבוקר. הילדים יצאו לשחק בפארק. הם שיחקו בכדור ואכלו ארטיק. בערב חזרו הביתה עייפים אך מאושרים."</div>
+      <div class="step"><strong>סיכום:</strong> ביום אביבי הילדים בילו בפארק, שיחקו ואכלו, וחזרו הביתה מרוצים.</div>
+    </div>`,
+  makeQuestion:(slot)=>{
+    function gen(){
+      const t = pick(summaryTasks);
+      slot.innerHTML='';
+      const wrap = document.createElement('div');
+      wrap.className = 'qbox';
+      wrap.innerHTML = `
+        <div class="he-passage">
+          <h4>${t.title}</h4>
+          ${t.text}
+        </div>
+        <div style="margin:14px 0 6px;color:#475569;font-weight:600">כתוב/כתבי סיכום קצר של הטקסט (כ־3–4 משפטים, במילים שלך):</div>
+        <textarea class="he-textarea" placeholder="כתוב כאן את הסיכום שלך..."></textarea>
+        <div class="actions" style="margin-top:14px">
+          <button class="btn btn-pink nx">🔄 קטע אחר</button>
+          <button class="btn btn-success ck">✓ בדוק את הסיכום שלי</button>
+        </div>
+        <div class="he-fb"></div>
+        <div class="he-points"></div>
+      `;
+      slot.appendChild(wrap);
+      const ta = wrap.querySelector('.he-textarea');
+      const fb = wrap.querySelector('.he-fb');
+      const pts = wrap.querySelector('.he-points');
+      let hasChecked = false;
+      function norm(s){ return (s||'').replace(/[״"׳']/g,'').replace(/\s+/g,' ').trim(); }
+      function runCheck(){
+        const userText = norm(ta.value);
+        if(userText.length < 20){
+          fb.className = 'he-fb bad';
+          fb.textContent = '✗ הסיכום קצר מדי. כתוב לפחות 3 משפטים שמסכמים את הנקודות העיקריות.';
+          pts.innerHTML = '';
+          return;
+        }
+        const hits = [];
+        const misses = [];
+        t.points.forEach(p => {
+          const found = p.kw.some(kw => userText.includes(kw));
+          if(found) hits.push(p);
+          else misses.push(p);
+        });
+        // Check for copy-paste: penalize if >50% of words match the source verbatim
+        const userWords = userText.split(/\s+/).filter(w=>w.length>3);
+        const srcWords = norm(t.text).split(/\s+/);
+        const longMatches = userWords.filter(w => srcWords.includes(w)).length;
+        const copyRatio = userWords.length ? longMatches / userWords.length : 0;
+        const ratio = hits.length / t.points.length;
+        if(ratio === 1 && copyRatio < 0.7){
+          fb.className = 'he-fb ok';
+          fb.textContent = `🎉 סיכום מצוין! זיהית את כל הנקודות המרכזיות (${hits.length} מתוך ${t.points.length}).`;
+        } else if(ratio >= 0.6){
+          fb.className = 'he-fb ok';
+          fb.textContent = `✓ סיכום טוב. כיסית ${hits.length} מתוך ${t.points.length} נקודות מרכזיות${copyRatio >= 0.7 ? '. שים לב — נראה שהעתקת ביטויים רבים מהמקור; נסה לנסח במילים שלך.' : ''}.`;
+        } else if(hits.length > 0){
+          fb.className = 'he-fb bad';
+          fb.textContent = `כיסית רק ${hits.length} מתוך ${t.points.length} נקודות מרכזיות. נסה להוסיף את הנקודות החסרות.`;
+        } else {
+          fb.className = 'he-fb bad';
+          fb.textContent = '✗ הסיכום לא נוגע בנקודות המרכזיות של הטקסט. חזור וקרא את הטקסט שוב.';
+        }
+        pts.innerHTML = '';
+        hits.forEach(p => {
+          const el = document.createElement('div'); el.className = 'he-point hit'; el.textContent = `✓ ${p.label}`; pts.appendChild(el);
+        });
+        misses.forEach(p => {
+          const el = document.createElement('div'); el.className = 'he-point miss'; el.textContent = `○ ${p.label}`; pts.appendChild(el);
+        });
+      }
+      wrap.querySelector('.ck').onclick = ()=>{ hasChecked = true; runCheck(); };
+      ta.addEventListener('input', ()=>{ if(hasChecked) runCheck(); });
+      wrap.querySelector('.nx').onclick = gen;
+    }
+    gen();
+  }
+};
+
 /* ===== Unseens (Reading Comprehension) ===== */
 const unseenPassages = [
   /* ---- Module C ---- */
@@ -3271,7 +4019,7 @@ let savedSubject = null;
 try { savedMode = localStorage.getItem('learnMathDevice'); } catch(e){}
 try { savedSubject = localStorage.getItem('learnMathSubject'); } catch(e){}
 
-if(savedSubject === 'math' || savedSubject === 'english'){
+if(savedSubject === 'math' || savedSubject === 'english' || savedSubject === 'hebrew'){
   window._learnSubject = savedSubject;
 } else {
   window._learnSubject = 'math';
